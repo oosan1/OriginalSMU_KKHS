@@ -27,8 +27,22 @@ body > * {
     grid-column: 1/5;
     border: 1px solid #000;
     overflow-y: auto;
+    overflow-x: scroll;
+    white-space: pre;
     display: flex;
     flex-direction: column-reverse;
+}
+
+.black {
+    color: black;
+}
+
+.red {
+    color: red;
+}
+
+.green {
+    color: green;
 }
 
 #send_btn {
