@@ -772,6 +772,12 @@
 		(uuid "312b5faf-d24f-441b-96fd-23db0e54d05f")
 	)
 	(junction
+		(at 110.49 144.78)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "4904e549-b58c-4a77-9921-32f34fe9b2df")
+	)
+	(junction
 		(at 208.28 72.39)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -971,6 +977,16 @@
 	)
 	(wire
 		(pts
+			(xy 110.49 148.59) (xy 114.3 148.59)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5feb35bd-6960-4fad-9325-0bcc7e9c2de8")
+	)
+	(wire
+		(pts
 			(xy 132.08 106.68) (xy 132.08 101.6)
 		)
 		(stroke
@@ -1011,7 +1027,7 @@
 	)
 	(wire
 		(pts
-			(xy 101.6 144.78) (xy 114.3 144.78)
+			(xy 101.6 144.78) (xy 110.49 144.78)
 		)
 		(stroke
 			(width 0)
@@ -1028,6 +1044,16 @@
 			(type default)
 		)
 		(uuid "6e9684d0-d468-4b6b-aa26-23cd234f74f5")
+	)
+	(wire
+		(pts
+			(xy 110.49 144.78) (xy 114.3 144.78)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7203365b-9948-48bd-a9ec-a329e05cad83")
 	)
 	(wire
 		(pts
@@ -1218,6 +1244,16 @@
 			(type default)
 		)
 		(uuid "ba7ed10d-02b4-4016-9cd5-a86dd54b9bbb")
+	)
+	(wire
+		(pts
+			(xy 110.49 144.78) (xy 110.49 148.59)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bbbf0ff9-5317-49b9-89d7-3be197115de5")
 	)
 	(wire
 		(pts
@@ -1750,6 +1786,18 @@
 			(justify left)
 		)
 		(uuid "0c31fe28-cb0e-44e2-bbbe-f7c9a6d89754")
+	)
+	(hierarchical_label "GNDA_2"
+		(shape input)
+		(at 114.3 148.59 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "257ee261-3bd9-4ea3-9e13-8a692a0539e9")
 	)
 	(hierarchical_label "GNDA"
 		(shape input)
