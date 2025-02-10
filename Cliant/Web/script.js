@@ -22,6 +22,24 @@ function onConsoleKeypress(event) {
 }
 
 // シリアル通信関係
+
+class LineBreakTransformer {
+    constructor() {
+      this.chunks = "";
+    }
+
+    transform(chunk, controller) {
+      this.chunks += chunk;
+      const lines = this.chunks.split("\r\n");
+      this.chunks = lines.pop();
+      lines.forEach((line) => controller.enqueue(line));
+    }
+
+    flush(controller) {
+      controller.enqueue(this.chunks);
+    }
+}
+
 async function onConnectButtonClick() {
     let baudrate
     try {
@@ -76,7 +94,11 @@ function sendSerialConsole(text, color) {
 
 async function readTextSerial() {
     while (port.readable) {
-        const reader = port.readable.getReader();
+        const textDecoder = new TextDecoderStream();
+        const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+        const reader = textDecoder.readable
+        .pipeThrough(new TransformStream(new LineBreakTransformer()))
+        .getReader();
         try {
             while (true) {
                 const { value, done } = await reader.read();
@@ -84,8 +106,7 @@ async function readTextSerial() {
                   console.log("Canceled");
                   break;
                 }
-                const inputValue = new TextDecoder().decode(value);
-                sendSerialConsole(inputValue, "black");
+                sendSerialConsole(value, "black");
               }
         } catch (error) {
             console.log(error);
