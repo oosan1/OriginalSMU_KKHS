@@ -1,0 +1,5 @@
+* Solar_D
+.MODEL Solar_D D
++ IS=10u
++ RS=1u
++ N=5

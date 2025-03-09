@@ -1,0 +1,503 @@
+**************************************************************
+*              Disclaimer and Copyright Notice
+**************************************************************
+*
+* This SPICE Model is protected under copyright laws.
+* The copyright in this SPICE Model and all other intellectual property rights therein belong to ROHM Co., Ltd., its affiliates and licensors (collectively "ROHM"), and all rights are reserved.
+*
+* ROHM hereby grants you a nonexclusive, nontransferable license to use this SPICE Model as long as you abide by the terms and conditions herein. 
+* However, you are not authorized to sell, loan, rent, lease, redistribute or license this SPICE Model, in whole or in part, or in modified form, to anyone.
+*
+* You may modify this SPICE Model to suit your specific applications, but the rights to derivative works and said modifications shall belong to ROHM. 
+* You may make copies of this SPICE Model as necessary for internal use only within your company.
+*
+* Any and all your act that violates the terms and conditions herein shall be deemed to constitute an act of intentional infringement on ROHM's copyright and other intellectual property rights. 
+* In this case, ROHM shall have the right to seek an immediate injunction or other remedial action and claim for any and all damages incurred by ROHM as the result of your act of infringement and you may not file any objection to such ROHM's claim.
+*
+* SPICE Models can be a useful tool for evaluating product performance. 
+* However, they cannot reflect accurate device performance under all conditions, and are not intended to replace the use of an evaluation board for final verification.
+* In any case, the latest datasheet is considered the final design guideline and represents the only actual performance specifications.
+* Please use this SPICE MODEL as an adjunct to simulate product operation.
+*
+* ROHM shall not be responsible for ensuring proper application on all computer systems.
+* This SPICE MODEL is provided AS IS. ROHM makes no guarantees, either implicitly or explicitly, regarding its usability, functionality, accuracy, merchantability, or fitness for a specific purpose.
+* You are responsible for verifying and validating the simulation results under the actual operating conditions and application environment.
+* In addition, you shall take full responsibility for the use of any information acquired from this SPICE MODEL. 
+* ROHM does not assume warranty of any kind arising from the use of this SPICE MODEL. 
+* ACCORDINGLY, IN NO EVENT SHALL ROHM BE RESPONSIBLE, WHETHER THROUGH CONTRACT OR TORT LIABILITY, FOR ANY DAMAGES (INCLUDING BUT NOT LIMITED TO LOST PROFITS OR OTHER INCIDENTAL, 
+* CONSEQUENTAL, OR PUNITIVE DAMAGES) ARISING OUT OF OR IN CONNECTION WITH THE USE OR APPLICATION OF THIS SPICE MODEL.
+* Furthermore, this SPICE MODEL is subject to change without notice.
+* Unless otherwise expressly provided herein, ROHM does not convey any license under patent rights or any other intellectual property rights (including those of third parties).
+* ROHM is not obligated to provide maintenance or support for the SPICE MODEL.
+*
+* IF YOU DO NOT AGREE TO THE TERMS STATED ABOVE, PLEASE CEASE ALL USE OF THIS SPICE MODEL AND DELETE THIS SPICE MODEL (INCLUDING ALL DERIVATIVE WORKS, MODIFICATIONS AND COPIES OF THIS SPICE MODEL) IMMEDIATELY.
+*
+**************************************************************
+* (C) Copyright 2023 ROHM Co.,Ltd. All right reserved.
+**************************************************************
+*
+* Released by       : ROHM Co., Ltd
+* Component         : BD87521
+* Date              : 2023/12/08
+* Model Type        : Transient,AC
+* Simulator         : SPICE
+* Model Revision    : 2.0.0
+*
+***********Revision update history****************************
+* 2023/12/08 : 1.0.0 release
+* 2024/03/29 : 2.0.0 release
+**************************************************************
+*
+*model usage notes:
+*1. temperature effects have not been modeled
+*2. stabillity depends on cout and esr have not been modeled
+*
+**************************************************************
+** block symbol definitions
+.subckt bd87521 out vss +in -in vdd
+xx1 -in +in out vdd vss zzz_0
+.ends bd87521
+.subckt zzz_0 a_0 a_1 a_2 a_3 a_4
+x_5 a_0 a_1 a_2 a_3 a_3 a_4 a_4 zzz_4
+.ends
+.subckt zzz_1 a_0 a_1 a_2 a_3 a_4 a_5
+x_6 a_6 0 a_4 a_8 zzz_18
+x_9 a_0 a_1 a_2 a_12 a_8 a_14 a_15 zzz_4
+x_16 a_6 a_5 0 a_18 zzz_18
+x_19 a_4 a_12 zzz_14
+x_21 a_6 a_4 0 a_23 zzz_18
+x_24 a_24 zzz_11
+x_25 a_18 a_23 a_27 zzz_7
+x_28 a_6 0 a_5 a_15 zzz_18
+x_31 a_5 a_14 zzz_14
+x_33 a_27 a_34 a_4 a_5 a_24 zzz_3
+x_38 a_3 a_6 a_34 a_4 a_5 zzz_30
+.ends
+.subckt zzz_2 a_0 a_1 a_2 a_3 a_4 a_5 a_6 a_7 a_8 a_9 a_10 a_11 a_12 a_13 a_14
++ a_15 a_16 a_17 a_18 a_19 a_20
+x_21 a_0 a_18 a_19 a_20 zzz_31
+x_25 a_1 a_18 a_19 a_20 zzz_32
+x_29 a_2 a_18 a_19 a_20 zzz_33
+x_33 a_3 a_18 a_19 a_20 zzz_34
+x_37 a_4 a_18 a_19 a_20 zzz_35
+x_41 a_5 a_18 a_19 a_20 zzz_36
+x_45 a_8 a_18 a_19 a_20 zzz_37
+x_49 a_9 a_18 a_19 a_20 zzz_38
+x_53 a_10 a_18 a_19 a_20 zzz_39
+x_57 a_11 a_18 a_19 a_20 zzz_40
+x_61 a_17 a_18 a_19 a_20 zzz_41
+x_65 a_12 a_18 a_19 a_20 zzz_42
+x_69 a_7 a_18 a_19 a_20 zzz_49
+x_73 a_13 a_18 a_19 a_20 zzz_44
+x_77 a_14 a_18 a_19 a_20 zzz_46
+x_81 a_15 a_18 a_19 a_20 zzz_43
+x_85 a_16 a_18 a_19 a_20 zzz_45
+x_89 a_6 a_18 a_19 a_20 zzz_48
+.ends
+.subckt zzz_3 a_0 a_1 a_2 a_3 a_4
+x_5 a_0 a_2 a_3 a_4 zzz_47
+x_9 a_1 a_2 a_3 a_4 zzz_50
+.ends
+.subckt zzz_4 a_0 a_1 a_2 a_3 a_4 a_5 a_6
+c_7 a_5 a_8 {b_105} tc=0, 0
+c_9 a_5 a_10 {b_105} tc=0, 0
+r_11 a_1 a_10 {b_103} tc=0, 0
+x_13 a_8 a_10 a_15 zzz_27
+x_16 a_15 a_17 a_18 zzz_26
+x_19 a_19 a_20 a_21 a_22 zzz_25
+c_23 a_5 a_2 {b_104} tc=0, 0
+x_25 a_25 a_26 a_27 a_28 a_29 a_30 a_2 a_4 a_6 zzz_22
+x_34 a_10 a_8 a_17 a_37 a_38 a_39 a_40 a_41 a_42 a_43 a_44 a_45 a_46 a_27 a_28 a_29
++ a_30 a_51 a_3 a_5 a_54 zzz_2
+x_55 a_1 a_3 zzz_20
+x_57 a_43 a_5 a_21 zzz_26
+x_60 a_38 a_39 a_40 a_37 a_18 a_41 a_20 a_3 a_5 zzz_12
+x_69 a_5 a_0 zzz_20
+r_71 a_0 a_8 {b_103} tc=0, 0
+x_73 a_0 a_3 zzz_20
+x_75 a_2 a_3 zzz_21
+x_77 a_54 zzz_11
+x_78 a_44 a_45 a_22 a_46 a_25 a_19 a_21 zzz_10
+x_85 a_5 a_1 zzz_20
+x_87 a_42 a_3 a_19 zzz_27
+r_90 a_5 a_2 1000k tc=0, 0
+c_92 a_5 a_0 {b_104} tc=0, 0
+c_94 a_5 a_1 {b_104} tc=0, 0
+x_96 a_5 a_2 zzz_21
+x_98 a_51 a_26 a_2 a_4 a_6 zzz_5
+.param b_103=3.0k b_104=5.0p b_105=2.65p
+.ends
+.subckt zzz_5 a_0 a_1 a_2 a_3 a_4
+v_5 a_5 0 0
+x_6 a_5 a_1 a_4 a_9 zzz_8
+x_10 a_4 a_3 a_12 zzz_7
+v_13 a_9 0 -1.0
+x_14 a_14 a_1 a_3 a_5 zzz_6
+v_18 a_14 0 1.0
+e_19 a_12 0 value {v(a_0)-v(a_2)/1000k}
+.ends
+.subckt zzz_6 a_0 a_1 a_2 a_3
+g_4 a_2 0 value {limit(v(a_1), v(a_3), v(a_0))}
+.ends
+.subckt zzz_7 a_0 a_1 a_2
+g_3 a_1 a_0 value {v(a_2)}
+.ends
+.subckt zzz_8 a_0 a_1 a_2 a_3
+g_4 0 a_2 value {limit(v(a_1), v(a_3), v(a_0))}
+.ends
+.subckt zzz_9 a_0 a_1 a_2
+e_3 a_2 0 value {v(a_1)/v(a_0)}
+.ends
+.subckt zzz_10 a_0 a_1 a_2 a_3 a_4 a_5 a_6
+x_7 a_5 a_8 a_6 a_4 zzz_25
+c_11 0 a_8 {b_13} tc=0, 0
+g_12 0 a_8 value {limit((v(a_1)+v(a_0))/2*v(a_2, a_8)*v(a_3), -v(a_1), v(a_0))}
+r_12 0 a_8 1g tc=0, 0
+.param b_13=1u
+.ends
+.subckt zzz_11 a_0
+e_1 a_0 0 value {if(0<1, temp, temp)}
+.ends
+.subckt zzz_12 a_0 a_1 a_2 a_3 a_4 a_5 a_6 a_7 a_8
+v_9 a_9 0 {cw*2.0*pi}
+c_10 0 a_10 {cw} tc=0, 0
+x_11 a_5 a_12 a_13 a_14 zzz_18
+x_15 a_15 a_16 a_17 zzz_17
+x_18 a_10 a_7 zzz_16
+x_20 a_20 a_3 zzz_15
+x_22 a_14 a_6 zzz_14
+x_24 a_24 a_25 a_10 zzz_17
+x_27 a_8 a_17 zzz_16
+x_29 a_10 a_12 zzz_14
+x_31 a_0 a_9 a_15 zzz_13
+r_34 0 a_17 1g tc=0, 0
+x_35 a_4 a_20 a_16 zzz_13
+c_38 0 a_17 {cw} tc=0, 0
+x_39 a_8 a_10 zzz_16
+x_41 a_17 a_7 zzz_16
+x_43 a_43 a_44 a_24 zzz_13
+x_46 a_17 a_25 zzz_14
+x_48 a_2 a_1 a_43 zzz_13
+r_51 0 a_10 1g tc=0, 0
+x_52 a_17 a_13 zzz_14
+v_54 a_44 0 {cw*2.0*pi}
+.param cw=10n
+.ends
+.subckt zzz_13 a_0 a_1 a_2
+e_3 a_2 0 value {v(a_0)*v(a_1)}
+.ends
+.subckt zzz_14 a_0 a_1
+e_2 a_1 0 a_0 0 1
+.ends
+.subckt zzz_15 a_0 a_1
+e_2 a_0 0 value {10**(v(a_1)/20)}
+.ends
+.subckt zzz_16 a_0 a_1
+g_2 a_0 a_3 value {if(v(a_0, a_1)>0.0, v(a_0, a_3)*1.0, 0)}
+r_4 a_3 a_1 0.001m tc=0, 0
+r_6 a_0 a_3 10g tc=0, 0
+.ends
+.subckt zzz_17 a_0 a_1 a_2
+g_3 a_1 a_2 value {v(a_1, a_2)*v(a_0)}
+r_5 a_2 a_1 1g tc=0, 0
+.ends
+.subckt zzz_18 a_0 a_1 a_2 a_3
+x_4 a_0 0 a_2 a_3 zzz_28
+x_7 a_7 0 a_1 a_3 zzz_29
+x_10 a_0 a_7 zzz_19
+.ends
+.subckt zzz_19 a_0 a_1
+e_2 a_1 0 value {if(v(a_0)>0.5, 0, 1)}
+.ends
+.subckt zzz_20 a_0 a_1
+r_2 a_0 a_3 10t tc=0, 0
+r_4 a_3 a_1 1m tc=0, 0
+g_6 a_0 a_3 value {(v(a_0, a_1)*1000)*(tanh(1000*(v(a_0, a_1)-5)/2)+1)}
+.ends
+.subckt zzz_21 a_0 a_1
+r_2 a_0 a_3 10t tc=0, 0
+r_4 a_3 a_1 1m tc=0, 0
+g_6 a_0 a_3 value {if(v(a_0, a_1)>0.0, v(a_0, a_1)*0.3, 0)}
+.ends
+.subckt zzz_22 a_0 a_1 a_2 a_3 a_4 a_5 a_6 a_7 a_8
+x_9 a_3 a_10 zzz_24
+x_11 a_11 a_0 a_10 a_6 a_15 zzz_23
+e_16 a_15 0 value {if((v(a_7)-v(a_8)+0.1)>0.3, (abs(v(a_2))+abs(v(a_4)))*50, 1g)+10u}
++
+x_17 a_6 a_0 a_19 zzz_27
+x_20 a_5 a_11 zzz_24
+x_22 a_15 a_19 a_1 zzz_9
+.ends
+.subckt zzz_23 a_0 a_1 a_2 a_3 a_4
+g_5 a_1 a_3 value {limit(v(a_1, a_3)/v(a_4), -(v(a_2)), v(a_0)+1m)}
+r_7 a_3 a_1 1g tc=0, 0
+.ends
+.subckt zzz_24 a_0 a_1
+e_2 a_1 0 value {abs(v(a_0))}
+.ends
+.subckt zzz_25 a_0 a_1 a_2 a_3
+e_4 a_3 0 value {limit(v(a_1), v(a_2), v(a_0))}
+.ends
+.subckt zzz_26 a_0 a_1 a_2
+e_3 a_2 0 value {v(a_0)+v(a_1)}
+.ends
+.subckt zzz_27 a_0 a_1 a_2
+e_3 a_2 0 value {v(a_1)-v(a_0)}
+.ends
+.subckt zzz_28 a_0 a_1 a_2 a_3
+s_4 a_2 a_3 a_0 a_1 _s1
+r_4 a_0 a_1 1g
+.model _s1 vswitch roff=1g ron=1m voff=0.25 von=0.75
+.ends zzz_28
+.subckt zzz_29 a_0 a_1 a_2 a_3
+s_4 a_2 a_3 a_0 a_1 _s2
+r_4 a_0 a_1 1g
+.model _s2 vswitch roff=1g ron=1m voff=0.25 von=0.75
+.ends zzz_29
+.subckt zzz_30 a_0 a_1 a_2 a_3 a_4
+c_5 0 a_5 1n tc=0, 0
+e_6 a_6 0 value {if((v(a_3)-v(a_0))<10u, if(v(a_0)-v(a_4)>=0.1, 0.0, 1.0), 1.0)}
++
+x_7 a_2 a_4 a_3 a_10 zzz_18
+r_11 a_11 a_12 29k tc=0, 0
+e_13 a_1 0 value {if(v(a_5)<0.5, 1.0, if(v(a_12)>0.5, 1.0, 0.0))}
+c_14 0 a_12 1n tc=0, 0
+r_15 a_6 a_5 29k tc=0, 0
+r_17 a_0 a_10 100000k tc=0, 0
+r_19 a_5 0 100000k tc=0, 0
+r_20 a_12 0 100000k tc=0, 0
+e_21 a_11 0 value {if(v(a_0)-v(a_4)>(v(a_3)-v(a_4))*0.5, 1.0, 0.0)}
+.ends
+.subckt zzz_31 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 2.8, 80.679321p, 3.9, 82.287712p, 5.0, 60.564436p,
++ 12.0, 0.161681n, 14.5, 0.122301n, 15.5, 0.15016n)}
+e_5 a_5 0 value {table(v(a_1, a_2), 2.8, 62.677323p, 3.9, 49.572428p, 5.0, 78.904096p,
++ 12.0, 0.158208n, 14.5, 0.118681n, 15.5, 0.136226n)}
+e_6 a_6 0 value {table(v(a_1, a_2), 2.8, 98.281718p, 3.9, 70.323676p, 5.0, 76.921079p,
++ 12.0, 0.190025n, 14.5, 0.146608n, 15.5, 0.163294n)}
+e_7 a_7 0 value {table(v(a_1, a_2), 2.8, 0.934016n, 3.9, 0.990948n, 5.0, 1.091117n,
++ 12.0, 1.569557n, 14.5, 1.793328n, 15.5, 1.94758n)}
+e_8 a_8 0 value {table(v(a_1, a_2), 2.8, 7.686254n, 3.9, 8.347598n, 5.0, 8.780505n,
++ 12.0, 11.801506n, 14.5, 13.292211n, 15.5, 13.590111n)}
+g_9 0 a_0 value {table(v(a_3), -60.0, v(a_4), -40.0, v(a_5), 25.0, v(a_6), 125.0,
++ v(a_7), 150.0, v(a_8))}
+.ends
+.subckt zzz_32 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 2.8, 80.679321p, 3.9, 82.287712p, 5.0, 60.564436p,
++ 12.0, 0.161681n, 14.5, 0.122301n, 15.5, 0.15016n)}
+e_5 a_5 0 value {table(v(a_1, a_2), 2.8, 62.677323p, 3.9, 49.572428p, 5.0, 78.904096p,
++ 12.0, 0.158208n, 14.5, 0.118681n, 15.5, 0.136226n)}
+e_6 a_6 0 value {table(v(a_1, a_2), 2.8, 98.281718p, 3.9, 70.323676p, 5.0, 76.921079p,
++ 12.0, 0.190025n, 14.5, 0.146608n, 15.5, 0.163294n)}
+e_7 a_7 0 value {table(v(a_1, a_2), 2.8, 0.934016n, 3.9, 0.990948n, 5.0, 1.091117n,
++ 12.0, 1.569557n, 14.5, 1.793328n, 15.5, 1.94758n)}
+e_8 a_8 0 value {table(v(a_1, a_2), 2.8, 7.686254n, 3.9, 8.347598n, 5.0, 8.780505n,
++ 12.0, 11.801506n, 14.5, 13.292211n, 15.5, 13.590111n)}
+g_9 0 a_0 value {table(v(a_3), -60.0, v(a_4), -40.0, v(a_5), 25.0, v(a_6), 125.0,
++ v(a_7), 150.0, v(a_8))}
+.ends
+.subckt zzz_33 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 3.8, -0.337462m, 5.0, -0.39327m, 12.0, -0.434163m,
++ 15.2, -2.058084m)}
+e_5 a_5 0 value {table(v(a_1, a_2), 3.8, -0.210223m, 5.0, -0.144956m, 12.0, -63.517613u,
++ 15.2, -1.083869m)}
+e_6 a_6 0 value {table(v(a_1, a_2), 3.8, 56.901414u, 5.0, 0.110302m, 12.0, 0.24275m,
++ 15.2, 0.133003m)}
+e_7 a_7 0 value {table(v(a_1, a_2), 3.8, 0.167859m, 5.0, 0.224156m, 12.0, 0.37697m,
++ 15.2, 0.305415m)}
+e_8 a_8 0 value {table(v(a_1, a_2), 3.8, 0.166863m, 5.0, 0.229488m, 12.0, 0.391046m,
++ 15.2, 0.304792m)}
+e_9 a_0 0 value {table(v(a_3), -60.0, v(a_4), -40.0, v(a_5), 25.0, v(a_6), 125.0,
++ v(a_7), 150.0, v(a_8))}
+.ends
+.subckt zzz_34 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 6.8, 80.0, 12.0, 80.0, 15.5, 75.0)}
+e_5 a_5 0 value {table(v(a_1, a_2), 6.8, 75.0, 12.0, 75.0, 15.5, 72.0)}
+e_6 a_6 0 value {table(v(a_1, a_2), 6.8, 70.0, 12.0, 70.0, 15.5, 68.0)}
+e_7 a_0 0 value {table(v(a_3), -60.0, v(a_4), 25.0, v(a_5), 150.0, v(a_6))}
+.ends
+.subckt zzz_35 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 2.8, 126.89, 3.9, 304.196667, 5.0, 347.233333,
++ 12.0, 304.196667, 14.5, 347.233333, 15.5, 370.47)}
+e_5 a_5 0 value {table(v(a_1, a_2), 2.8, 126.89, 3.9, 287.24, 5.0, 347.233333, 12.0,
++ 287.24, 14.5, 323.993333, 15.5, 347.233333)}
+e_6 a_6 0 value {table(v(a_1, a_2), 2.8, 110.913333, 3.9, 253.333333, 5.0, 304.196667,
++ 12.0, 253.333333, 14.5, 287.24, 15.5, 304.196667)}
+e_7 a_7 0 value {table(v(a_1, a_2), 2.8, 98.55, 3.9, 209.563333, 5.0, 253.333333,
++ 12.0, 209.563333, 14.5, 221.933333, 15.5, 236.38)}
+e_8 a_8 0 value {table(v(a_1, a_2), 2.8, 92.366667, 3.9, 197.196667, 5.0, 236.38,
++ 12.0, 197.196667, 14.5, 209.563333, 15.5, 229.333333)}
+e_9 a_0 0 value {table(v(a_3), -60.0, v(a_4), -40.0, v(a_5), 25.0, v(a_6), 125.0,
++ v(a_7), 150.0, v(a_8))}
+.ends
+.subckt zzz_36 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 2.8, 6.40154meg, 3.9, 6.803079meg, 5.0, 7.204619meg,
++ 12.0, 8.223928meg, 14.5, 9.324672meg, 15.5, 9.875044meg)}
+e_5 a_5 0 value {table(v(a_1, a_2), 2.8, 6.0meg, 3.9, 6.40154meg, 5.0, 6.803079meg,
++ 12.0, 7.673555meg, 14.5, 8.7743meg, 15.5, 9.324672meg)}
+e_6 a_6 0 value {table(v(a_1, a_2), 2.8, 4.687764meg, 3.9, 5.256335meg, 5.0, 5.59846meg,
++ 12.0, 6.0meg, 14.5, 6.803079meg, 15.5, 7.204619meg)}
+e_7 a_7 0 value {table(v(a_1, a_2), 2.8, 3.399882meg, 3.9, 4.119193meg, 5.0, 4.403479meg,
++ 12.0, 4.403479meg, 14.5, 4.687764meg, 15.5, 4.972049meg)}
+e_8 a_8 0 value {table(v(a_1, a_2), 2.8, 2.998538meg, 3.9, 3.600554meg, 5.0, 3.834908meg,
++ 12.0, 4.119193meg, 14.5, 4.119193meg, 15.5, 4.403479meg)}
+e_9 a_0 0 value {table(v(a_3), -60.0, v(a_4), -40.0, v(a_5), 25.0, v(a_6), 125.0,
++ v(a_7), 150.0, v(a_8))}
+.ends
+.subckt zzz_37 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 6.8, 0.2m, 12.0, 0.1m, 15.5, 0.2m)}
+e_5 a_5 0 value {table(v(a_1, a_2), 6.8, 0.1m, 12.0, 0.0, 15.5, 0.2m)}
+e_6 a_6 0 value {table(v(a_1, a_2), 6.8, 0.3m, 12.0, 0.3m, 15.5, 0.1m)}
+e_7 a_7 0 value {table(v(a_1, a_2), 6.8, 0.4m, 12.0, 0.3m, 15.5, 0.6m)}
+e_8 a_8 0 value {table(v(a_1, a_2), 6.8, 0.1m, 12.0, 0.0, 15.5, 0.2m)}
+e_9 a_0 0 value {table(v(a_3), -60.0, v(a_4), -40.0, v(a_5), 25.0, v(a_6), 125.0,
++ v(a_7), 150.0, v(a_8))}
+.ends
+.subckt zzz_38 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 6.8, 0.3m, 12.0, 0.1m, 15.5, 0.1m)}
+e_5 a_5 0 value {table(v(a_1, a_2), 6.8, 0.1m, 12.0, 0.1m, 15.5, 0.4m)}
+e_6 a_6 0 value {table(v(a_1, a_2), 6.8, 0.4m, 12.0, 0.1m, 15.5, 0.3m)}
+e_7 a_7 0 value {table(v(a_1, a_2), 6.8, 0.1m, 12.0, 0.3m, 15.5, 0.2m)}
+e_8 a_8 0 value {table(v(a_1, a_2), 6.8, 0.1m, 12.0, 0.2m, 15.5, 0.3m)}
+e_9 a_0 0 value {table(v(a_3), -60.0, v(a_4), -40.0, v(a_5), 25.0, v(a_6), 125.0,
++ v(a_7), 150.0, v(a_8))}
+.ends
+.subckt zzz_39 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 2.8, 1.354857, 3.9, 1.81856, 5.0, 1.929088, 12.0,
++ 1.977437, 14.5, 2.405479, 15.5, 2.838119)}
+e_5 a_5 0 value {table(v(a_1, a_2), 2.8, 1.524233, 3.9, 1.942114, 5.0, 2.144105,
++ 12.0, 1.982405, 14.5, 2.481123, 15.5, 2.817847)}
+e_6 a_6 0 value {table(v(a_1, a_2), 2.8, 1.550648, 3.9, 2.092301, 5.0, 2.287, 12.0,
++ 2.280339, 14.5, 2.450302, 15.5, 2.838119)}
+e_7 a_7 0 value {table(v(a_1, a_2), 2.8, 1.679233, 3.9, 2.349829, 5.0, 2.369472,
++ 12.0, 2.254278, 14.5, 2.301994, 15.5, 2.493114)}
+e_8 a_8 0 value {table(v(a_1, a_2), 2.8, 1.697863, 3.9, 2.24751, 5.0, 2.293701, 12.0,
++ 1.825719, 14.5, 2.17955, 15.5, 2.288249)}
+e_9 a_0 0 value {table(v(a_3), -60.0, v(a_4), -25.0, v(a_5), 25.0, v(a_6), 125.0,
++ v(a_7), 150.0, v(a_8))}
+.ends
+.subckt zzz_40 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 2.8, 1.655777, 3.9, 2.558708, 5.0, 2.964857,
++ 12.0, 3.379751, 14.5, 3.772044, 15.5, 4.182861)}
+e_5 a_5 0 value {table(v(a_1, a_2), 2.8, 1.655777, 3.9, 2.503414, 5.0, 2.975215,
++ 12.0, 3.274953, 14.5, 3.719623, 15.5, 3.96794)}
+e_6 a_6 0 value {table(v(a_1, a_2), 2.8, 1.41518, 3.9, 2.272027, 5.0, 2.8937, 12.0,
++ 3.149988, 14.5, 3.326784, 15.5, 3.673643)}
+e_7 a_7 0 value {table(v(a_1, a_2), 2.8, 1.230311, 3.9, 1.92208, 5.0, 2.456326, 12.0,
++ 2.816459, 14.5, 2.954328, 15.5, 3.129399)}
+e_8 a_8 0 value {table(v(a_1, a_2), 2.8, 1.192024, 3.9, 1.89071, 5.0, 2.428091, 12.0,
++ 2.621955, 14.5, 2.835362, 15.5, 2.975133)}
+e_9 a_0 0 value {table(v(a_3), -60.0, v(a_4), -25.0, v(a_5), 25.0, v(a_6), 125.0,
++ v(a_7), 150.0, v(a_8))}
+.ends
+.subckt zzz_41 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 3.5, 1.7651m, 4.0, 1.827325m, 5.0, 1.81475m,
++ 6.0, 1.801025m, 7.0, 1.80575m, 9.0, 1.815325m, 12.0, 1.910475m, 14.0, 2.18515m,
++ 15.0, 2.433425m, 15.5, 2.594875m)}
+e_5 a_5 0 value {table(v(a_1, a_2), 3.5, 1.84625m, 4.0, 1.905025m, 5.0, 1.89405m,
++ 6.0, 1.870675m, 7.0, 1.875075m, 9.0, 1.88125m, 12.0, 1.9609m, 14.0, 2.205175m,
++ 15.0, 2.43325m, 15.5, 2.581125m)}
+e_6 a_6 0 value {table(v(a_1, a_2), 3.5, 1.808025m, 4.0, 1.83135m, 5.0, 1.818825m,
++ 6.0, 1.78555m, 7.0, 1.782025m, 9.0, 1.7794m, 12.0, 1.814025m, 14.0, 1.9553m, 15.0,
++ 2.0985m, 15.5, 2.19195m)}
+e_7 a_7 0 value {table(v(a_1, a_2), 3.5, 1.542875m, 4.0, 1.5648m, 5.0, 1.547625m,
++ 6.0, 1.52285m, 7.0, 1.520625m, 9.0, 1.52095m, 12.0, 1.5449m, 14.0, 1.6387m, 15.0,
++ 1.735525m, 15.5, 1.8009m)}
+e_8 a_8 0 value {table(v(a_1, a_2), 3.5, 1.469975m, 4.0, 1.4924m, 5.0, 1.47545m,
++ 6.0, 1.4543m, 7.0, 1.4536m, 9.0, 1.453925m, 12.0, 1.477125m, 14.0, 1.561325m, 15.0,
++ 1.6472m, 15.5, 1.706m)}
+e_9 a_0 0 value {table(v(a_3), -60.0, v(a_4), -40.0, v(a_5), 25.0, v(a_6), 125.0,
++ v(a_7), 150.0, v(a_8))}
+.ends
+.subckt zzz_42 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 12.0, 90.0)}
+e_5 a_0 0 value {table(v(a_3), 25.0, v(a_4))}
+.ends
+.subckt zzz_43 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 6.8, 0.110064, 8.0, 0.152217, 9.0, 0.161584,
++ 10.0, 0.163145, 11.0, 0.166268, 12.0, 0.174074, 13.0, 0.192027, 14.0, 0.227935,
++ 15.0, 0.285699, 15.5, 0.319265)}
+e_5 a_5 0 value {table(v(a_1, a_2), 6.8, 0.120212, 8.0, 0.187344, 9.0, 0.196711,
++ 10.0, 0.196711, 11.0, 0.201395, 12.0, 0.210762, 13.0, 0.245108, 14.0, 0.283357,
++ 15.0, 0.339561, 15.5, 0.372346)}
+e_6 a_6 0 value {table(v(a_1, a_2), 6.8, 0.179538, 8.0, 0.380932, 9.0, 0.413718,
++ 10.0, 0.413718, 11.0, 0.419182, 12.0, 0.430891, 13.0, 0.454309, 14.0, 0.49568,
++ 15.0, 0.554225, 15.5, 0.588572)}
+e_7 a_7 0 value {table(v(a_1, a_2), 6.8, 0.362979, 8.0, 0.696294, 9.0, 0.843828,
++ 10.0, 0.86022, 11.0, 0.86022, 12.0, 0.874271, 13.0, 0.896908, 14.0, 0.939061, 15.0,
++ 1.001509, 15.5, 1.0421)}
+e_8 a_8 0 value {table(v(a_1, a_2), 6.8, 0.448844, 8.0, 0.800895, 9.0, 0.99058, 10.0,
++ 1.013218, 11.0, 1.019462, 12.0, 1.02883, 13.0, 1.048345, 14.0, 1.093619, 15.0,
++ 1.156848, 15.5, 1.196658)}
+e_9 a_0 0 value {table(v(a_3), -60.0, v(a_4), -40.0, v(a_5), 25.0, v(a_6), 125.0,
++ v(a_7), 150.0, v(a_8))}
+.ends
+.subckt zzz_44 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 6.8, 0.110064, 8.0, 0.152217, 9.0, 0.161584,
++ 10.0, 0.163145, 11.0, 0.166268, 12.0, 0.174074, 13.0, 0.192027, 14.0, 0.227935,
++ 15.0, 0.285699, 15.5, 0.319265)}
+e_5 a_5 0 value {table(v(a_1, a_2), 6.8, 0.120212, 8.0, 0.187344, 9.0, 0.196711,
++ 10.0, 0.196711, 11.0, 0.201395, 12.0, 0.210762, 13.0, 0.245108, 14.0, 0.283357,
++ 15.0, 0.339561, 15.5, 0.372346)}
+e_6 a_6 0 value {table(v(a_1, a_2), 6.8, 0.179538, 8.0, 0.380932, 9.0, 0.413718,
++ 10.0, 0.413718, 11.0, 0.419182, 12.0, 0.430891, 13.0, 0.454309, 14.0, 0.49568,
++ 15.0, 0.554225, 15.5, 0.588572)}
+e_7 a_7 0 value {table(v(a_1, a_2), 6.8, 0.362979, 8.0, 0.696294, 9.0, 0.843828,
++ 10.0, 0.86022, 11.0, 0.86022, 12.0, 0.874271, 13.0, 0.896908, 14.0, 0.939061, 15.0,
++ 1.001509, 15.5, 1.0421)}
+e_8 a_8 0 value {table(v(a_1, a_2), 6.8, 0.448844, 8.0, 0.800895, 9.0, 0.99058, 10.0,
++ 1.013218, 11.0, 1.019462, 12.0, 1.02883, 13.0, 1.048345, 14.0, 1.093619, 15.0,
++ 1.156848, 15.5, 1.196658)}
+e_9 a_0 0 value {table(v(a_3), -60.0, v(a_4), -40.0, v(a_5), 25.0, v(a_6), 125.0,
++ v(a_7), 150.0, v(a_8))}
+.ends
+.subckt zzz_45 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 3.8, 22.8m, 5.0, 41.2m, 12.0, 0.1756, 15.2, 0.2)}
++
+e_5 a_5 0 value {table(v(a_1, a_2), 3.8, 21.0m, 5.0, 38.7m, 12.0, 0.1743, 15.2, 0.2)}
++
+e_6 a_6 0 value {table(v(a_1, a_2), 3.8, 16.8m, 5.0, 32.5m, 12.0, 0.1526, 15.2, 0.2)}
++
+e_7 a_7 0 value {table(v(a_1, a_2), 3.8, 14.1m, 5.0, 28.3m, 12.0, 0.1388, 15.2, 0.1863)}
++
+e_8 a_8 0 value {table(v(a_1, a_2), 3.8, 14.0m, 5.0, 27.9m, 12.0, 0.1387, 15.2, 0.186)}
++
+e_9 a_0 0 value {table(v(a_3), -60.0, v(a_4), -40.0, v(a_5), 25.0, v(a_6), 125.0,
++ v(a_7), 150.0, v(a_8))}
+.ends
+.subckt zzz_46 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 3.8, 32.8m, 5.0, 61.0m, 12.0, 0.2, 15.2, 0.2)}
++
+e_5 a_5 0 value {table(v(a_1, a_2), 3.8, 32.2m, 5.0, 57.9m, 12.0, 0.2, 15.2, 0.2)}
++
+e_6 a_6 0 value {table(v(a_1, a_2), 3.8, 27.7m, 5.0, 50.0m, 12.0, 0.1815, 15.2, 0.2)}
++
+e_7 a_7 0 value {table(v(a_1, a_2), 3.8, 23.1m, 5.0, 41.6m, 12.0, 0.158, 15.2, 0.198)}
++
+e_8 a_8 0 value {table(v(a_1, a_2), 3.8, 22.8m, 5.0, 41.3m, 12.0, 0.1579, 15.2, 0.1979)}
++
+e_9 a_0 0 value {table(v(a_3), -60.0, v(a_4), -40.0, v(a_5), 25.0, v(a_6), 125.0,
++ v(a_7), 150.0, v(a_8))}
+.ends
+.subckt zzz_47 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 2.4, 0.13m, 2.7, 0.16m, 5.0, 0.26m, 5.5, 0.35m,
++ 6.5, 0.43m)}
+e_5 a_5 0 value {table(v(a_1, a_2), 2.4, 0.29m, 2.7, 0.31m, 5.0, 0.46m, 5.5, 0.54m,
++ 6.5, 0.72m)}
+e_6 a_0 0 value {table(v(a_3), 25.0, v(a_4), 150.0, v(a_5))}
+.ends
+.subckt zzz_48 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 12.0, 5.0)}
+e_5 a_5 0 value {table(v(a_1, a_2), 12.0, 5.0)}
+e_6 a_6 0 value {table(v(a_1, a_2), 12.0, 5.0)}
+e_7 a_0 0 value {table(v(a_3), -60.0, v(a_4), 25.0, v(a_5), 150.0, v(a_6))}
+.ends
+.subckt zzz_49 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 5, 0)}
+e_5 a_0 0 value {table(v(a_3), 25.0, v(a_4))}
+.ends
+.subckt zzz_50 a_0 a_1 a_2 a_3
+e_4 a_4 0 value {table(v(a_1, a_2), 5, 0)}
+e_5 a_0 0 value {table(v(a_3), 25.0, v(a_4))}
+.ends
+

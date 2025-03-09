@@ -1,0 +1,7 @@
+* Solar Cell Macro Model
+.subckt Cell V+ V-
+D1 N001 V- D
+R1 N001 V- {rp}
+R2 V+ N001 {rs}
+I1 V- N001 {ip}
+.model D D(Is={is} Rs=1u N={n})
