@@ -67,9 +67,17 @@ async function onConnectButtonClick() {
 async function writeTextSerial(text) {
     const encoder = new TextEncoder();
     const writer = port.writable.getWriter();
-    await writer.write(encoder.encode(text));
+    await writer.write(encoder.encode(text + "\n"));
     console.log("テキスト書き込み: " + text);
     writer.releaseLock();
+   /*
+    const textEncoder = new TextEncoderStream();
+    const writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
+    const writer = textEncoder.writable.getWriter();
+    await writer.write(text);
+    console.log("テキスト書き込み: " + text);
+    writer.releaseLock();
+    */
 }
 
 function sendMessage() {
