@@ -763,7 +763,7 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Params" "rms=100m dt=10m"
+		(property "Sim.Params" "dc=0 ac=100m"
 			(at 167.64 96.52 0)
 			(effects
 				(font
@@ -772,7 +772,7 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Type" "WHITENOISE"
+		(property "Sim.Type" "DC"
 			(at 167.64 96.52 0)
 			(effects
 				(font

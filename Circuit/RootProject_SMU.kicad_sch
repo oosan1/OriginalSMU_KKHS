@@ -2187,6 +2187,16 @@
 	)
 	(wire
 		(pts
+			(xy 181.61 91.44) (xy 185.42 91.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2a4eb5ed-f3da-483f-a3a2-4e6be17b6344")
+	)
+	(wire
+		(pts
 			(xy 81.28 128.27) (xy 81.28 129.54)
 		)
 		(stroke
@@ -2547,16 +2557,6 @@
 	)
 	(wire
 		(pts
-			(xy 181.61 91.44) (xy 185.42 91.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "76b8e2c6-0159-45b2-b94d-b671e92b45e6")
-	)
-	(wire
-		(pts
 			(xy 185.42 77.47) (xy 191.77 77.47)
 		)
 		(stroke
@@ -2624,16 +2624,6 @@
 			(type default)
 		)
 		(uuid "869fdc9e-9cd7-4803-8656-2c700e412b11")
-	)
-	(wire
-		(pts
-			(xy 181.61 87.63) (xy 187.96 87.63)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "880209ec-0ccf-40a4-8c61-d56ad3c133eb")
 	)
 	(wire
 		(pts
@@ -2754,6 +2744,16 @@
 			(type default)
 		)
 		(uuid "9db6e56e-c12e-432f-a9e5-2827eafbbe0d")
+	)
+	(wire
+		(pts
+			(xy 181.61 87.63) (xy 187.96 87.63)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9f3a0d85-4ddb-4a59-9220-f47551229dcc")
 	)
 	(wire
 		(pts
@@ -5135,7 +5135,7 @@
 			(uuid "cf5f8be5-d022-4719-8277-846349a99f07")
 		)
 		(pin "RE" input
-			(at 181.61 91.44 0)
+			(at 181.61 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5145,7 +5145,7 @@
 			(uuid "17f690f9-7d5b-496f-a94b-c0557b065304")
 		)
 		(pin "WE" input
-			(at 181.61 87.63 0)
+			(at 181.61 91.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
