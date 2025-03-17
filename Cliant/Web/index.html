@@ -5,15 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>オリジナルSMU Webクライアント</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
 </head>
 <body>
+    <div id="status_monitor">
+        <div id="connectivity">通信: 断×</div>
+    </div>
+    <div id="control_panel">
+        <button type="button" id="setVolA_btn" disabled>DAC A出力</button>
+        <label id="A_vol_label">電圧(V):<input type="text" id="A_vol" size="1" value="0"></label>
+        <button type="button" id="setVolB_btn" disabled>DAC B出力</button>
+        <label id="B_vol_label">電圧(V):<input type="text" id="B_vol" size="1" value="0"></label>
+        <button type="button" id="IV_btn" disabled>IVカーブ計測</button>
+        <label id="IV_vol_label">最大電圧(V):<input type="text" id="IV_vol" size="1" value="1"></label>
+        <button type="button" id="csv_btn" disabled>CSVファイル出力</button>
+        <label id="csv_name_label">ファイル名:<input type="text" id="csv_name" value="data1.csv"></label>
+    </div>
+    <div id="graph_container">
+        <canvas id="graph"></canvas>
+    </div>
     <button type="button" id="connect_btn">接続</button>
-    <label>ボーレート:<input type="text" id="baudrate" size="5" value="115200"></label>
+    <label id="baudrate_label">ボーレート:<input type="text" id="baudrate" size="5" value="115200"></label>
     <div id="serial_console">
     </div>
     <button type="button" id="send_btn" disabled>送信</button>
     <input type="text" id="send_text" size="40"></label>
-
     <script src="script.js"></script>
 </body>
 </html>

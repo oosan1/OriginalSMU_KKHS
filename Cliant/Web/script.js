@@ -1,9 +1,25 @@
 let port;
+let MODE = "NORMAL";
+let recording = false;
+const SYS_VOL = 3.3;
+const IconvR = 100; // カレントフォロア回路の変換抵抗値
+const IunitM = 1000; //A:1, mA:1000
+
+let IVcurveList = [];
 
 const connectButton = document.getElementById("connect_btn");
 const baudrateTextbox = document.getElementById("baudrate");
 const serialConsoleTextbox = document.getElementById("send_text");
 const sendButton = document.getElementById("send_btn");
+const connectivity_text = document.getElementById("connectivity");
+const DACaButton = document.getElementById("setVolA_btn");
+const DACaTextbox = document.getElementById("A_vol");
+const DACbButton = document.getElementById("setVolB_btn");
+const DACbTextbox = document.getElementById("B_vol");
+const IVButton = document.getElementById("IV_btn");
+const IVTextbox = document.getElementById("IV_vol");
+const CSVButton = document.getElementById("csv_btn");
+const CSVTextbox = document.getElementById("csv_name");
 
 connectButton.addEventListener("click", onConnectButtonClick, false);
 serialConsoleTextbox.addEventListener('keydown', onConsoleKeypress);
@@ -12,8 +28,65 @@ sendButton.addEventListener("click", sendMessage, false);
 navigator.serial.addEventListener("disconnect", (event) => {
     const button = document.getElementById("send_btn");
     button.disabled = true;
+    DACaButton.disabled = true;
+    DACbButton.disabled = true;
+    IVButton.disabled = true;
+    CSVButton.disabled = true;
     sendSerialConsole("disconnection", "red");
+    connectivity_text.innerText = "通信: 断×"
 });
+
+//グラフ設定
+const graph_canvas = document.getElementById("graph");
+let graph;
+
+// DAC制御
+DACaButton.addEventListener("click", () => {
+    const voltage = Number(DACaTextbox.value)
+    let conv_voltage = Math.round(voltage * 4096 / SYS_VOL);
+    conv_voltage = conv_voltage > 4095 ? 4095 : conv_voltage;
+    writeTextSerial(`setVolA ${conv_voltage}`);
+});
+// CSVファイル出力
+CSVButton.addEventListener("click", () => {
+    const filename = CSVTextbox.value;
+
+    const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+    const data_csvText = ListToCSV(IVcurveList, ["電圧(V)", "電流(mA)"]);
+    const blob = new Blob([bom, data_csvText], { type: "text/csv" });
+
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = URL.createObjectURL(blob);
+    link.click();
+    URL.revokeObjectURL(link.href);
+
+    console.log(`CSVファイル出力完了。ファイル名:${filename}`)
+});
+function ListToCSV(list, header) {
+    result = "";
+    for(let i in header) {
+        result = `${result}${header[i]},`;
+    }
+    result = result.slice(0, -1) + "\n";
+    for(let i in list) {
+        for(key in list[i]) {
+            result = `${result}${list[i][key]},`;
+        }
+        result = result.slice(0, -1) + "\n";
+    }
+    return result;
+};
+
+//IVカーブ計測
+IVButton.addEventListener("click", onIVcurveButtonClick, false);
+function onIVcurveButtonClick() {
+    MODE = "IVcurve"
+    const voltage = Number(IVTextbox.value)
+    let conv_voltage = Math.round(voltage * 4096 / SYS_VOL);
+    conv_voltage = conv_voltage > 4095 ? 4095 : conv_voltage;
+    writeTextSerial(`IVcurve ${conv_voltage}`);
+}
 
 function onConsoleKeypress(event) {
     if(event.key === 'Enter'){
@@ -22,7 +95,6 @@ function onConsoleKeypress(event) {
 }
 
 // シリアル通信関係
-
 class LineBreakTransformer {
     constructor() {
       this.chunks = "";
@@ -53,8 +125,12 @@ async function onConnectButtonClick() {
         console.log("接続成功")
         const button = document.getElementById("send_btn");
         button.disabled = false;
+        DACaButton.disabled = false;
+        DACbButton.disabled = false;
+        IVButton.disabled = false;
         sendSerialConsole("connection", "green");
         readTextSerial();
+        connectivity_text.innerText = "通信: 接続〇"
     } catch (e) {
         console.error(`Connection failed ${e}`)
         sendSerialConsole("Connection failed", "red");
@@ -70,14 +146,6 @@ async function writeTextSerial(text) {
     await writer.write(encoder.encode(text + "\n"));
     console.log("テキスト書き込み: " + text);
     writer.releaseLock();
-   /*
-    const textEncoder = new TextEncoderStream();
-    const writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
-    const writer = textEncoder.writable.getWriter();
-    await writer.write(text);
-    console.log("テキスト書き込み: " + text);
-    writer.releaseLock();
-    */
 }
 
 function sendMessage() {
@@ -100,6 +168,71 @@ function sendSerialConsole(text, color) {
     serialConsole.prepend(messageElement);
 }
 
+function CopySerial(text) {
+    const noCtrlCharText = text.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
+    if (MODE === "IVcurve") {
+        IVButton.disabled = true;
+        if (noCtrlCharText === "START") {
+            console.log("記録開始...")
+            recording = true;
+            IVcurveList = [];
+        }else if (noCtrlCharText === "END") {
+            recording = false;
+            MODE = "NORMAL";
+            console.log("記録終了...")
+
+            if (graph) {
+                graph.destroy();
+            }
+            drawGraph(IVcurveList);
+            CSVButton.disabled = false;
+        }else if (recording) {
+            const REF = noCtrlCharText.split(" ")[0];
+            const VOL = noCtrlCharText.split(" ")[1];
+            IVcurveList.push({"x": REF, "y": VOL / IconvR * IunitM});
+        };
+    }else {
+        IVButton.disabled = false;
+    }
+}
+
+function drawGraph(data) {
+    graph = new Chart(graph_canvas, {
+        type: 'scatter', 
+        data: { 
+          datasets: [
+            {
+                label: "IV曲線",
+                data: data,
+                showLine: true,
+                fill: false,
+                borderColor: "RGBA(0, 0, 0, 1)",
+                borderWidth: 1,
+                pointBorderColor: "RGBA(0, 0, 0, 0)",
+                pointBackgroundColor: "RGBA(0, 0, 0, 0)",
+            }]
+        },
+        options:{
+          scales: {
+            xAxes: [{        
+              scaleLabel: {             
+                display: true,          
+                labelString: '電圧(V)' 
+              }
+            }],
+            yAxes: [{        
+              scaleLabel: {             
+                display: true,          
+                labelString: '電流(mA)' 
+              }
+            }]
+          },
+          responsive: true,
+          maintainAspectRatio: false
+        },
+    });
+}
+
 async function readTextSerial() {
     while (port.readable) {
         const textDecoder = new TextDecoderStream();
@@ -115,6 +248,7 @@ async function readTextSerial() {
                   break;
                 }
                 sendSerialConsole(value, "black");
+                CopySerial(value);
               }
         } catch (error) {
             console.log(error);
