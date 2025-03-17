@@ -1,8 +1,0 @@
-.title KiCad schematic
-.tran 10u 1
-.option plotwinsize=0
-R1 Net-_C1-Pad1_ V 10
-C1 Net-_C1-Pad1_ Net-_C1-Pad2_ 100u
-R2 0 Net-_C1-Pad2_ 1e-07
-V1 V 0 V NC--0 NC--1 DC 1
-.end
