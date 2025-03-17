@@ -5,142 +5,6 @@
 	(uuid "dff053be-d7c3-4dee-8e28-efd05f09390c")
 	(paper "A4")
 	(lib_symbols
-		(symbol "Device:C"
-			(pin_numbers hide)
-			(pin_names
-				(offset 0.254)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "C"
-				(at 0.635 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "C"
-				(at 0.635 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" ""
-				(at 0.9652 -3.81 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Unpolarized capacitor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "cap capacitor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "C_*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "C_0_1"
-				(polyline
-					(pts
-						(xy -2.032 -0.762) (xy 2.032 -0.762)
-					)
-					(stroke
-						(width 0.508)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.032 0.762) (xy 2.032 0.762)
-					)
-					(stroke
-						(width 0.508)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "C_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 2.794)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 2.794)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "Device:R"
 			(pin_numbers hide)
 			(pin_names
@@ -1462,18 +1326,6 @@
 		(uuid "3f66252d-2e3d-4852-a405-fe27a3c23307")
 	)
 	(junction
-		(at 118.11 105.41)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "4011e731-079c-49d5-93a1-c63a5bec5d12")
-	)
-	(junction
-		(at 135.89 105.41)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "52fe7c0b-b805-4fa7-bc01-f6f3c211173f")
-	)
-	(junction
 		(at 35.56 153.67)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1558,26 +1410,6 @@
 			(type default)
 		)
 		(uuid "0bfc1a38-4818-4f06-8685-f6c64222212d")
-	)
-	(wire
-		(pts
-			(xy 123.19 93.98) (xy 118.11 93.98)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0cb9d39e-de36-4321-bc63-35495e205efb")
-	)
-	(wire
-		(pts
-			(xy 135.89 93.98) (xy 130.81 93.98)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "11bc8d08-0713-43e6-b3aa-13aaab11d369")
 	)
 	(wire
 		(pts
@@ -1801,16 +1633,6 @@
 	)
 	(wire
 		(pts
-			(xy 135.89 105.41) (xy 135.89 93.98)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b3fcf656-17b2-4d11-9958-321fa1cc5a5d")
-	)
-	(wire
-		(pts
 			(xy 24.13 184.15) (xy 24.13 189.23)
 		)
 		(stroke
@@ -1818,16 +1640,6 @@
 			(type default)
 		)
 		(uuid "ba30ffa3-de29-4d7d-a106-667e666e6d78")
-	)
-	(wire
-		(pts
-			(xy 118.11 93.98) (xy 118.11 105.41)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bad3019d-7e8c-402b-8c5f-770460d72739")
 	)
 	(wire
 		(pts
@@ -3543,110 +3355,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:C")
-		(at 127 93.98 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "bb8aa227-93db-4fa5-abfd-bc346209b43e")
-		(property "Reference" "C1"
-			(at 127 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "${SIM.PARAMS}"
-			(at 127 88.9 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 130.81 93.0148 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 127 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 127 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" "C"
-			(at 127 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" "="
-			(at 127 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Params" "c=1n"
-			(at 127 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=+ 2=-"
-			(at 127 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "02092c0a-d7d7-48cc-9eab-6a8c78f293db")
-		)
-		(pin "2"
-			(uuid "56c8aed8-4cca-4c76-9be1-8e299ad88b98")
-		)
-		(instances
-			(project "potentio_stat"
-				(path "/dff053be-d7c3-4dee-8e28-efd05f09390c"
-					(reference "C1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_name "VDC_1")
 		(lib_id "Simulation_SPICE:VDC")
 		(at 92.71 143.51 270)
@@ -4111,7 +3819,7 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Params" "pwl=\"0 0 5m 3.3\""
+		(property "Sim.Params" "dc=0 ampl=1 f=1k"
 			(at 27.94 181.61 0)
 			(effects
 				(font
@@ -4120,7 +3828,7 @@
 				(justify left)
 			)
 		)
-		(property "Sim.Type" "PWL"
+		(property "Sim.Type" "SIN"
 			(at 24.13 179.07 0)
 			(effects
 				(font
