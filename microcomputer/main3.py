@@ -40,6 +40,7 @@ test = 0
 adc_vols = []
 cal_adc_vols = []
 cal_adc_vols = [0] * 4096
+isCalibrated = False
 
 poll_obj = select.poll()
 poll_obj.register(sys.stdin, select.POLLIN)
@@ -147,7 +148,7 @@ def process_command(command):
         LDAC.value(1)
     
     def sweepVolA(vol):
-        for i in range(0, int(vol)):
+        for i in range(int(vol)):
             data = 0b0011000000000000 + i
             cs.value(0)
             spi.write(data.to_bytes(2, "big"))
@@ -157,11 +158,11 @@ def process_command(command):
         sent_log("debug", "sweepVolAコマンド実行完了")
     
     def IVcurve(vol):
-        global adc_vols
+        global adc_vols, isCalibrated
         adc_vols = []
         sent_log("info", "IVカーブ測定中...")
         AnalyzePin.value(1)
-        for i in range(0, int(vol)):
+        for i in range(int(vol)):
             data = 0b0011000000000000 + i
             cs.value(0)
             spi.write(data.to_bytes(2, "big"))
@@ -175,8 +176,13 @@ def process_command(command):
         AnalyzePin.value(0)
         sent_log("info", "IVカーブ測定完了")
         sent_log("info", "IVカーブ転送中...")
+        if isCalibrated:
+            print("CALIBRATION:ON")
+        else:
+            print("CALIBRATION:OFF")
+        
         print("START")
-        for i in range(0, int(vol)):
+        for i in range(int(vol)):
             adc_vol_12bit = round(adc_vols[i] / 65536 * 4096)
             adc_vol = 3.3 / 4096 * (adc_vol_12bit - cal_adc_vols[adc_vol_12bit])
             print(f"{3.3 / 4096 * i} {adc_vol}")
@@ -184,7 +190,7 @@ def process_command(command):
         sent_log("debug", "IVcurveコマンド実行完了")
     
     def IVcal(resistance):
-        global cal_adc_vols, adc_vols
+        global cal_adc_vols, adc_vols, isCalibrated
         
         if adc_vols == []:
             sent_log("error", "校正用IVデータがありません")
@@ -193,11 +199,11 @@ def process_command(command):
             sent_log("error", "校正用抵抗値は0より大きい値にしてください")
             return
         
+        cal_adc_vols = []
         cal_adc_vols = ["n"] * 4096
         
         sent_log("info", "校正用データ計算中...")
-        print(len(adc_vols))
-        for i in range(0, len(adc_vols)):
+        for i in range(len(adc_vols)):
             adc_vol_12bit = round(adc_vols[i] / 65536 * 4096)
             theoretical_vol = round(((3.3 / 4096 * i) / resistance * 100) / 3.3 * 4095) # 電流計測抵抗100Ω
             vol_diff = adc_vol_12bit - theoretical_vol
@@ -209,9 +215,12 @@ def process_command(command):
         sent_log("info", "校正用データ補完中...")
         for i in range(4096):
             if cal_adc_vols[i] == "n":
-                cal_adc_vols[i] = cal_adc_vols[i - 1]
-        
+                if i == 0:
+                    cal_adc_vols[i] = 0
+                else:
+                    cal_adc_vols[i] = cal_adc_vols[i - 1]
         sent_log("info", "校正完了")
+        isCalibrated = True
         sent_log("debug", "IVcalコマンド実行完了")
         
 
