@@ -6,12 +6,14 @@ const IconvR = 100; // カレントフォロア回路の変換抵抗値
 const IunitM = 1000; //A:1, mA:1000
 
 let IVcurveList = [];
+let isCalibrated = false;
 
 const connectButton = document.getElementById("connect_btn");
 const baudrateTextbox = document.getElementById("baudrate");
 const serialConsoleTextbox = document.getElementById("send_text");
 const sendButton = document.getElementById("send_btn");
 const connectivity_text = document.getElementById("connectivity");
+const calibrated_text = document.getElementById("calibrated");
 const DACaButton = document.getElementById("setVolA_btn");
 const DACaTextbox = document.getElementById("A_vol");
 const DACbButton = document.getElementById("setVolB_btn");
@@ -20,18 +22,15 @@ const IVButton = document.getElementById("IV_btn");
 const IVTextbox = document.getElementById("IV_vol");
 const CSVButton = document.getElementById("csv_btn");
 const CSVTextbox = document.getElementById("csv_name");
+const calButton = document.getElementById("cal_btn");
+const calTextbox = document.getElementById("cal_reg");
 
 connectButton.addEventListener("click", onConnectButtonClick, false);
 serialConsoleTextbox.addEventListener('keydown', onConsoleKeypress);
 sendButton.addEventListener("click", sendMessage, false);
 
 navigator.serial.addEventListener("disconnect", (event) => {
-    const button = document.getElementById("send_btn");
-    button.disabled = true;
-    DACaButton.disabled = true;
-    DACbButton.disabled = true;
-    IVButton.disabled = true;
-    CSVButton.disabled = true;
+    ButtonEnDi("disconnect")
     sendSerialConsole("disconnection", "red");
     connectivity_text.innerText = "通信: 断×"
 });
@@ -78,7 +77,7 @@ function ListToCSV(list, header) {
     return result;
 };
 
-//IVカーブ計測
+// IVカーブ計測
 IVButton.addEventListener("click", onIVcurveButtonClick, false);
 function onIVcurveButtonClick() {
     MODE = "IVcurve"
@@ -86,6 +85,44 @@ function onIVcurveButtonClick() {
     let conv_voltage = Math.round(voltage * 4096 / SYS_VOL);
     conv_voltage = conv_voltage > 4095 ? 4095 : conv_voltage;
     writeTextSerial(`IVcurve ${conv_voltage}`);
+}
+
+// 校正
+calButton.addEventListener("click", () => {
+    writeTextSerial(`IVcal ${calTextbox.value}`);
+});
+
+// ボタンの有効無効制御
+function ButtonEnDi(mode) {
+    if (mode === "disconnect") {
+        sendButton.disabled = true;
+        DACaButton.disabled = true;
+        DACbButton.disabled = true;
+        IVButton.disabled = true;
+        CSVButton.disabled = true;
+        calButton.disabled = true;
+    }else if (mode === "connect") {
+        sendButton.disabled = false;
+        DACaButton.disabled = false;
+        DACbButton.disabled = false;
+        IVButton.disabled = false;
+        calButton.disabled = false;
+    }else if (mode === "IVcurve_start") {
+        sendButton.disabled = true;
+        DACaButton.disabled = true;
+        DACbButton.disabled = true;
+        IVButton.disabled = true;
+        CSVButton.disabled = true;
+        calButton.disabled = true;
+    }else if (mode === "IVcurve_finish") {
+        CSVButton.disabled = false
+    }else if (mode === "IVcurve_notMeasured") {
+        sendButton.disabled = false;
+        DACaButton.disabled = false;
+        DACbButton.disabled = false;
+        IVButton.disabled = false;
+        calButton.disabled = false;
+    }
 }
 
 function onConsoleKeypress(event) {
@@ -122,12 +159,8 @@ async function onConnectButtonClick() {
     try {
         port = await navigator.serial.requestPort();
         await port.open({ baudRate: baudrate });
-        console.log("接続成功")
-        const button = document.getElementById("send_btn");
-        button.disabled = false;
-        DACaButton.disabled = false;
-        DACbButton.disabled = false;
-        IVButton.disabled = false;
+        console.log("接続成功");
+        ButtonEnDi("connect");
         sendSerialConsole("connection", "green");
         readTextSerial();
         connectivity_text.innerText = "通信: 接続〇"
@@ -171,7 +204,7 @@ function sendSerialConsole(text, color) {
 function CopySerial(text) {
     const noCtrlCharText = text.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
     if (MODE === "IVcurve") {
-        IVButton.disabled = true;
+        ButtonEnDi("IVcurve_start");
         if (noCtrlCharText === "START") {
             console.log("記録開始...")
             recording = true;
@@ -183,16 +216,23 @@ function CopySerial(text) {
 
             if (graph) {
                 graph.destroy();
+                console.log("destroyed");
             }
             drawGraph(IVcurveList);
-            CSVButton.disabled = false;
+            ButtonEnDi("IVcurve_finish");
+        }else if (noCtrlCharText === "CALIBRATION:ON") {
+            isCalibrated = true;
+            calibrated_text.innerText = "校正: 有効"
+        }else if (noCtrlCharText === "CALIBRATION:OFF") {
+            isCalibrated = false;
+            calibrated_text.innerText = "校正: 無効"
         }else if (recording) {
             const REF = noCtrlCharText.split(" ")[0];
             const VOL = noCtrlCharText.split(" ")[1];
             IVcurveList.push({"x": REF, "y": VOL / IconvR * IunitM});
         };
     }else {
-        IVButton.disabled = false;
+        ButtonEnDi("IVcurve_notMeasured");
     }
 }
 

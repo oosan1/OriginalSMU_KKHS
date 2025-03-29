@@ -10,6 +10,7 @@
 <body>
     <div id="status_monitor">
         <div id="connectivity">通信: 断×</div>
+        <div id="calibrated">校正: 無効</div>
     </div>
     <div id="control_panel">
         <button type="button" id="setVolA_btn" disabled>DAC A出力</button>
@@ -20,6 +21,9 @@
         <label id="IV_vol_label">最大電圧(V):<input type="text" id="IV_vol" size="1" value="1"></label>
         <button type="button" id="csv_btn" disabled>CSVファイル出力</button>
         <label id="csv_name_label">ファイル名:<input type="text" id="csv_name" value="data1.csv"></label>
+        <button type="button" id="cal_btn" disabled>校正(ベース補正)</button>
+        <label id="cal_label">校正用抵抗値(Ω)<input type="text" id="cal_reg" size="1" value="100"></label>
+        <!-- DACとADCを直結した場合は100Ωに設定-->
     </div>
     <div id="graph_container">
         <canvas id="graph"></canvas>
