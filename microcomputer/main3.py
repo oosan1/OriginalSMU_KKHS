@@ -37,6 +37,10 @@ PowerMode.value(1) # 0:PFMモード, 1:PWMモード
 
 test = 0
 
+adc_vols = []
+cal_adc_vols = []
+cal_adc_vols = [0] * 4096
+
 poll_obj = select.poll()
 poll_obj.register(sys.stdin, select.POLLIN)
 
@@ -141,6 +145,7 @@ def process_command(command):
         
         LDAC.value(0)
         LDAC.value(1)
+    
     def sweepVolA(vol):
         for i in range(0, int(vol)):
             data = 0b0011000000000000 + i
@@ -150,9 +155,11 @@ def process_command(command):
             LDAC.value(0)
             LDAC.value(1)
         sent_log("debug", "sweepVolAコマンド実行完了")
+    
     def IVcurve(vol):
+        global adc_vols
         adc_vols = []
-        sent_log("debug", "IVカーブ測定中...")
+        sent_log("info", "IVカーブ測定中...")
         AnalyzePin.value(1)
         for i in range(0, int(vol)):
             data = 0b0011000000000000 + i
@@ -166,13 +173,47 @@ def process_command(command):
             
             adc_vols.append(vol_adc.read_u16())
         AnalyzePin.value(0)
-        sent_log("debug", "IVカーブ測定完了")
-        sent_log("debug", "IVカーブ転送中...")
+        sent_log("info", "IVカーブ測定完了")
+        sent_log("info", "IVカーブ転送中...")
         print("START")
         for i in range(0, int(vol)):
-            print(f"{3.3 / 4096 * i} {adc_vols[i] * 3.3 / 65536}")
+            adc_vol_12bit = round(adc_vols[i] / 65536 * 4096)
+            adc_vol = 3.3 / 4096 * (adc_vol_12bit - cal_adc_vols[adc_vol_12bit])
+            print(f"{3.3 / 4096 * i} {adc_vol}")
         print("END")
         sent_log("debug", "IVcurveコマンド実行完了")
+    
+    def IVcal(resistance):
+        global cal_adc_vols, adc_vols
+        
+        if adc_vols == []:
+            sent_log("error", "校正用IVデータがありません")
+            return
+        if resistance <= 0:
+            sent_log("error", "校正用抵抗値は0より大きい値にしてください")
+            return
+        
+        cal_adc_vols = ["n"] * 4096
+        
+        sent_log("info", "校正用データ計算中...")
+        print(len(adc_vols))
+        for i in range(0, len(adc_vols)):
+            adc_vol_12bit = round(adc_vols[i] / 65536 * 4096)
+            theoretical_vol = round(((3.3 / 4096 * i) / resistance * 100) / 3.3 * 4095) # 電流計測抵抗100Ω
+            vol_diff = adc_vol_12bit - theoretical_vol
+            if cal_adc_vols[adc_vol_12bit] == "n":
+                cal_adc_vols[adc_vol_12bit] = round(vol_diff)
+            else:
+                cal_adc_vols[adc_vol_12bit] = round((cal_adc_vols[adc_vol_12bit] + vol_diff) / 2)
+        
+        sent_log("info", "校正用データ補完中...")
+        for i in range(4096):
+            if cal_adc_vols[i] == "n":
+                cal_adc_vols[i] = cal_adc_vols[i - 1]
+        
+        sent_log("info", "校正完了")
+        sent_log("debug", "IVcalコマンド実行完了")
+        
 
     _command = command
     if _command[0:4] == "INFO":
@@ -191,6 +232,8 @@ def process_command(command):
         sweepVolA(_command[10:])
     elif _command[0:7] == "IVcurve":
         IVcurve(_command[8:])
+    elif _command[0:5] == "IVcal":
+        IVcal(float(_command[6:]))
     else:
         sent_log("error", f"不明なコマンド: {_command}")
     return
