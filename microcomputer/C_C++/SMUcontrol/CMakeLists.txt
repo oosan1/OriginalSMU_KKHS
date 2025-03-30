@@ -46,7 +46,8 @@ pico_enable_stdio_usb(SMUcontrol 0)
 
 # Add the standard library to the build
 target_link_libraries(SMUcontrol
-        pico_stdlib)
+        pico_stdlib
+        hardware_rtc)
 
 # Add the standard include files to the build
 target_include_directories(SMUcontrol PRIVATE
