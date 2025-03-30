@@ -85,7 +85,8 @@ function onIVcurveButtonClick() {
     const voltage = Number(IVTextbox.value)
     let conv_voltage = Math.round(voltage * 4096 / SYS_VOL);
     conv_voltage = conv_voltage > 4095 ? 4095 : conv_voltage;
-    writeTextSerial(`IVcurve ${conv_voltage}`);
+    writeTextSerial(`IVcurve 0 0 1 5 ${conv_voltage}`);
+
 }
 
 // 校正
