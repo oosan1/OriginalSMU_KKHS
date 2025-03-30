@@ -33,6 +33,7 @@ navigator.serial.addEventListener("disconnect", (event) => {
     ButtonEnDi("disconnect")
     sendSerialConsole("disconnection", "red");
     connectivity_text.innerText = "通信: 断×"
+    MODE = "NORMAL";
 });
 
 //グラフ設定
@@ -201,7 +202,22 @@ function sendSerialConsole(text, color) {
     serialConsole.prepend(messageElement);
 }
 
-function CopySerial(text) {
+function parseSerial(text) {
+    const parsed = text.split(" ");
+    if (parsed[1] === "debug:") {
+        sendSerialConsole(text, "gray");
+    }else if (parsed[1] === "info:") {
+        sendSerialConsole(text, "green");
+    }else if (parsed[1] === "notice:") {
+        sendSerialConsole(text, "green");
+    }else if (parsed[1] === "warning:") {
+        sendSerialConsole(text, "red");
+    }else if (parsed[1] === "error:") {
+        sendSerialConsole(text, "red_bold");
+    }
+}
+
+function SerialControl(text) {
     const noCtrlCharText = text.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
     if (MODE === "IVcurve") {
         ButtonEnDi("IVcurve_start");
@@ -230,9 +246,12 @@ function CopySerial(text) {
             const REF = noCtrlCharText.split(" ")[0];
             const VOL = noCtrlCharText.split(" ")[1];
             IVcurveList.push({"x": REF, "y": VOL / IconvR * IunitM});
-        };
+        }else {
+            parseSerial(text);
+        }
     }else {
         ButtonEnDi("IVcurve_notMeasured");
+        parseSerial(text);
     }
 }
 
@@ -287,8 +306,7 @@ async function readTextSerial() {
                   console.log("Canceled");
                   break;
                 }
-                sendSerialConsole(value, "black");
-                CopySerial(value);
+                SerialControl(value);
               }
         } catch (error) {
             console.log(error);

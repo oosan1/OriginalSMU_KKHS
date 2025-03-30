@@ -64,9 +64,17 @@ body > * {
 .red {
     color: red;
 }
+.red_bold {
+    color: red;
+    font-weight: bold;
+}
 
 .green {
     color: green;
+}
+
+.gray {
+    color: gray;
 }
 
 #send_btn {
