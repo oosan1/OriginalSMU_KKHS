@@ -25,7 +25,7 @@
 
 // プロトタイプ宣言
 int INFO(datetime_t *t);
-int sentLog(char *text, int level);
+int sendLog(char *text, int level);
 
 // コマンド関係
 // INFO {t}
@@ -36,7 +36,7 @@ int INFO(datetime_t *t) {
     rtc_get_datetime(t);
     datetime_to_str(datetime_str, sizeof(datetime_buf), t);
     sprintf(buffer, "%s\n", datetime_str);
-    sentLog(buffer, 1);
+    sendLog(buffer, 1);
 
     return 0;
 }
@@ -44,7 +44,7 @@ int INFO(datetime_t *t) {
 // setVol {channel(0:A, 1:B)} {Voltage(step表記)}
 int setVol(int channel, int voltage_step) {
     if(channel < 0 || channel > 2) {
-        sentLog("DAC channel is 1 or 2.", 3);
+        sendLog("DAC channel is 1 or 2.", 3);
         return -1;
     }
     uint16_t write_data = 0x3000 + channel * 0x8000 + voltage_step;
@@ -60,7 +60,7 @@ int setVol(int channel, int voltage_step) {
 // readVol {channel(0:A, 1:B)}
 int readVol(int channel) {
     if(channel < 0 || channel > 2) {
-        sentLog("DAC channel is 1 or 2.", 3);
+        sendLog("DAC channel is 1 or 2.", 3);
         return -1;
     }
     char buffer[512];
@@ -68,7 +68,7 @@ int readVol(int channel) {
     adc_select_input(channel);
     float adc = (float)adc_read() * conversionFactor;
     sprintf(buffer, "ADC%d=%f V\n", channel, adc);
-    sentLog(buffer, 1);
+    sendLog(buffer, 1);
 
     return 0;
 }
@@ -77,12 +77,12 @@ int readVol(int channel) {
 int IVsweep(int channel, float speed_VperS, int voltage_step_max) {
     char buffer[512];
     if(channel < 0 || channel > 2) {
-        sentLog("DAC channel is 1 or 2.", 3);
+        sendLog("DAC channel is 1 or 2.", 3);
         return -1;
     }
     if(voltage_step_max > 4095) {
         sprintf(buffer, "%d is greater than the DAC's maximum voltage step of %d. The maximum voltage step of %d is used.\n", voltage_step_max, ADC_STEP - 1, ADC_STEP - 1);
-        sentLog(buffer, 2);
+        sendLog(buffer, 2);
         voltage_step_max = 4095;
     }
 
@@ -95,7 +95,7 @@ int IVsweep(int channel, float speed_VperS, int voltage_step_max) {
     const uint16_t DAC_setting_data = 0x3000 + channel * 0x8000;
     uint16_t write_data;
 
-    sentLog("Start sweep.\n", 1);
+    sendLog("Start sweep.\n", 1);
     for (int i = 0; i <= voltage_step_max; i++) {
         write_data = DAC_setting_data + i;
         gpio_put(PIN_CS, 0);
@@ -111,7 +111,7 @@ int IVsweep(int channel, float speed_VperS, int voltage_step_max) {
         start_time_us = time_us_32();
         gpio_put(PIN_LDAC, 1);
     }
-    sentLog("Finish sweep.\n", 1);
+    sendLog("Finish sweep.\n", 1);
 
     // 計測後は安全のため、出力電圧を0Vに戻す。
     write_data = DAC_setting_data + 0;
@@ -122,33 +122,33 @@ int IVsweep(int channel, float speed_VperS, int voltage_step_max) {
     gpio_put(PIN_LDAC, 1);
 
     if(over_time_flag) {
-        sentLog("The specified sweep speed could not be achieved. Reduce the sweep speed.", 2);
+        sendLog("The specified sweep speed could not be achieved. Reduce the sweep speed.", 2);
     }
     return 0;
 }
 
-// IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(V/s)} {waitingTime(us)} {maxVoltageStep(step表記)} {&result_list} {&result_size} 
-int IVcurve(int DACchannel, int ADCchannel, float speed_VperS, int waiting_time, int voltage_step_max, uint16_t *result_list, int *result_size) {
+// IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(V/s)} {waitingTime(us)} {maxVoltageStep(step表記)} {&result_list} {&result_size} {&cal_list} {&isCalibrated}
+int IVcurve(int DACchannel, int ADCchannel, float speed_VperS, int waiting_time, int voltage_step_max, uint16_t *result_list, int *result_size, int *cal_list, bool *isCalibrated) {
     char buffer[512];
     if(ADCchannel < 0 || ADCchannel > 4) {
-        sentLog("Available ADC channels are 1 to 3.", 3);
+        sendLog("Available ADC channels are 1 to 3.", 3);
         return -1;
     }
     if(ADCchannel == 3) {
-        sentLog("The ADC3 is connected to VSYS and cannot be used.", 3);
+        sendLog("The ADC3 is connected to VSYS and cannot be used.", 3);
         return -1;
     }
     if(ADCchannel == 4) {
-        sentLog("The ADC4 is connected to Built-in thermometer and cannot be used.", 3);
+        sendLog("The ADC4 is connected to Built-in thermometer and cannot be used.", 3);
         return -1;
     }
     if(DACchannel < 0 || DACchannel > 2) {
-        sentLog("DAC channel is 1 or 2.", 3);
+        sendLog("DAC channel is 1 or 2.", 3);
         return -1;
     }
     if(voltage_step_max > 4095) {
         sprintf(buffer, "%d is greater than the DAC's maximum voltage step of %d. The maximum voltage step of %d is used.\n", voltage_step_max, ADC_STEP - 1, ADC_STEP - 1);
-        sentLog(buffer, 2);
+        sendLog(buffer, 2);
         voltage_step_max = 4095;
     }
 
@@ -170,7 +170,7 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_VperS, int waiting_time,
     *result_size = voltage_step_max + 1;
 
     // IVcurve測定
-    sentLog("Start measurement.\n", 1);
+    sendLog("Start measurement.\n", 1);
     for (int i = 0; i <= voltage_step_max; i++) {
         write_data = DAC_setting_data + i;
         gpio_put(PIN_CS, 0);
@@ -189,7 +189,7 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_VperS, int waiting_time,
         ADCvalue = adc_read();
         result_list[i] = ADCvalue;
     }
-    sentLog("Finish measurement.\n", 1);
+    sendLog("Finish measurement.\n", 1);
 
     // 計測後は安全のため、出力電圧を0Vに戻す。
     write_data = DAC_setting_data + 0;
@@ -200,17 +200,69 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_VperS, int waiting_time,
     gpio_put(PIN_LDAC, 1);
     
     // 測定データの送信
-    sentLog("Start sending.\n", 1);
+    sendLog("Start sending.\n", 1);
+    if(*isCalibrated) {
+        printf("CALIBRATION:ON\n");
+    }else {
+        printf("CALIBRATION:OFF\n");
+    }
     printf("START\n");
     for (int i = 0; i <= voltage_step_max; i++) {
-        ADCvoltage = result_list[i] * conversionFactor;
+        ADCvoltage = (result_list[i] - cal_list[result_list[i]]) * conversionFactor;
         printf("%f %f\n", 3.3 / 4096 * i, ADCvoltage);
     }
     printf("END\n");
 
     if(over_time_flag) {
-        sentLog("The specified sweep speed could not be achieved. Reduce the sweep speed.", 2);
+        sendLog("The specified sweep speed could not be achieved. Reduce the sweep speed.", 2);
     }
+    return 0;
+}
+
+// IVcal {resistance(Ω)} {&IV_list} {&IV_size} {&cal_list} {&isCalibrated}
+int IVcal(float resistance, uint16_t *IV_list, int *IV_size, int *cal_list, bool *isCalibrated) {
+    char buffer[512];
+    if(resistance <= 0) {
+        sendLog("The calibration resistance value must be greater than 0.\n", 3);
+        return -1;
+    }
+    if(*IV_size == 0) {
+        sendLog("No IV data for calibration.\n", 3);
+        return -1;
+    }
+
+    for (int i = 0; i < ADC_STEP; i++) {
+        cal_list[i] = -ADC_STEP;
+    }
+
+    const float conversionFactor = 3.3f / (1 << 12);
+    int theoretical_vol;
+    int vol_diff;
+
+    sendLog("Start calibration data calculation.\n", 1);
+    for (int i = 0; i < *IV_size; i++) {
+        theoretical_vol = ((3.3 / ADC_STEP * i) / resistance * 100) / 3.3 * ADC_STEP;
+        vol_diff = IV_list[i] - theoretical_vol;
+        if(cal_list[IV_list[i]] == -ADC_STEP) {
+            cal_list[IV_list[i]] = vol_diff;
+        }else {
+            cal_list[IV_list[i]] = (int)((cal_list[IV_list[i]] + vol_diff) / 2);
+        }
+    }
+    sendLog("End calibration data calculation.\n", 1);
+    sendLog("Start data supplement for proofreading.\n", 1);
+    for (int i = 0; i < ADC_STEP; i++) {
+        if(cal_list[i] == -ADC_STEP) {
+            if(i == 0) {
+                cal_list[i] = 0;
+            }else {
+                cal_list[i] = cal_list[i - 1];
+            }
+        }
+    }
+    sendLog("Calibration complete.\n", 1);
+    *isCalibrated = true;
+
     return 0;
 }
 
@@ -221,7 +273,7 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_VperS, int waiting_time,
  *      2: 警告
  *      3: エラー
  */
-int sentLog(char *text, int level) {
+int sendLog(char *text, int level) {
     if(level > 3) {
         return -1;
     }
@@ -291,10 +343,12 @@ int main() {
     char buffer[512];
 
     //IVcurve変数
-    uint16_t IVcurve_list[ADC_STEP];
+    uint16_t IVcurve_list[ADC_STEP] = {0};
+    int IVcal_list[ADC_STEP] = {0};
+    bool isCalibrated = false;
     int IVcurve_size = 0;
 
-    sentLog("system started\n", 1);
+    sendLog("system started\n", 1);
 
     while (true) {
         scanf("%s", &com_command);
@@ -302,9 +356,9 @@ int main() {
             // INFO
             success = INFO(&t);
             if(success==0) {
-                sentLog("INFO was executed\n", 0);
+                sendLog("INFO was executed\n", 0);
             }else {
-                sentLog("INFO was failed\n", 3);
+                sendLog("INFO was failed\n", 3);
             }
         }
         else if(strcmp(com_command, "setVol") == 0) {
@@ -313,9 +367,9 @@ int main() {
             scanf("%d", &int_com_arg2);
             success = setVol(int_com_arg1, int_com_arg2);
             if(success==0) {
-                sentLog("setVol was executed\n", 0);
+                sendLog("setVol was executed\n", 0);
             }else {
-                sentLog("setVol was failed\n", 3);
+                sendLog("setVol was failed\n", 3);
             }
         }
         else if(strcmp(com_command, "readVol") == 0) {
@@ -323,9 +377,9 @@ int main() {
             scanf("%d", &int_com_arg1);
             success = readVol(int_com_arg1);
             if(success==0) {
-                sentLog("readVol was executed\n", 0);
+                sendLog("readVol was executed\n", 0);
             }else {
-                sentLog("readVol was failed\n", 3);
+                sendLog("readVol was failed\n", 3);
             }
         }
         else if(strcmp(com_command, "IVsweep") == 0) {
@@ -335,28 +389,38 @@ int main() {
             scanf("%d", &int_com_arg2);
             success = IVsweep(int_com_arg1, float_com_arg1, int_com_arg2);
             if(success==0) {
-                sentLog("IVsweep was executed\n", 0);
+                sendLog("IVsweep was executed\n", 0);
             }else {
-                sentLog("IVsweep was failed\n", 3);
+                sendLog("IVsweep was failed\n", 3);
             }
         }
         else if(strcmp(com_command, "IVcurve") == 0) {
-            // IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(V/s)} {waitingTime(us)} {maxVoltageStep(step表記)} {&result_list} {&result_size} 
+            // IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(V/s)} {waitingTime(us)} {maxVoltageStep(step表記)}
             scanf("%d", &int_com_arg1);
             scanf("%d", &int_com_arg2);
             scanf("%f", &float_com_arg1);
             scanf("%d", &int_com_arg3);
             scanf("%d", &int_com_arg4);
-            success = IVcurve(int_com_arg1, int_com_arg2, float_com_arg1, int_com_arg3, int_com_arg4, IVcurve_list, &IVcurve_size);
+            success = IVcurve(int_com_arg1, int_com_arg2, float_com_arg1, int_com_arg3, int_com_arg4, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
             if(success==0) {
-                sentLog("IVcurve was executed\n", 0);
+                sendLog("IVcurve was executed\n", 0);
             }else {
-                sentLog("IVcurve was failed\n", 3);
+                sendLog("IVcurve was failed\n", 3);
+            }
+        }
+        else if(strcmp(com_command, "IVcal") == 0) {
+            // IVcal {resistance(Ω)} {&IV_list} {&IV_size} {&cal_list}
+            scanf("%f", &float_com_arg1);
+            success = IVcal(float_com_arg1, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
+            if(success==0) {
+                sendLog("IVcal was executed\n", 0);
+            }else {
+                sendLog("IVcal was failed\n", 3);
             }
         }
         else {
             sprintf(buffer, "Unknown command:%s\n", com_command);
-            sentLog(buffer, 3);
+            sendLog(buffer, 3);
         }
     }
 }
