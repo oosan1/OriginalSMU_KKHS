@@ -382,6 +382,15 @@
     "subpart_first_id": 65,
     "subpart_id_separator": 0
   },
-  "sheets": [],
+  "sheets": [
+    [
+      "736408a4-d995-4f38-bf98-0d13d4319ec4",
+      "ルート"
+    ],
+    [
+      "4425bf7d-ba9b-4278-ad22-c2bfccc85d92",
+      "PotentioStatUnit"
+    ]
+  ],
   "text_variables": {}
 }
