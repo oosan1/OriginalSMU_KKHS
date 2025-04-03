@@ -1483,7 +1483,7 @@
 	)
 	(wire
 		(pts
-			(xy 100.33 124.46) (xy 118.11 124.46)
+			(xy 104.14 124.46) (xy 118.11 124.46)
 		)
 		(stroke
 			(width 0)
@@ -1723,7 +1723,7 @@
 	)
 	(wire
 		(pts
-			(xy 85.09 124.46) (xy 92.71 124.46)
+			(xy 85.09 124.46) (xy 93.98 124.46)
 		)
 		(stroke
 			(width 0)
@@ -3357,16 +3357,16 @@
 	(symbol
 		(lib_name "VDC_1")
 		(lib_id "Simulation_SPICE:VDC")
-		(at 92.71 143.51 270)
+		(at 99.06 124.46 90)
+		(mirror x)
 		(unit 1)
-		(exclude_from_sim yes)
+		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "c883a429-50ff-475a-8b15-0271b284dd7d")
 		(property "Reference" "V4"
-			(at 92.8398 135.89 90)
+			(at 98.9302 116.84 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3374,7 +3374,7 @@
 			)
 		)
 		(property "Value" "1"
-			(at 92.8398 138.43 90)
+			(at 98.9302 119.38 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3382,7 +3382,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 92.71 143.51 0)
+			(at 99.06 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3391,7 +3391,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 92.71 143.51 0)
+			(at 99.06 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3400,7 +3400,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 92.71 143.51 0)
+			(at 99.06 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3409,7 +3409,7 @@
 			)
 		)
 		(property "Sim.Device" "SUBCKT"
-			(at 92.71 143.51 0)
+			(at 99.06 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3419,7 +3419,7 @@
 			)
 		)
 		(property "Sim.Library" "solar.lib"
-			(at 92.71 143.51 0)
+			(at 99.06 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3428,7 +3428,7 @@
 			)
 		)
 		(property "Sim.Name" "Cell"
-			(at 92.71 143.51 0)
+			(at 99.06 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3437,7 +3437,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=V+ 2=V-"
-			(at 92.71 143.51 0)
+			(at 99.06 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3641,111 +3641,6 @@
 		)
 	)
 	(symbol
-		(lib_name "R_1")
-		(lib_id "Device:R")
-		(at 96.52 124.46 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "e0f3eb13-a27c-4e58-8489-73b5ff6b134f")
-		(property "Reference" "R3"
-			(at 96.52 118.11 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "${SIM.PARAMS}"
-			(at 96.52 120.65 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 96.52 122.682 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 96.52 124.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 96.52 124.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" "R"
-			(at 96.52 124.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" "="
-			(at 96.52 124.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Params" "r=200"
-			(at 96.52 124.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=+ 2=-"
-			(at 96.52 124.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "95b70dc6-1bea-4d13-9d65-803ecdd5598c")
-		)
-		(pin "2"
-			(uuid "d51262eb-622f-4c16-a7a3-18a4ba92033d")
-		)
-		(instances
-			(project "potentio_stat"
-				(path "/dff053be-d7c3-4dee-8e28-efd05f09390c"
-					(reference "R3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Simulation_SPICE:IPWL")
 		(at 24.13 179.07 0)
 		(unit 1)
@@ -3819,7 +3714,7 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Params" "dc=0 ampl=1 f=1k"
+		(property "Sim.Params" "pwl=\"0 -1 1m 1\""
 			(at 27.94 181.61 0)
 			(effects
 				(font
@@ -3828,7 +3723,7 @@
 				(justify left)
 			)
 		)
-		(property "Sim.Type" "SIN"
+		(property "Sim.Type" "PWL"
 			(at 24.13 179.07 0)
 			(effects
 				(font

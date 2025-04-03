@@ -390,6 +390,18 @@
     [
       "4425bf7d-ba9b-4278-ad22-c2bfccc85d92",
       "PotentioStatUnit"
+    ],
+    [
+      "bc2bf976-bc95-479f-912b-d2815548a460",
+      "反転回路"
+    ],
+    [
+      "864e5ea1-a722-470e-b63e-a899af75262d",
+      "PotentioStatUnit1"
+    ],
+    [
+      "8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71",
+      "反転回路1"
     ]
   ],
   "text_variables": {}
