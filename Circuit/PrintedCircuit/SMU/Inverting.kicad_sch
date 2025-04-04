@@ -5,6 +5,237 @@
 	(uuid "200e5a79-e017-4b1f-9ed8-b890950fb93e")
 	(paper "A4")
 	(lib_symbols
+		(symbol "Amplifier_Operational:OP07"
+			(pin_names
+				(offset 0.127)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "U"
+				(at 1.27 6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "OP07"
+				(at 1.27 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" ""
+				(at 1.27 1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.analog.com/media/en/technical-documentation/data-sheets/OP07.pdf"
+				(at 1.27 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Single Ultra-Low Offset Voltage Operational Amplifier, DIP-8/SOIC-8"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "single opamp"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "DIP*W7.62mm* SOIC*3.9x4.9mm*P1.27mm* TO*99*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "OP07_0_1"
+				(polyline
+					(pts
+						(xy -5.08 5.08) (xy 5.08 0) (xy -5.08 -5.08) (xy -5.08 5.08)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+			)
+			(symbol "OP07_1_1"
+				(pin input line
+					(at 0 -7.62 90)
+					(length 5.08)
+					(name "VOS"
+						(effects
+							(font
+								(size 0.508 0.508)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -7.62 -2.54 0)
+					(length 2.54)
+					(name "-"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -7.62 2.54 0)
+					(length 2.54)
+					(name "+"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -2.54 -7.62 90)
+					(length 3.81)
+					(name "V-"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at 0 2.54 270)
+					(length 2.54) hide
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at 7.62 0 180)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -2.54 7.62 270)
+					(length 3.81)
+					(name "V+"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at 2.54 -7.62 90)
+					(length 6.35)
+					(name "VOS"
+						(effects
+							(font
+								(size 0.508 0.508)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "Device:C"
 			(pin_numbers hide)
 			(pin_names
@@ -433,211 +664,6 @@
 				)
 			)
 		)
-		(symbol "Simulation_SPICE:OPAMP"
-			(pin_names
-				(offset 0.254)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "U"
-				(at 3.81 3.175 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "${SIM.PARAMS}"
-				(at 3.81 -3.175 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#sec__SUBCKT_Subcircuits"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Operational amplifier, single, node sequence=1:+ 2:- 3:OUT 4:V+ 5:V-"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Sim.Pins" "1=in+ 2=in- 3=vcc 4=vee 5=out"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Sim.Device" "SUBCKT"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "Sim.Library" "${KICAD8_SYMBOL_DIR}/Simulation_SPICE.sp"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Sim.Name" "kicad_builtin_opamp"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "simulation"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "OPAMP_0_1"
-				(polyline
-					(pts
-						(xy 5.08 0) (xy -5.08 5.08) (xy -5.08 -5.08) (xy 5.08 0)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-			)
-			(symbol "OPAMP_1_1"
-				(pin input line
-					(at -7.62 2.54 0)
-					(length 2.54)
-					(name "+"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin input line
-					(at -7.62 -2.54 0)
-					(length 2.54)
-					(name "-"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin power_in line
-					(at -2.54 7.62 270)
-					(length 3.81)
-					(name "V+"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin power_in line
-					(at -2.54 -7.62 90)
-					(length 3.81)
-					(name "V-"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin output line
-					(at 7.62 0 180)
-					(length 2.54)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "power:+15V"
 			(power)
 			(pin_numbers hide)
@@ -952,10 +978,10 @@
 		)
 	)
 	(junction
-		(at 130.81 83.82)
+		(at 130.81 82.55)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "039c60fb-b17b-48c1-a1c1-2d2443fb6457")
+		(uuid "1589314a-a598-46ab-99d7-72e5353118d0")
 	)
 	(junction
 		(at 102.87 92.71)
@@ -993,6 +1019,14 @@
 		(color 0 0 0 0)
 		(uuid "bb03091d-4a11-42d0-9114-841ca756d00d")
 	)
+	(no_connect
+		(at 128.27 85.09)
+		(uuid "691ff763-8916-469f-8850-edeb0de4fa53")
+	)
+	(no_connect
+		(at 125.73 85.09)
+		(uuid "89bbad0e-4f60-4c7a-b1b9-e786cc2c5696")
+	)
 	(wire
 		(pts
 			(xy 154.94 77.47) (xy 154.94 80.01)
@@ -1005,7 +1039,7 @@
 	)
 	(wire
 		(pts
-			(xy 125.73 83.82) (xy 130.81 83.82)
+			(xy 123.19 82.55) (xy 130.81 82.55)
 		)
 		(stroke
 			(width 0)
@@ -1095,6 +1129,16 @@
 	)
 	(wire
 		(pts
+			(xy 130.81 82.55) (xy 130.81 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "48a3e9ba-676d-43e7-8d4c-1824e7b48850")
+	)
+	(wire
+		(pts
 			(xy 123.19 119.38) (xy 127 119.38)
 		)
 		(stroke
@@ -1105,7 +1149,7 @@
 	)
 	(wire
 		(pts
-			(xy 125.73 102.87) (xy 130.81 102.87)
+			(xy 123.19 102.87) (xy 130.81 102.87)
 		)
 		(stroke
 			(width 0)
@@ -1125,7 +1169,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 83.82) (xy 130.81 82.55)
+			(xy 130.81 81.28) (xy 130.81 82.55)
 		)
 		(stroke
 			(width 0)
@@ -1165,7 +1209,7 @@
 	)
 	(wire
 		(pts
-			(xy 125.73 101.6) (xy 125.73 102.87)
+			(xy 123.19 101.6) (xy 123.19 102.87)
 		)
 		(stroke
 			(width 0)
@@ -1205,7 +1249,7 @@
 	)
 	(wire
 		(pts
-			(xy 125.73 93.98) (xy 125.73 83.82)
+			(xy 123.19 93.98) (xy 123.19 82.55)
 		)
 		(stroke
 			(width 0)
@@ -1295,16 +1339,6 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 85.09) (xy 130.81 83.82)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f466e9d7-a3fc-4117-81da-3aed9dac61da")
-	)
-	(wire
-		(pts
 			(xy 154.94 90.17) (xy 158.75 90.17)
 		)
 		(stroke
@@ -1361,7 +1395,7 @@
 	)
 	(symbol
 		(lib_id "power:-15V")
-		(at 130.81 82.55 0)
+		(at 130.81 81.28 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1369,8 +1403,8 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0a2f192c-c0f9-44eb-ab6d-f6ca4fd2f19c")
-		(property "Reference" "#PWR022"
-			(at 130.81 86.36 0)
+		(property "Reference" "#PWR039"
+			(at 130.81 85.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1379,7 +1413,7 @@
 			)
 		)
 		(property "Value" "-15V"
-			(at 130.81 77.47 0)
+			(at 130.81 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1387,7 +1421,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 130.81 82.55 0)
+			(at 130.81 81.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1396,7 +1430,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 130.81 82.55 0)
+			(at 130.81 81.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1405,7 +1439,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"-15V\""
-			(at 130.81 82.55 0)
+			(at 130.81 81.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1419,11 +1453,101 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "#PWR038")
+					(reference "#PWR039")
 					(unit 1)
 				)
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
-					(reference "#PWR022")
+					(reference "#PWR026")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Amplifier_Operational:OP07")
+		(at 128.27 92.71 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1c2f0bb8-6e47-4a91-919d-1c4f65973b4b")
+		(property "Reference" "U12"
+			(at 119.38 87.7568 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "OP07"
+			(at 119.38 90.2968 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Package_DIP:DIP-8_W7.62mm"
+			(at 127 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.analog.com/media/en/technical-documentation/data-sheets/OP07.pdf"
+			(at 127 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Single Ultra-Low Offset Voltage Operational Amplifier, DIP-8/SOIC-8"
+			(at 128.27 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "729c9477-276a-4d47-8f87-e8a043f041c6")
+		)
+		(pin "6"
+			(uuid "fe49b63b-ceee-464f-ac1c-e1da45f63c71")
+		)
+		(pin "7"
+			(uuid "8674e029-7cd5-4cdf-9d91-084c67712e93")
+		)
+		(pin "8"
+			(uuid "a6d5bc2d-05db-478e-a29d-38a082193752")
+		)
+		(pin "3"
+			(uuid "f6e4263c-8777-4075-8eed-79c8dc3fefa3")
+		)
+		(pin "4"
+			(uuid "1e218428-e511-4639-ac13-39f83c7d655b")
+		)
+		(pin "1"
+			(uuid "fc7eb762-ba7c-402c-8b3b-99fb649ee4c1")
+		)
+		(pin "5"
+			(uuid "86bbb076-42fb-4c47-b45e-fe44b5bf0b08")
+		)
+		(instances
+			(project ""
+				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
+					(reference "U12")
+					(unit 1)
+				)
+				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
+					(reference "U8")
 					(unit 1)
 				)
 			)
@@ -1439,7 +1563,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1f1802ff-a3b5-407f-b603-a02ec1547e69")
-		(property "Reference" "R10"
+		(property "Reference" "R14"
 			(at 130.81 113.03 90)
 			(effects
 				(font
@@ -1447,7 +1571,7 @@
 				)
 			)
 		)
-		(property "Value" "${SIM.PARAMS}"
+		(property "Value" "30k"
 			(at 130.81 115.57 90)
 			(effects
 				(font
@@ -1455,7 +1579,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
 			(at 130.81 121.158 90)
 			(effects
 				(font
@@ -1527,11 +1651,11 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "R13")
+					(reference "R14")
 					(unit 1)
 				)
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
-					(reference "R10")
+					(reference "R7")
 					(unit 1)
 				)
 			)
@@ -1547,7 +1671,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "2f1d7817-f4a8-4a07-b02e-9f16bcf4c88d")
-		(property "Reference" "#PWR029"
+		(property "Reference" "#PWR040"
 			(at 130.81 101.6 0)
 			(effects
 				(font
@@ -1597,131 +1721,11 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "#PWR039")
+					(reference "#PWR040")
 					(unit 1)
 				)
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
-					(reference "#PWR029")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Simulation_SPICE:OPAMP")
-		(at 128.27 92.71 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "4fef0c95-171f-4331-a930-f631c8081bf5")
-		(property "Reference" "U9"
-			(at 133.8265 83.82 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "${SIM.PARAMS}"
-			(at 133.8265 86.36 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 128.27 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#sec__SUBCKT_Subcircuits"
-			(at 128.27 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Operational amplifier, single, node sequence=1:+ 2:- 3:OUT 4:V+ 5:V-"
-			(at 128.27 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=in+ 2=in- 3=vcc 4=vee 5=out"
-			(at 128.27 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" "SUBCKT"
-			(at 128.27 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Sim.Library" "${KICAD8_SYMBOL_DIR}/Simulation_SPICE.sp"
-			(at 128.27 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Name" "kicad_builtin_opamp"
-			(at 128.27 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "59c0a35d-5a5e-43a0-b4db-b586b8fdde76")
-		)
-		(pin "5"
-			(uuid "30570d50-b93a-4253-8b77-ee1ef97a1ed4")
-		)
-		(pin "3"
-			(uuid "ffd72276-5540-434d-96e5-616a5054c2ba")
-		)
-		(pin "4"
-			(uuid "b4640473-6d24-423e-82ad-673c3e8abddc")
-		)
-		(pin "2"
-			(uuid "16b7eaca-800a-4d1f-bab0-8c05a6b132e3")
-		)
-		(instances
-			(project "SMU"
-				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "U12")
-					(unit 1)
-				)
-				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
-					(reference "U9")
+					(reference "#PWR027")
 					(unit 1)
 				)
 			)
@@ -1737,7 +1741,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "63ec4063-c538-44b8-a323-1535ef489cee")
-		(property "Reference" "#PWR018"
+		(property "Reference" "#PWR038"
 			(at 102.87 73.66 0)
 			(effects
 				(font
@@ -1787,11 +1791,11 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "#PWR037")
+					(reference "#PWR038")
 					(unit 1)
 				)
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
-					(reference "#PWR018")
+					(reference "#PWR025")
 					(unit 1)
 				)
 			)
@@ -1807,7 +1811,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "751b4fd6-9702-45d6-b445-6b6027b3dee3")
-		(property "Reference" "#PWR033"
+		(property "Reference" "#PWR037"
 			(at 154.94 50.8 0)
 			(effects
 				(font
@@ -1857,11 +1861,11 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "#PWR041")
+					(reference "#PWR037")
 					(unit 1)
 				)
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
-					(reference "#PWR033")
+					(reference "#PWR024")
 					(unit 1)
 				)
 			)
@@ -1877,7 +1881,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "9073e94e-8fef-4dd4-9047-f2b587db8b6f")
-		(property "Reference" "D7"
+		(property "Reference" "D6"
 			(at 157.48 72.3899 90)
 			(effects
 				(font
@@ -1895,7 +1899,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Diode_THT:D_T-1_P5.08mm_Horizontal"
 			(at 154.94 73.66 0)
 			(effects
 				(font
@@ -1958,11 +1962,11 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "D3")
+					(reference "D6")
 					(unit 1)
 				)
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
-					(reference "D7")
+					(reference "D2")
 					(unit 1)
 				)
 			)
@@ -1978,7 +1982,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "90ffbef8-9306-4572-8522-c51d22400bf6")
-		(property "Reference" "R11"
+		(property "Reference" "R13"
 			(at 146.05 83.82 90)
 			(effects
 				(font
@@ -1994,7 +1998,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
 			(at 146.05 91.948 90)
 			(effects
 				(font
@@ -2030,11 +2034,11 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "R14")
+					(reference "R13")
 					(unit 1)
 				)
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
-					(reference "R11")
+					(reference "R6")
 					(unit 1)
 				)
 			)
@@ -2050,7 +2054,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "aaf4a099-62a9-41c3-b4da-15c8277aff67")
-		(property "Reference" "#PWR032"
+		(property "Reference" "#PWR041"
 			(at 158.75 119.38 0)
 			(effects
 				(font
@@ -2101,11 +2105,11 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "#PWR040")
+					(reference "#PWR041")
 					(unit 1)
 				)
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
-					(reference "#PWR032")
+					(reference "#PWR028")
 					(unit 1)
 				)
 			)
@@ -2113,15 +2117,15 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 125.73 97.79 0)
+		(at 123.19 97.79 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "b3578fd8-2b7c-4fcd-b130-d99dd31c19fc")
-		(property "Reference" "C15"
-			(at 119.126 96.774 0)
+		(property "Reference" "C19"
+			(at 116.586 96.774 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2130,7 +2134,7 @@
 			)
 		)
 		(property "Value" "4.7u"
-			(at 119.126 99.314 0)
+			(at 116.586 99.314 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2138,8 +2142,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
-			(at 126.6952 101.6 0)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder"
+			(at 124.1552 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2148,7 +2152,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 125.73 97.79 0)
+			(at 123.19 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2157,7 +2161,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 125.73 97.79 0)
+			(at 123.19 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2178,7 +2182,7 @@
 					(unit 1)
 				)
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
-					(reference "C15")
+					(reference "C14")
 					(unit 1)
 				)
 			)
@@ -2194,7 +2198,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b4a4530b-05a9-4f64-a0a6-6dd6de536838")
-		(property "Reference" "D6"
+		(property "Reference" "D5"
 			(at 157.48 62.2299 90)
 			(effects
 				(font
@@ -2212,7 +2216,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Diode_THT:D_T-1_P5.08mm_Horizontal"
 			(at 154.94 63.5 0)
 			(effects
 				(font
@@ -2275,11 +2279,11 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "D2")
+					(reference "D5")
 					(unit 1)
 				)
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
-					(reference "D6")
+					(reference "D1")
 					(unit 1)
 				)
 			)
@@ -2295,7 +2299,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "be7ebca8-5b41-4dfd-ae2c-82c9ff5dda18")
-		(property "Reference" "R9"
+		(property "Reference" "R12"
 			(at 127 62.23 90)
 			(effects
 				(font
@@ -2311,7 +2315,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
 			(at 127 70.358 90)
 			(effects
 				(font
@@ -2347,11 +2351,11 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "R8")
+					(reference "R12")
 					(unit 1)
 				)
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
-					(reference "R9")
+					(reference "R5")
 					(unit 1)
 				)
 			)
@@ -2367,7 +2371,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c47215f0-0be8-4051-b97c-4f1e7fee5ea8")
-		(property "Reference" "D5"
+		(property "Reference" "D8"
 			(at 105.41 85.0899 90)
 			(effects
 				(font
@@ -2385,7 +2389,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Diode_THT:D_T-1_P5.08mm_Horizontal"
 			(at 102.87 86.36 0)
 			(effects
 				(font
@@ -2448,11 +2452,11 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "D1")
+					(reference "D8")
 					(unit 1)
 				)
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
-					(reference "D5")
+					(reference "D4")
 					(unit 1)
 				)
 			)
@@ -2468,7 +2472,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "de9673d6-d910-46b5-bb10-2c2d6bd9feeb")
-		(property "Reference" "R12"
+		(property "Reference" "R15"
 			(at 146.05 113.03 90)
 			(effects
 				(font
@@ -2476,7 +2480,7 @@
 				)
 			)
 		)
-		(property "Value" "${SIM.PARAMS}"
+		(property "Value" "10k"
 			(at 146.05 115.57 90)
 			(effects
 				(font
@@ -2484,7 +2488,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
 			(at 146.05 121.158 90)
 			(effects
 				(font
@@ -2560,7 +2564,7 @@
 					(unit 1)
 				)
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
-					(reference "R12")
+					(reference "R8")
 					(unit 1)
 				)
 			)
@@ -2576,7 +2580,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "fa71c488-06b4-4408-914a-3c4afa43ca49")
-		(property "Reference" "D8"
+		(property "Reference" "D7"
 			(at 157.48 82.5499 90)
 			(effects
 				(font
@@ -2594,7 +2598,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Diode_THT:D_T-1_P5.08mm_Horizontal"
 			(at 154.94 83.82 0)
 			(effects
 				(font
@@ -2657,11 +2661,11 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "D4")
+					(reference "D7")
 					(unit 1)
 				)
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/bc2bf976-bc95-479f-912b-d2815548a460"
-					(reference "D8")
+					(reference "D3")
 					(unit 1)
 				)
 			)
