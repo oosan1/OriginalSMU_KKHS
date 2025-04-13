@@ -4,7 +4,7 @@
     {
       "analysis": "TRAN",
       "commands": [
-        ".tran 1u 2m",
+        ".tran 10u 320m",
         ".kicad adjustpaths",
         ".save all",
         ".probe alli",
@@ -12,8 +12,8 @@
       ],
       "dottedSecondary": true,
       "legend": {
-        "x": 135,
-        "y": 210
+        "x": 88,
+        "y": 41
       },
       "margins": {
         "bottom": 45,
@@ -25,13 +25,13 @@
       "showGrid": true,
       "traces": [
         {
-          "color": "rgb(255, 127, 0)",
-          "signal": "V(INPUT)",
+          "color": "rgb(228, 26, 28)",
+          "signal": "V(Vcrr)",
           "trace_type": 257
         },
         {
-          "color": "rgb(228, 26, 28)",
-          "signal": "V(Vcrr)",
+          "color": "rgb(55, 126, 184)",
+          "signal": "V(Vre)",
           "trace_type": 257
         }
       ]
