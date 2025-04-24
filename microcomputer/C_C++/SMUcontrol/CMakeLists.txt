@@ -60,6 +60,8 @@ target_link_libraries(SMUcontrol
         hardware_spi
         hardware_timer
         hardware_adc
+        hardware_clocks
+        hardware_pll
         )
 
 pico_add_extra_outputs(SMUcontrol)

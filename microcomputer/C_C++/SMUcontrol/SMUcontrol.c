@@ -7,6 +7,8 @@
 #include "hardware/rtc.h"
 #include "hardware/spi.h"
 #include "hardware/adc.h"
+#include "hardware/clocks.h"
+#include "hardware/pll.h"
 #include "pico/util/datetime.h"
 
 // SPIピン設定
@@ -22,6 +24,9 @@
 // ADC設定
 #define ADC_STEP 4096
 #define ADC_REF  3.3
+
+// システムクロック設定 (67~260MHz)
+#define SYSTEM_CLOCK_MHZ 200
 
 // プロトタイプ宣言
 int INFO(datetime_t *t);
@@ -266,6 +271,103 @@ int IVcal(float resistance, uint16_t *IV_list, int *IV_size, int *cal_list, bool
     return 0;
 }
 
+// EIS {DACchannel(0:A, 1:B)} {ADCchannel} {samplingRate(Hz)} {raise_time(ms)} {Voltage_min(step)} {Voltage_max(step)} {&result_list} {&result_size} {&cal_list} {&isCalibrated}
+int EIS(int DACchannel, int ADCchannel, int samplingRate, int raise_time, int volage_min, int volage_max, uint16_t *result_list, int *result_size, int *cal_list, bool *isCalibrated) {
+    char buffer[512];
+    if(ADCchannel < 0 || ADCchannel > 4) {
+        sendLog("Available ADC channels are 1 to 3.", 3);
+        return -1;
+    }
+    if(ADCchannel == 3) {
+        sendLog("The ADC3 is connected to VSYS and cannot be used.", 3);
+        return -1;
+    }
+    if(ADCchannel == 4) {
+        sendLog("The ADC4 is connected to Built-in thermometer and cannot be used.", 3);
+        return -1;
+    }
+    if(DACchannel < 0 || DACchannel > 2) {
+        sendLog("DAC channel is 1 or 2.", 3);
+        return -1;
+    }
+
+    int loop_count = samplingRate * (raise_time * 2 / 1000);
+    int loop_count_half = samplingRate * (raise_time / 1000);
+    absolute_time_t wait_time_us = 1/samplingRate * 1000 * 1000;
+    uint32_t start_time_us = time_us_32();
+    absolute_time_t target_time_us;
+    bool over_time_flag = false;
+    
+    // DAC設定
+    // チャンネル: 指定, バッファ: 無, ゲイン: 1倍
+    const uint16_t DAC_setting_data = 0x3000 + DACchannel * 0x8000;
+    uint16_t data_min_voltage = DAC_setting_data + volage_min;
+    uint16_t data_max_voltage = DAC_setting_data + volage_max;
+
+
+    // ADC設定
+    const float conversionFactor = 3.3f / (1 << 12);
+    adc_select_input(ADCchannel);
+    uint16_t ADCvalue;
+    float ADCvoltage;
+    *result_size = loop_count;
+    
+    // IVcurve測定
+    sendLog("Start measurement.\n", 1);
+    gpio_put(PIN_CS, 0);
+    spi_write16_blocking(SPI_PORT, &data_min_voltage, 2);
+    gpio_put(PIN_CS, 1);
+    gpio_put(PIN_LDAC, 0);
+    gpio_put(PIN_LDAC, 1);
+    sleep_ms(100);
+
+    for (int i = 0; i <= loop_count; i++) {
+        if (i == loop_count_half) {
+            gpio_put(PIN_CS, 0);
+            spi_write16_blocking(SPI_PORT, &data_max_voltage, 2);
+            gpio_put(PIN_CS, 1);
+            gpio_put(PIN_LDAC, 0);
+            gpio_put(PIN_LDAC, 1);
+        }
+        target_time_us = start_time_us + wait_time_us;
+        if (time_us_32() > target_time_us && i != 0) {
+            over_time_flag = true; // 処理速度的にサンプリングレートを守れなかった場合はフラグを立てる。
+        }
+        busy_wait_until(target_time_us); // サンプリングレートに合わせて待機。
+        start_time_us = time_us_32();
+        ADCvalue = adc_read();
+        result_list[i] = ADCvalue;
+    }
+    sendLog("Finish measurement.\n", 1);
+
+    // 計測後は安全のため、出力電圧を0Vに戻す。
+    uint16_t write_data = DAC_setting_data + 0;
+    gpio_put(PIN_CS, 0);
+    spi_write16_blocking(SPI_PORT, &write_data, 2);
+    gpio_put(PIN_CS, 1);
+    gpio_put(PIN_LDAC, 0);
+    gpio_put(PIN_LDAC, 1);
+    
+    // 測定データの送信
+    sendLog("Start sending.\n", 1);
+    if(*isCalibrated) {
+        printf("CALIBRATION:ON\n");
+    }else {
+        printf("CALIBRATION:OFF\n");
+    }
+    printf("START\n");
+    for (int i = 0; i <= loop_count; i++) {
+        ADCvoltage = (result_list[i] - cal_list[result_list[i]]) * conversionFactor;
+        printf("%f %f\n", (1 / samplingRate) * i, ADCvoltage);
+    }
+    printf("END\n");
+
+    if(over_time_flag) {
+        sendLog("The specified sweep speed could not be achieved. Reduce the sweep speed.", 2);
+    }
+    return 0;
+}
+
 // テキスト処理
 /*  ログレベル
  *      0: デバッグ
@@ -297,10 +399,12 @@ int sendLog(char *text, int level) {
 }
 
 int main() {
+    set_sys_clock_pll(SYSTEM_CLOCK_MHZ*3*2 * MHZ, 3, 2);
+
     stdio_init_all();
 
     // SPI初期化
-    spi_init(SPI_PORT, 500*1000); //1MHz
+    spi_init(SPI_PORT, 10 * MHZ);
     spi_set_format( SPI_PORT,
                     16,
                     0,
@@ -339,6 +443,8 @@ int main() {
     int int_com_arg2;
     int int_com_arg3;
     int int_com_arg4;
+    int int_com_arg5;
+    int int_com_arg6;
     int success;
     char buffer[512];
 
@@ -412,6 +518,22 @@ int main() {
             // IVcal {resistance(Ω)} {&IV_list} {&IV_size} {&cal_list}
             scanf("%f", &float_com_arg1);
             success = IVcal(float_com_arg1, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
+            if(success==0) {
+                sendLog("IVcal was executed\n", 0);
+            }else {
+                sendLog("IVcal was failed\n", 3);
+            }
+        }
+        else if(strcmp(com_command, "EIS") == 0) {
+            // EIS {DACchannel(0:A, 1:B)} {ADCchannel} {samplingRate(Hz)} {raise_time(ms)} {Voltage_min(step)} {Voltage_max(step)}
+            scanf("%d", &int_com_arg1);
+            scanf("%d", &int_com_arg2);
+            scanf("%d", &int_com_arg3);
+            scanf("%d", &int_com_arg4);
+            scanf("%d", &int_com_arg5);
+            scanf("%d", &int_com_arg6);
+
+            success = EIS(int_com_arg1, int_com_arg2, int_com_arg3, int_com_arg4, int_com_arg5, int_com_arg6, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
             if(success==0) {
                 sendLog("IVcal was executed\n", 0);
             }else {

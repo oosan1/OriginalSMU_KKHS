@@ -1,0 +1,12 @@
+測定回路:
+	直列100Ω、直列100Ω、並列1kΩ、並列4.7uF
+	電流変換抵抗1kΩ
+
+測定条件:
+	印加電圧:		50mV(62step)→70mV(87step)
+	印加時間:		40ms→40ms
+	サンプリング時間:	80ms
+	サンプリング周波数:	100,000Hz(100kHz)
+	
+	コマンド:		EIS {DACchannel(0:A, 1:B)} {ADCchannel} {samplingRate(Hz)} {raise_time(ms)} {Voltage_min(step)} {Voltage_max(step)}
+				EIS 0 0 100000 40 62 87
