@@ -4,7 +4,7 @@
     {
       "analysis": "TRAN",
       "commands": [
-        ".tran 10u 320m",
+        ".tran 50u 80m",
         ".kicad adjustpaths",
         ".save all",
         ".probe alli",
@@ -13,7 +13,7 @@
       "dottedSecondary": true,
       "legend": {
         "x": 88,
-        "y": 41
+        "y": 40
       },
       "margins": {
         "bottom": 45,
@@ -21,7 +21,12 @@
         "right": 70,
         "top": 30
       },
-      "measurements": [],
+      "measurements": [
+        {
+          "expr": "PP V(Vcrr)",
+          "format": "3~V"
+        }
+      ],
       "showGrid": true,
       "traces": [
         {

@@ -1680,6 +1680,16 @@
 	)
 	(wire
 		(pts
+			(xy 171.45 130.81) (xy 187.96 130.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "37ac31fa-142a-4975-931e-21b1bcdf71c9")
+	)
+	(wire
+		(pts
 			(xy 123.19 137.16) (xy 121.92 137.16)
 		)
 		(stroke
@@ -1987,16 +1997,6 @@
 			(type default)
 		)
 		(uuid "cc2244fb-ae56-400a-9d5e-9afb26b3fe81")
-	)
-	(wire
-		(pts
-			(xy 171.45 130.81) (xy 187.96 130.81)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d0cc267f-c9d5-4959-8ccb-016829cffd8c")
 	)
 	(wire
 		(pts
@@ -2765,7 +2765,7 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Params" "r=100"
+		(property "Sim.Params" "r=10k"
 			(at 162.56 109.22 0)
 			(effects
 				(font
@@ -3278,7 +3278,7 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Params" "c=1u"
+		(property "Sim.Params" "c=4.7u"
 			(at 127 137.16 0)
 			(effects
 				(font
@@ -3487,7 +3487,7 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Params" "r=280"
+		(property "Sim.Params" "r=100"
 			(at 109.22 128.27 0)
 			(effects
 				(font
@@ -4116,7 +4116,7 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Params" "r=2"
+		(property "Sim.Params" "r=100"
 			(at 92.71 128.27 0)
 			(effects
 				(font
@@ -4622,7 +4622,7 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Params" "y1=0 y2=20m td=100u tr=100u tf=100u tw=80m per=160m np=0"
+		(property "Sim.Params" "y1=50m y2=70m td=40m tr=50u tf=50u tw=40m per=80m np=0"
 			(at 27.94 200.66 0)
 			(effects
 				(font
