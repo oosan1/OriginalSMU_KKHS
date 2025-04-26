@@ -1538,7 +1538,7 @@
 		)
 		(uuid "fdb28e9d-53e2-4dce-980d-c78a8133b6c0")
 	)
-	(hierarchical_label "WE"
+	(hierarchical_label "CE"
 		(shape input)
 		(at 143.51 99.06 0)
 		(fields_autoplaced yes)
@@ -1598,7 +1598,7 @@
 		)
 		(uuid "d7f1b3a8-871c-4e53-a5ef-dc46da6fdac6")
 	)
-	(hierarchical_label "CE"
+	(hierarchical_label "WE"
 		(shape input)
 		(at 157.48 99.06 180)
 		(fields_autoplaced yes)
