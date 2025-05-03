@@ -4,7 +4,7 @@
     {
       "analysis": "TRAN",
       "commands": [
-        ".tran 50u 80m",
+        ".tran 10u 160m",
         ".kicad adjustpaths",
         ".save all",
         ".probe alli",
@@ -13,7 +13,7 @@
       "dottedSecondary": true,
       "legend": {
         "x": 88,
-        "y": 40
+        "y": 93
       },
       "margins": {
         "bottom": 45,
