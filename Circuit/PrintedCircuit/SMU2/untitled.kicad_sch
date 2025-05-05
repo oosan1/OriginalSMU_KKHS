@@ -1,7 +1,7 @@
 (kicad_sch
-	(version 20231120)
+	(version 20250114)
 	(generator "eeschema")
-	(generator_version "8.0")
+	(generator_version "9.0")
 	(uuid "f926a1c0-2f63-4158-ac46-0943d06096ee")
 	(paper "A4")
 	(lib_symbols
@@ -91,16 +91,16 @@
 			)
 			(symbol "OP07_1_1"
 				(pin input line
-					(at 0 -7.62 90)
-					(length 5.08)
-					(name "VOS"
+					(at -7.62 2.54 0)
+					(length 2.54)
+					(name "+"
 						(effects
 							(font
-								(size 0.508 0.508)
+								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "1"
+					(number "3"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -126,17 +126,17 @@
 						)
 					)
 				)
-				(pin input line
-					(at -7.62 2.54 0)
-					(length 2.54)
-					(name "+"
+				(pin power_in line
+					(at -2.54 7.62 270)
+					(length 3.81)
+					(name "V+"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "3"
+					(number "7"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -164,7 +164,8 @@
 				)
 				(pin no_connect line
 					(at 0 2.54 270)
-					(length 2.54) hide
+					(length 2.54)
+					(hide yes)
 					(name "NC"
 						(effects
 							(font
@@ -180,35 +181,17 @@
 						)
 					)
 				)
-				(pin output line
-					(at 7.62 0 180)
-					(length 2.54)
-					(name "~"
+				(pin input line
+					(at 0 -7.62 90)
+					(length 5.08)
+					(name "VOS"
 						(effects
 							(font
-								(size 1.27 1.27)
+								(size 0.508 0.508)
 							)
 						)
 					)
-					(number "6"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin power_in line
-					(at -2.54 7.62 270)
-					(length 3.81)
-					(name "V+"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "7"
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -234,10 +217,31 @@
 						)
 					)
 				)
+				(pin output line
+					(at 7.62 0 180)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "Device:C"
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 0.254)
 			)
@@ -310,7 +314,7 @@
 			(symbol "C_0_1"
 				(polyline
 					(pts
-						(xy -2.032 -0.762) (xy 2.032 -0.762)
+						(xy -2.032 0.762) (xy 2.032 0.762)
 					)
 					(stroke
 						(width 0.508)
@@ -322,7 +326,7 @@
 				)
 				(polyline
 					(pts
-						(xy -2.032 0.762) (xy 2.032 0.762)
+						(xy -2.032 -0.762) (xy 2.032 -0.762)
 					)
 					(stroke
 						(width 0.508)
@@ -371,9 +375,12 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "Device:R"
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 0)
 			)
@@ -492,12 +499,17 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "GND_1"
 			(power)
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 0) hide)
+				(offset 0)
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -588,12 +600,17 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "power:+15V"
 			(power)
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 0) hide)
+				(offset 0)
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -665,7 +682,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 0) (xy 0 2.54)
+						(xy 0 2.54) (xy 0.762 1.27)
 					)
 					(stroke
 						(width 0)
@@ -677,7 +694,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 2.54) (xy 0.762 1.27)
+						(xy 0 0) (xy 0 2.54)
 					)
 					(stroke
 						(width 0)
@@ -708,12 +725,17 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "power:-15V"
 			(power)
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 0) hide)
+				(offset 0)
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -804,12 +826,17 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "power:GNDA"
 			(power)
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 0) hide)
+				(offset 0)
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -900,6 +927,7 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 	)
 	(junction
@@ -907,18 +935,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "1c5c32bf-7c68-4084-bffa-4c236c1de855")
-	)
-	(junction
-		(at 200.66 77.47)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "36810aac-9c4e-42fb-a2f3-9516a71fd883")
-	)
-	(junction
-		(at 182.88 77.47)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "5657863b-44f6-4e8d-9e30-5a40020feac6")
 	)
 	(junction
 		(at 111.76 68.58)
@@ -997,16 +1013,6 @@
 	(no_connect
 		(at 194.31 93.98)
 		(uuid "df459eaa-b0dc-42ab-b669-7a4bd8ffb2b3")
-	)
-	(wire
-		(pts
-			(xy 182.88 68.58) (xy 182.88 77.47)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "061c1e3e-a909-402f-b8bd-aed99e8a4eca")
 	)
 	(wire
 		(pts
@@ -1120,16 +1126,6 @@
 	)
 	(wire
 		(pts
-			(xy 200.66 68.58) (xy 200.66 77.47)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2c23fdb4-1d8a-4094-861c-69b5baabfc5e")
-	)
-	(wire
-		(pts
 			(xy 200.66 77.47) (xy 200.66 101.6)
 		)
 		(stroke
@@ -1137,16 +1133,6 @@
 			(type default)
 		)
 		(uuid "2c4b5514-c4d3-45aa-a6b5-7903e5654db3")
-	)
-	(wire
-		(pts
-			(xy 187.96 68.58) (xy 182.88 68.58)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2cb2a31f-c0e7-4b2a-99dd-e2c44789058e")
 	)
 	(wire
 		(pts
@@ -1277,16 +1263,6 @@
 			(type default)
 		)
 		(uuid "726b9486-e0ef-447c-a4b9-c6cab951a06c")
-	)
-	(wire
-		(pts
-			(xy 200.66 68.58) (xy 195.58 68.58)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "74cf8956-b584-459c-bd0f-2afd1ac39cd1")
 	)
 	(wire
 		(pts
@@ -1541,7 +1517,6 @@
 	(hierarchical_label "CE"
 		(shape input)
 		(at 143.51 99.06 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1553,7 +1528,6 @@
 	(hierarchical_label "Vre"
 		(shape input)
 		(at 86.36 68.58 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1565,7 +1539,6 @@
 	(hierarchical_label "INPUT"
 		(shape input)
 		(at 88.9 96.52 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1577,7 +1550,6 @@
 	(hierarchical_label "Vcrr"
 		(shape input)
 		(at 217.17 101.6 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1589,7 +1561,6 @@
 	(hierarchical_label "RE"
 		(shape input)
 		(at 151.13 91.44 270)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1601,7 +1572,6 @@
 	(hierarchical_label "WE"
 		(shape input)
 		(at 157.48 99.06 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1959,7 +1929,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 109.982 83.82 90)
 			(effects
 				(font
@@ -2067,7 +2037,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 100.33 98.298 90)
 			(effects
 				(font
@@ -2214,114 +2184,6 @@
 				)
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/864e5ea1-a722-470e-b63e-a899af75262d"
 					(reference "#PWR030")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 191.77 68.58 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "5aeb6b2d-9a82-466d-8f78-ba85eea603d8")
-		(property "Reference" "C10"
-			(at 191.77 60.96 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "1n"
-			(at 191.77 63.5 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder"
-			(at 195.58 67.6148 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 191.77 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 191.77 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" "C"
-			(at 191.77 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" "="
-			(at 191.77 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Params" "c=1n"
-			(at 191.77 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=+ 2=-"
-			(at 191.77 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "e3a6ad9d-8ecb-4fb2-b585-da62241d60e4")
-		)
-		(pin "2"
-			(uuid "6d03e475-7f56-4e57-8fd5-81e0400b8e77")
-		)
-		(instances
-			(project "SMU"
-				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/4425bf7d-ba9b-4278-ad22-c2bfccc85d92"
-					(reference "C10")
-					(unit 1)
-				)
-				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/864e5ea1-a722-470e-b63e-a899af75262d"
-					(reference "C15")
 					(unit 1)
 				)
 			)
@@ -2584,7 +2446,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder"
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
 			(at 133.6548 71.12 0)
 			(effects
 				(font
@@ -2763,7 +2625,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder"
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
 			(at 195.8848 105.41 0)
 			(effects
 				(font
@@ -3012,7 +2874,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder"
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
 			(at 131.1148 102.87 0)
 			(effects
 				(font
@@ -3109,6 +2971,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Value" "100"
@@ -3119,7 +2982,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 191.77 79.248 90)
 			(effects
 				(font

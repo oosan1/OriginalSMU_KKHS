@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP MCW03-12D15
+D The MCW03 series is a range of isolated 3W DC-DC converter modules featuring fully regulated output and wide 2:1 input voltage ranges. The product comes in a SIP-8 package with a very small footprint occupying only 0.3 square in. on the PCB.
+K
+F https://www.minmaxpower.com/storage/media/Product-MINMAX/MCW03/MCW03_Datasheet.pdf
+$ENDCMP
+#
+#End Doc Library
