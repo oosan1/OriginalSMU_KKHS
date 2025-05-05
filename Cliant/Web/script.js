@@ -19,6 +19,7 @@ const DACaTextbox = document.getElementById("A_vol");
 const DACbButton = document.getElementById("setVolB_btn");
 const DACbTextbox = document.getElementById("B_vol");
 const IVButton = document.getElementById("IV_btn");
+const EISButton = document.getElementById("EIS_btn");
 const IVTextbox = document.getElementById("IV_vol");
 const CSVButton = document.getElementById("csv_btn");
 const CSVTextbox = document.getElementById("csv_name");
@@ -85,8 +86,14 @@ function onIVcurveButtonClick() {
     const voltage = Number(IVTextbox.value)
     let conv_voltage = Math.round(voltage * 4096 / SYS_VOL);
     conv_voltage = conv_voltage > 4095 ? 4095 : conv_voltage;
-    writeTextSerial(`IVcurve 0 0 1 5 ${conv_voltage}`);
+    writeTextSerial(`IVcurve 0 0 0.5 5 ${conv_voltage}`);
+}
 
+// EIS計測
+EISButton.addEventListener("click", onEISButtonClick, false);
+function onEISButtonClick() {
+    MODE = "IVcurve"
+    writeTextSerial("EIS 0 0 100000 40 62 87");
 }
 
 // 校正
@@ -101,6 +108,7 @@ function ButtonEnDi(mode) {
         DACaButton.disabled = true;
         DACbButton.disabled = true;
         IVButton.disabled = true;
+        EISButton.disabled = true;
         CSVButton.disabled = true;
         calButton.disabled = true;
     }else if (mode === "connect") {
@@ -108,12 +116,14 @@ function ButtonEnDi(mode) {
         DACaButton.disabled = false;
         DACbButton.disabled = false;
         IVButton.disabled = false;
+        EISButton.disabled = false;
         calButton.disabled = false;
     }else if (mode === "IVcurve_start") {
         sendButton.disabled = true;
         DACaButton.disabled = true;
         DACbButton.disabled = true;
         IVButton.disabled = true;
+        EISButton.disabled = true;
         CSVButton.disabled = true;
         calButton.disabled = true;
     }else if (mode === "IVcurve_finish") {
@@ -123,6 +133,7 @@ function ButtonEnDi(mode) {
         DACaButton.disabled = false;
         DACbButton.disabled = false;
         IVButton.disabled = false;
+        EISButton.disabled = false;
         calButton.disabled = false;
     }
 }
@@ -246,7 +257,8 @@ function SerialControl(text) {
         }else if (recording) {
             const REF = noCtrlCharText.split(" ")[0];
             const VOL = noCtrlCharText.split(" ")[1];
-            IVcurveList.push({"x": REF, "y": VOL / IconvR * IunitM});
+            //IVcurveList.push({"x": REF, "y": VOL / IconvR * IunitM});
+            IVcurveList.push({"x": REF, "y": VOL});
         }else {
             parseSerial(text);
         }
