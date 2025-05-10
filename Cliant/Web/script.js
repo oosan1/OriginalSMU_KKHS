@@ -2,7 +2,7 @@ let port;
 let MODE = "NORMAL";
 let recording = false;
 const SYS_VOL = 3.3;
-const IconvR = 100; // カレントフォロア回路の変換抵抗値
+const IconvR = 10000; // カレントフォロア回路の変換抵抗値
 const IunitM = 1000; //A:1, mA:1000
 
 let IVcurveList = [];
@@ -93,12 +93,12 @@ function onIVcurveButtonClick() {
 EISButton.addEventListener("click", onEISButtonClick, false);
 function onEISButtonClick() {
     MODE = "IVcurve"
-    writeTextSerial("EIS 0 0 100000 40 62 87");
+    writeTextSerial("EIS 0 0 50000 40 62 87 2");
 }
 
 // 校正
 calButton.addEventListener("click", () => {
-    writeTextSerial(`IVcal ${calTextbox.value}`);
+    writeTextSerial(`IVcal ${calTextbox.value} ${IconvR}`);
 });
 
 // ボタンの有効無効制御
@@ -257,8 +257,8 @@ function SerialControl(text) {
         }else if (recording) {
             const REF = noCtrlCharText.split(" ")[0];
             const VOL = noCtrlCharText.split(" ")[1];
-            //IVcurveList.push({"x": REF, "y": VOL / IconvR * IunitM});
-            IVcurveList.push({"x": REF, "y": VOL});
+            IVcurveList.push({"x": REF, "y": VOL / IconvR * IunitM});
+            //IVcurveList.push({"x": REF, "y": VOL});
         }else {
             parseSerial(text);
         }
