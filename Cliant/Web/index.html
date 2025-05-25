@@ -8,33 +8,77 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
 </head>
 <body>
-    <div id="status_monitor">
-        <div id="connectivity">通信: 断×</div>
-        <div id="calibrated">校正: 無効</div>
+    <div class="page-container">
+        <header class="page-header">
+            <div id="status_monitor">
+                <div id="connectivity">通信: 断×</div>
+                <div id="calibrated">校正: 無効</div>
+                <div id="status">状態: 接続待ち</div>
+            </div>
+            <div class="connection-controls">
+                <button type="button" id="connect_btn">接続</button>
+                <label id="baudrate_label">ボーレート:<input type="text" id="baudrate" value="115200"></label>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div id="control_panel">
+                <div class="control-group">
+                    <button type="button" id="setVolA_btn" disabled>DAC A出力</button>
+                    <label class="input-label">電圧(V):<input type="text" id="A_vol" value="0"></label>
+                </div>
+                <div class="control-group">
+                    <button type="button" id="setVolB_btn" disabled>DAC B出力</button>
+                    <label class="input-label">電圧(V):<input type="text" id="B_vol" value="0"></label>
+                </div>
+                <hr>
+                <div class="control-group">
+                    <div><button type="button" id="IV_btn" class="action-button" disabled>IVカーブ</button></div>
+                    <div class="inputs_list">
+                        <div><label class="input-label">掃引速度(mV/s):<input type="text" id="IV_speed" value="1000"></label></div>
+                        <div><label class="input-label">最大電圧(V):<input type="text" id="IV_vol" value="0.7"></label></div>
+                    </div>
+                </div>
+                <hr>
+                <div class="control-group eis-controls">
+                    <button type="button" id="EIS_btn" class="action-button" disabled>EIS</button>
+                    <div class="inputs_list">
+                        <div><label>振幅(mV):<input type="text" id="EIS_amp" value="20"></label></div>
+                        <div><label>周波数(Hz):<input type="text" id="EIS_input_freq" value="12.5"></label></div>
+                        <div><label>オフセット電圧(mV):<input type="text" id="EIS_offset_vol" value="60"></label></div>
+                        <div><label>ｻﾝﾌﾟﾘﾝｸﾞ周波数(kHz):<input type="text" id="EIS_sampling_freq" value="100"></label></div>
+                        </div>
+                    </div>
+                <hr>
+                <div class="control-group">
+                    <button type="button" id="csv_btn" disabled>CSV保存</button>
+                    <label class="input-label">ファイル名:<input type="text" id="csv_name" value="Test.csv"></label>
+                </div>
+                <hr>
+                <div class="control-group">
+                    <button type="button" id="cal_btn" disabled>校正</button>
+                    <label class="input-label">校正用抵抗値(Ω):<input type="text" id="cal_reg" value="1000"></label>
+                </div>
+                <hr>
+                <div class="control-group">
+                    <label class="full-width-label">電流電圧変換抵抗値(Ω):<input type="text" id="IconvR_new" value="1000"></label>
+                </div>
+            </div>
+
+            <div id="graph_container">
+                <canvas id="graph"></canvas>
+            </div>
+        </main>
+
+        <footer class="page-footer">
+            <div id="serial_console">
+                </div>
+            <div class="send-controls">
+                <button type="button" id="send_btn" disabled>送信</button>
+                <input type="text" id="send_text">
+            </div>
+        </footer>
     </div>
-    <div id="control_panel">
-        <button type="button" id="setVolA_btn" disabled>DAC A出力</button>
-        <label id="A_vol_label">電圧(V):<input type="text" id="A_vol" size="1" value="0"></label>
-        <button type="button" id="setVolB_btn" disabled>DAC B出力</button>
-        <label id="B_vol_label">電圧(V):<input type="text" id="B_vol" size="1" value="0"></label>
-        <button type="button" id="IV_btn" disabled>IVカーブ計測</button>
-        <label id="IV_vol_label">最大電圧(V):<input type="text" id="IV_vol" size="1" value="1"></label>
-        <button type="button" id="EIS_btn" disabled>EIS計測</button>
-        <button type="button" id="csv_btn" disabled>CSVファイル出力</button>
-        <label id="csv_name_label">ファイル名:<input type="text" id="csv_name" value="data1.csv"></label>
-        <button type="button" id="cal_btn" disabled>校正(ベース補正)</button>
-        <label id="cal_label">校正用抵抗値(Ω)<input type="text" id="cal_reg" size="1" value="100"></label>
-        <!-- DACとADCを直結した場合は100Ωに設定-->
-    </div>
-    <div id="graph_container">
-        <canvas id="graph"></canvas>
-    </div>
-    <button type="button" id="connect_btn">接続</button>
-    <label id="baudrate_label">ボーレート:<input type="text" id="baudrate" size="5" value="115200"></label>
-    <div id="serial_console">
-    </div>
-    <button type="button" id="send_btn" disabled>送信</button>
-    <input type="text" id="send_text" size="40"></label>
     <script src="script.js"></script>
 </body>
 </html>

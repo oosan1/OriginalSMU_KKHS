@@ -1,88 +1,231 @@
 body {
-    display: grid;
     margin: 0;
+    font-family: sans-serif;
     height: 100vh;
-    grid-template-rows: 1fr 35px 1fr 35px;
-    grid-template-columns: 55px 200px 300px 1fr;
-    column-gap: 5px;
-    row-gap: 5px;
+    display: flex;
+    flex-direction: column;
+    background-color: #f0f0f0; /* Light background for the page */
 }
 
-body > * {
-	margin: 5px;
+.page-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 10px;
+    gap: 10px;
+}
+
+.page-header {
+    display: flex;
+    gap: 10px;
+    align-items: stretch; /* Make items in header same height */
 }
 
 #status_monitor {
-    grid-row: 1;
-    grid-column: 1/3;
-    background-color:lightgray;
-    padding: 5px;
+    background-color: dimgray; /* Darker gray like screenshot */
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px; /* Space between "通信" and "校正" */
+    min-width: 180px; /* Ensure it has some width */
+    font-size: 1.1em;
+}
+
+#status_monitor > div {
+    background-color: #5a5a5a; /* Slightly lighter background for individual items */
+    padding: 8px;
+    border-radius: 3px;
+}
+
+
+.connection-controls {
+    display: flex;
+    flex-direction: row; /* Stack button and baudrate */
+    gap: 10px;
+    padding: 10px;
+    background-color: #e9e9e9;
+    border-radius: 5px;
+    justify-content: center;
+}
+
+.connection-controls button {
+    padding: 10px 15px;
+}
+.connection-controls label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.connection-controls input[type="text"] {
+    width: 80px; /* Adjust as needed */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+
+.main-content {
+    display: flex;
+    flex-grow: 1; /* Takes up available vertical space */
+    gap: 10px;
+    min-height: 0; /* Important for flex children with overflow */
 }
 
 #control_panel {
-    background-color: whitesmoke;
+    background-color: #ffffff; /* White background for control panel */
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
     display: flex;
     flex-direction: column;
-    padding: 10px;
-}
-#control_panel label{
-    margin: 0 0 10px 0;
+    gap: 12px; /* Spacing between control groups */
+    min-width: 400px; /* Increased width for control panel */
+    overflow-y: auto; /* Allow scrolling if content overflows */
 }
 
-#connect_btn {
-    grid-row: 2;
-    grid-column: 1;
+.control-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px; /* Space between button and label/input */
 }
+
+.control-group button {
+    padding: 8px 12px;
+    min-width: 120px; /* Common width for buttons */
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.control-group button:disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
+
+
+.control-group .input-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-grow: 1; /* Allow label/input to take remaining space */
+}
+
+.control-group input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    width: 100px; /* Default width for most inputs */
+}
+
+/* Special styling for EIS button and its inputs */
+.eis-controls {
+    align-items: flex-start; /* Align button to top of multi-line inputs */
+}
+
+.inputs_list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Space between each EIS input line */
+}
+.inputs_list > div {
+    display: flex;
+    align-items: center;
+}
+.inputs_list label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 160px; /* Ensure labels align */
+    justify-content: flex-end; /* Right-align label text */
+    font-size: 0.9em;
+}
+.inputs_list input[type="text"] {
+    width: 70px; /* Smaller inputs for EIS values */
+}
+
+
+.action-button {
+    background-color: #ff9800; /* Orange color like screenshot */
+    border: none;
+}
+.action-button:disabled {
+    background-color: #ffcc80; /* Lighter orange when disabled */
+}
+
+.full-width-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+}
+.full-width-label input[type="text"] {
+    flex-grow: 1;
+}
+
+#control_panel hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 5px 0;
+}
+
 
 #graph_container {
-    grid-row: 1;
-    grid-column: 4;
-    width: 100%;
-    height: 100%;
+    flex-grow: 1; /* Takes remaining horizontal space */
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    display: flex; /* To help canvas fill it */
+    min-width: 0; /* Important for flex children */
+}
+#graph_container canvas {
+    width: 100% !important; /* Override chart.js inline style if necessary */
+    height: 100% !important;
 }
 
-#baudrate, #baudrate_label {
-    grid-row: 2;
-    grid-column: 2;
+
+.page-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 200px; /* Fixed height for footer, adjust as needed */
 }
 
 #serial_console {
-    grid-row: 3;
-    grid-column: 1/5;
-    border: 1px solid #000;
+    border: 1px solid #ccc;
+    background-color: #ffffff;
+    padding: 10px;
+    flex-grow: 1; /* Takes available space in footer */
     overflow-y: auto;
     overflow-x: scroll;
     white-space: pre;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column-reverse; /* To show newest messages at bottom and scroll up */
+    border-radius: 5px;
+    font-size: 0.9em;
 }
 
-.black {
-    color: black;
-}
+/* Serial console message styling (from original, can be expanded) */
+.message { padding: 2px 0; }
+.black { color: black; }
+.red { color: red; }
+.red_bold { color: red; font-weight: bold; }
+.green { color: green; }
+.gray { color: gray; }
 
-.red {
-    color: red;
+.send-controls {
+    display: flex;
+    gap: 10px;
 }
-.red_bold {
-    color: red;
-    font-weight: bold;
+.send-controls button {
+    padding: 10px 15px;
 }
-
-.green {
-    color: green;
-}
-
-.gray {
-    color: gray;
-}
-
-#send_btn {
-    grid-row: 4;
-    grid-column: 1;
-}
-
-#send_text {
-    grid-row: 4;
-    grid-column: 2/5;
+.send-controls input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
 }
