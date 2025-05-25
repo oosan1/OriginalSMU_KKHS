@@ -21,14 +21,15 @@
 // DAC設定
 #define PIN_LDAC 9
 #define SPI_CLOCK_SPEED 15 * MHZ
+#define LDAC_MASK (1u << PIN_LDAC)
 
 // ADC設定
 #define ADC_STEP 4096
 #define ADC_REF  3.3
 #define IV_BUF_SIZE 10000
 
-// システムクロック設定 (67~260MHz)
-#define SYSTEM_CLOCK_MHZ 250
+// システムクロック設定 (100~400MHz)
+#define SYSTEM_CLOCK_MHZ 270
 
 // プロトタイプ宣言
 int INFO(datetime_t *t);
@@ -288,7 +289,6 @@ int IVcal(float resistance, float VtoIresistance, int offset_voltage_step, bool 
 
 // EIS {DACchannel(0:A, 1:B)} {ADCchannel} {samplingRate(Hz)} {raise_time(ms)} {Voltage_min(step)} {Voltage_max(step)} {repeat_count} {offset_voltage_step}(step)} {isInvert} {&result_list} {&result_size} {&cal_list} {&isCalibrated}
 int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, int volage_min, int volage_max, int repeat_count, int offset_voltage_step, bool isInvert, uint16_t *result_list, int *result_size, int *cal_list, bool *isCalibrated) {
-    printf("DAC: %d, ADC: %d, samplingRate: %f, raise_time: %f, volage_min: %d, volage_max: %d, ", DACchannel, ADCchannel, samplingRate, raise_time, volage_min, volage_max);
     char buffer[512];
     if(ADCchannel < 0 || ADCchannel > 4) {
         sendLog("Available ADC channels are 1 to 3.", 3);
@@ -340,8 +340,10 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
     gpio_put(PIN_LDAC, 1);
     sleep_ms(100);
 
-    for (int i = 0; i <= loop_count*repeat_count; i++) {
-        if (i % loop_count_half == 0) {
+    int dac_update_counter = 0;
+    int overCount = 0;
+    for (int i = 0; i < loop_count; i++) {
+        if (dac_update_counter == 0) {
             if (voltage_status) {
                 gpio_put(PIN_CS, 0);
                 spi_write16_blocking(SPI_PORT, &data_min_voltage, 2);
@@ -358,15 +360,20 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
                 voltage_status = true;
             }
         }
+        dac_update_counter++;
+        if (dac_update_counter >= loop_count_half) {
+            dac_update_counter = 0;
+        }
         target_time_us = start_time_us + wait_time_us;
         if (time_us_32() > target_time_us && i != 0) {
-            over_time_flag = true; // 処理速度的にサンプリングレートを守れなかった場合はフラグを立てる。
+            overCount++;
         }
         busy_wait_until(target_time_us); // サンプリングレートに合わせて待機。
         start_time_us = time_us_32();
         ADCvalue = adc_read();
         result_list[i] = ADCvalue;
     }
+    gpio_put(PIN_CS, 1);
     sendLog("Finish measurement.\n", 1);
 
     // 計測後は安全のため、出力電圧を0Vに戻す。
@@ -387,7 +394,7 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
         printf("CALIBRATION:OFF\n");
     }
     printf("START\n");
-    for (int i = 0; i <= loop_count*repeat_count; i++) {
+    for (int i = 0; i < loop_count; i++) {
         if (i % loop_count_half == 0) {
             if (voltage_status) {
                 voltage_status = false;
@@ -409,8 +416,11 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
     }
     printf("END\n");
 
-    if(over_time_flag) {
-        sendLog("The specified sweep speed could not be achieved. Reduce the sweep speed.\n", 2);
+    if(overCount > 2) {
+        sendLog("There is multiple data that exceeds the sampling rate.\n", 2);
+    }
+    else if(overCount > 0) {
+        sendLog("There are two or less pieces of data that exceed the sampling rate.\n", 2);
     }
     return 0;
 }
@@ -446,7 +456,7 @@ int sendLog(char *text, int level) {
 }
 
 int main() {
-    set_sys_clock_pll(SYSTEM_CLOCK_MHZ*3*2 * MHZ, 3, 2);
+    set_sys_clock_pll(SYSTEM_CLOCK_MHZ*2*2 * MHZ, 2, 2);
 
     stdio_init_all();
 
