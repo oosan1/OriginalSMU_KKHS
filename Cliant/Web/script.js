@@ -2,13 +2,16 @@ let port;
 let MODE = "NORMAL";
 let recording = false;
 const SYS_VOL = 3.3;
-const IconvR = 100; // カレントフォロア回路の変換抵抗値
+const IconvR = 10000; // カレントフォロア回路の変換抵抗値
 const IunitM = 1000; //A:1, mA:1000
 const EIS_max_data = 9000; // EIS計測の最大データ個数
+const EIS_max_sampling_freq = 250000; // EIS計測の最大サンプリングレート
 
 let drawDataList = [];
 let EIS_time = 0;
 let EIS_samplig = 0;
+let EIS_finished_flag = false;
+let EIS_flag_promise;
 let dataType = "none"
 let isCalibrated = false;
 
@@ -29,7 +32,8 @@ const IV_speedTextbox = document.getElementById("IV_speed");
 const EISButton = document.getElementById("EIS_btn");
 const EISampText = document.getElementById("EIS_amp");
 const EISinpFreqText = document.getElementById("EIS_input_freq");
-const EISsampFreqText = document.getElementById("EIS_sampling_freq");
+const EISFreqAmpText = document.getElementById("EIS_input_freq_amp");
+const EIStimes = document.getElementById("EIS_times");
 const EISoffsetVolText = document.getElementById("EIS_offset_vol");
 const CSVButton = document.getElementById("csv_btn");
 const CSVTextbox = document.getElementById("csv_name");
@@ -61,8 +65,10 @@ DACaButton.addEventListener("click", () => {
 });
 // CSVファイル出力
 CSVButton.addEventListener("click", () => {
-    const filename = CSVTextbox.value;
+    saveCSV(CSVTextbox.value)
+});
 
+function saveCSV(filename) {
     const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
     let data_csvText;
     if (dataType === "IVcurve") {
@@ -79,7 +85,7 @@ CSVButton.addEventListener("click", () => {
     URL.revokeObjectURL(link.href);
 
     console.log(`CSVファイル出力完了。ファイル名:${filename}`)
-});
+}
 function ListToCSV(list, header) {
     result = "";
     for(let i in header) {
@@ -100,7 +106,7 @@ IVButton.addEventListener("click", onIVcurveButtonClick, false);
 function onIVcurveButtonClick() {
     MODE = "IVcurve";
     status_text.innerText = "IVカーブ測定中...";
-    writeTextSerial("setOffsets -2048 0");
+    writeTextSerial("setOffsets -2048 1");
     setTimeout(() => {
         const voltage = Number(IV_maxTextbox.value);
         const speed = Number(IV_speedTextbox.value);
@@ -114,25 +120,62 @@ function onIVcurveButtonClick() {
 
 // EIS計測
 EISButton.addEventListener("click", onEISButtonClick, false);
-function onEISButtonClick() {
-    status_text.innerText = "EIS測定中...";
-    writeTextSerial("setOffsets -2048 0");
-    setTimeout(() => {
-        let amp_voltage = Math.round(Number(EISampText.value) * 4096 / SYS_VOL / 1000);
-        amp_voltage = amp_voltage > 4095 ? 4095 : amp_voltage;
-        let input_delay_time = (1 / Number(EISinpFreqText.value)) * 1000 / 2;
-        let offset_voltage = Math.round(Number(EISoffsetVolText.value) * 4096 / SYS_VOL / 1000);
-        offset_voltage = offset_voltage > 4095 ? 4095 : offset_voltage;
-        let high_voltage = Math.round(offset_voltage + amp_voltage / 2);
-        let low_voltage = Math.round(offset_voltage - amp_voltage / 2);
-        let sampfreq = Number(EISsampFreqText.value) * 1000;
+async function onEISButtonClick() {
+    writeTextSerial("setOffsets -2048 1");
+    const mesure_times = Number(EIStimes.value);
+    let amp_voltage = Math.round(Number(EISampText.value) * 4096 / SYS_VOL / 1000);
+    amp_voltage = amp_voltage > 4095 ? 4095 : amp_voltage;
+    let offset_voltage = Math.round(Number(EISoffsetVolText.value) * 4096 / SYS_VOL / 1000);
+    let high_voltage = Math.round(offset_voltage + amp_voltage / 2);
+    let low_voltage = Math.round(offset_voltage - amp_voltage / 2);
+    offset_voltage = offset_voltage > 4095 ? 4095 : offset_voltage;
 
-        EIS_time = 1 / Number(EISinpFreqText.value);
-        EIS_samplig = Number(EISsampFreqText.value) * 1000
+    let input_delay_time;
+    let sampfreq;
+    let input_freq;
+    for (let i = 0; i < mesure_times; i++) {
+        status_text.innerText = `EIS測定中...(${i+1}/${mesure_times})`;
+        input_freq = Number(EISinpFreqText.value) * (Number(EISFreqAmpText.value) ** i);
+        input_delay_time = (1 / input_freq) * 1000 / 2;
 
-        MODE = "EIS";
-        writeTextSerial(`EIS 0 0 ${sampfreq} ${input_delay_time} ${low_voltage} ${high_voltage} 1`);  
-    }, 50);
+        sampfreq = EIS_max_data * input_freq;
+        let closestN = 1;
+        let minDiff = Infinity;
+        let sampfreq_arrange = 0;
+        // RPpicoは自然数μs単位でしか動作できないため、もっとも切りの良いサンプリングレートを探す。
+        for (let n = 1; n <= 100000; n++) {
+            let candidateRate = 1000000 / n;
+            let diff = Math.abs(candidateRate - sampfreq);
+            if (diff < minDiff) {
+                minDiff = diff;
+                closestN = n;
+                sampfreq_arrange = candidateRate;
+            } else {
+                // 差が増加し始めたら、最適値を超えたと判断して打ち切る
+                break;
+            }
+        }
+        sampfreq_arrange = Math.min(sampfreq_arrange, EIS_max_sampling_freq);
+        EIS_time = 1 / input_freq
+        EIS_samplig = sampfreq_arrange
+
+        setTimeout(() => {
+            MODE = "EIS";
+            writeTextSerial(`EIS 0 0 ${sampfreq_arrange} ${input_delay_time} ${low_voltage} ${high_voltage} 1`);  
+        }, 50);
+        const flagPromise = new Promise(resolve => {
+            EIS_flag_promise = resolve;
+        });
+        // EISの計測が終わるまで待機する
+        await flagPromise;
+        
+        EIS_finished_flag = false
+        let filename = CSVTextbox.value.replace(".csv", "");
+        let freq_str = String(input_freq).replace(".", "-");
+        filename = `${filename}_${freq_str}Hz.csv`;
+        saveCSV(filename);
+    }
+    status_text.innerText = "接続完了";
 }
 
 // 校正
@@ -308,13 +351,11 @@ function SerialControl(text) {
         ButtonEnDi("IVcurve_start");
         if (noCtrlCharText === "START") {
             console.log("記録開始...")
-            status_text.innerText = "データ送信中...";
             recording = true;
             drawDataList = [];
         }else if (noCtrlCharText === "END") {
             recording = false;
             console.log("記録終了...")
-            status_text.innerText = "接続完了";
 
             if (graph) {
                 graph.destroy();
@@ -322,6 +363,9 @@ function SerialControl(text) {
             }
             drawGraph(drawDataList);
             ButtonEnDi("IVcurve_finish");
+            if (EIS_flag_promise) {
+                EIS_flag_promise();
+            }
         }else if (noCtrlCharText === "CALIBRATION:ON") {
             isCalibrated = true;
             calibrated_text.innerText = "校正: 有効"
@@ -332,7 +376,7 @@ function SerialControl(text) {
             const TIME = noCtrlCharText.split(" ")[0];
             const OUT_VOL = noCtrlCharText.split(" ")[1];
             const INP_VOL = noCtrlCharText.split(" ")[2];
-            drawDataList.push({"x": TIME, "y": OUT_VOL / IconvR * IunitM, "INPvol": INP_VOL});
+            drawDataList.push({"x": TIME, "y": OUT_VOL / IconvR * IunitM, "INPvol": INP_VOL, "measureTime": EIS_time, "samplingHz": EIS_samplig});
             dataType = "EIS";
         }else {
             parseSerial(text);
