@@ -320,7 +320,7 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
     const uint16_t DAC_setting_data = 0x3000 + DACchannel * 0x8000;
     uint16_t data_min_voltage = DAC_setting_data + volage_min;
     uint16_t data_max_voltage = DAC_setting_data + volage_max;
-    bool voltage_status = false;
+    bool voltage_status = true;
 
 
     // ADC設定
@@ -334,14 +334,14 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
     // IVcurve測定
     sendLog("Start measurement.\n", 1);
     gpio_put(PIN_CS, 0);
-    spi_write16_blocking(SPI_PORT, &data_min_voltage, 2);
+    spi_write16_blocking(SPI_PORT, &data_max_voltage, 2);
     gpio_put(PIN_CS, 1);
     gpio_put(PIN_LDAC, 0);
     gpio_put(PIN_LDAC, 1);
     sleep_ms(100);
 
     for (int i = 0; i <= loop_count*repeat_count; i++) {
-        if (i % loop_count_half == 0 && i != 0) {
+        if (i % loop_count_half == 0) {
             if (voltage_status) {
                 gpio_put(PIN_CS, 0);
                 spi_write16_blocking(SPI_PORT, &data_min_voltage, 2);
@@ -379,6 +379,7 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
     gpio_put(PIN_LDAC, 1);
     
     // 測定データの送信
+    voltage_status = true;
     sendLog("Start sending.\n", 1);
     if(*isCalibrated) {
         printf("CALIBRATION:ON\n");
@@ -387,13 +388,24 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
     }
     printf("START\n");
     for (int i = 0; i <= loop_count*repeat_count; i++) {
+        if (i % loop_count_half == 0) {
+            if (voltage_status) {
+                voltage_status = false;
+            } else {
+                voltage_status = true;
+            }
+        }
         ADCvoltage_step =  result_list[i] - cal_list[result_list[i]];
         ADCvoltage = ADCvoltage_step * conversionFactor;
         if (isInvert) {
             ADCvoltage = (ADCvoltage - ADC_REF) * -1;
         }
         ADCvoltage += ADC_REF * ((float)offset_voltage_step / ADC_STEP);
-        printf("%f %f\n", (1 / samplingRate) * i, ADCvoltage);
+        if (voltage_status) {
+            printf("%f %f %f\n", (1 / samplingRate) * i, ADCvoltage, volage_max * conversionFactor);
+        } else {
+            printf("%f %f %f\n", (1 / samplingRate) * i, ADCvoltage, volage_min * conversionFactor);
+        }
     }
     printf("END\n");
 
