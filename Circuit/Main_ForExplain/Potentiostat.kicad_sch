@@ -797,7 +797,7 @@
 	)
 	(wire
 		(pts
-			(xy 187.96 121.92) (xy 187.96 130.81)
+			(xy 187.96 124.46) (xy 187.96 130.81)
 		)
 		(stroke
 			(width 0.5)
@@ -1357,7 +1357,7 @@
 	)
 	(wire
 		(pts
-			(xy 186.69 121.92) (xy 187.96 121.92)
+			(xy 186.69 124.46) (xy 187.96 124.46)
 		)
 		(stroke
 			(width 0.5)
@@ -1527,7 +1527,7 @@
 	)
 	(wire
 		(pts
-			(xy 179.07 121.92) (xy 177.8 121.92)
+			(xy 179.07 124.46) (xy 177.8 124.46)
 		)
 		(stroke
 			(width 0.5)
@@ -1577,7 +1577,7 @@
 	)
 	(wire
 		(pts
-			(xy 177.8 121.92) (xy 177.8 130.81)
+			(xy 177.8 124.46) (xy 177.8 130.81)
 		)
 		(stroke
 			(width 0.5)
@@ -3605,7 +3605,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 182.88 121.92 90)
+		(at 182.88 124.46 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3614,7 +3614,7 @@
 		(fields_autoplaced yes)
 		(uuid "a23a4a7f-9115-42ca-b5ec-bdda5288a2e2")
 		(property "Reference" "C7"
-			(at 182.88 114.3 90)
+			(at 182.88 116.84 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3623,7 +3623,7 @@
 			)
 		)
 		(property "Value" "C"
-			(at 182.88 116.84 90)
+			(at 182.88 119.38 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3631,7 +3631,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 186.69 120.9548 0)
+			(at 186.69 123.4948 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3640,7 +3640,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 182.88 121.92 0)
+			(at 182.88 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3649,7 +3649,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 182.88 121.92 0)
+			(at 182.88 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)

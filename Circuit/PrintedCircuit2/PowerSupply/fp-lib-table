@@ -1,0 +1,5 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "MCW03-12D15")(type "KiCad")(uri "${KIPRJMOD}/Footprints/MCW03-12D15")(options "")(descr ""))
+  (lib (name "MJ-179PH")(type "KiCad")(uri "${KIPRJMOD}/Footprints/MJ-179PH")(options "")(descr ""))
+)

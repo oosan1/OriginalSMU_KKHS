@@ -1,0 +1,5 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "MCW03-12D15")(type "KiCad")(uri "${KIPRJMOD}/Symbols/MCW03-12D15.kicad_sym")(options "")(descr ""))
+  (lib (name "MJ-179PH")(type "KiCad")(uri "${KIPRJMOD}/Symbols/MJ-179PH.kicad_sym")(options "")(descr ""))
+)
