@@ -2,7 +2,7 @@ let port;
 let MODE = "NORMAL";
 let recording = false;
 const SYS_VOL = 3.3;
-const IconvR = 10000; // カレントフォロア回路の変換抵抗値
+const IconvR = 1000; // カレントフォロア回路の変換抵抗値
 const IunitM = 1000; //A:1, mA:1000
 const EIS_max_data = 9000; // EIS計測の最大データ個数
 const EIS_max_sampling_freq = 250000; // EIS計測の最大サンプリングレート
@@ -72,7 +72,7 @@ function saveCSV(filename) {
     const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
     let data_csvText;
     if (dataType === "IVcurve") {
-        data_csvText = ListToCSV(drawDataList, ["電圧(V)", "電流(mA)"]);
+        data_csvText = ListToCSV(drawDataList, ["電圧(V)", "電流(mA)", "走査方向"]);
     }else if (dataType === "EIS") {
         data_csvText = ListToCSV(drawDataList, ["時間(s)", "出力電流(mA)", "入力電圧(V)", "測定時間(s)", "ｻﾝﾌﾟﾘﾝｸﾞ周波数(Hz)"]);
     }
@@ -113,8 +113,8 @@ function onIVcurveButtonClick() {
         let conv_speed = Math.round(speed * 1000) / 1000 / 1000
         let conv_voltage = Math.round(voltage * 4096 / SYS_VOL);
         conv_voltage = conv_voltage > 4095 ? 4095 : conv_voltage;
-        console.log(`IVcurve 0 0 ${conv_speed} 5 ${conv_voltage}`);
-        writeTextSerial(`IVcurve 0 0 ${conv_speed} 5 ${conv_voltage}`);
+        console.log(`IVcurve 0 0 ${conv_speed} 5 ${conv_voltage} 1`);
+        writeTextSerial(`IVcurve 0 0 ${conv_speed} 5 ${conv_voltage} 1`);
     }, 50);
 }
 
@@ -136,7 +136,7 @@ async function onEISButtonClick() {
     for (let i = 0; i < mesure_times; i++) {
         status_text.innerText = `EIS測定中...(${i+1}/${mesure_times})`;
         input_freq = Number(EISinpFreqText.value) * (Number(EISFreqAmpText.value) ** i);
-        input_delay_time = (1 / input_freq) * 1000 / 2;
+        input_delay_time = Math.round(((1 / input_freq) * 1000 / 2)*100)/100;
 
         sampfreq = EIS_max_data * input_freq;
         let closestN = 1;
@@ -155,9 +155,9 @@ async function onEISButtonClick() {
                 break;
             }
         }
-        sampfreq_arrange = Math.min(sampfreq_arrange, EIS_max_sampling_freq);
-        EIS_time = 1 / input_freq
-        EIS_samplig = sampfreq_arrange
+        sampfreq_arrange = Math.round(Math.min(sampfreq_arrange, EIS_max_sampling_freq) * 100) / 100
+        EIS_time = 1/input_freq;
+        EIS_samplig = sampfreq_arrange;
 
         setTimeout(() => {
             MODE = "EIS";
@@ -341,7 +341,8 @@ function SerialControl(text) {
         }else if (recording) {
             const REF = noCtrlCharText.split(" ")[0];
             const VOL = noCtrlCharText.split(" ")[1];
-            drawDataList.push({"x": REF, "y": VOL / IconvR * IunitM});
+            const INV = noCtrlCharText.split(" ")[2];
+            drawDataList.push({"x": REF, "y": VOL / IconvR * IunitM, "INV": INV});
             dataType = "IVcurve";
             //drawDataList.push({"x": REF, "y": VOL});
         }else {
@@ -389,20 +390,38 @@ function SerialControl(text) {
 
 function drawGraph(data) {
     if (dataType === "IVcurve") {
+        // INVの値ごとにデータをグループ化
+        const groupedData = {};
+        drawDataList.forEach(item => {
+            if (!groupedData[item.INV]) {
+                groupedData[item.INV] = [];
+            }
+            groupedData[item.INV].push({ x: item.x, y: item.y });
+        });
+
+        // 各INVに対応する色を定義
+        const invColors = {
+            "0": "rgba(255, 99, 132, 0.8)", // 赤系
+            "1": "rgba(54, 162, 235, 0.8)", // 青系
+        };
+
+        // データセットを作成
+        const datasets = Object.keys(groupedData).map(invValue => {
+            return {
+                label: `INV: ${invValue}`, // 凡例のラベル
+                data: groupedData[invValue],
+                showLine: true,
+                fill: false,
+                borderColor: invColors[invValue] || "rgba(0, 0, 0, 1)", // INVに対応する色、なければ黒
+                borderWidth: 1,
+                pointBorderColor: invColors[invValue] || "rgba(0, 0, 0, 1)", // ポイントの枠線の色
+                pointBackgroundColor: invColors[invValue] || "rgba(0, 0, 0, 1)", // ポイントの塗りつぶしの色
+            };
+        });
         graph = new Chart(graph_canvas, {
             type: 'scatter', 
             data: { 
-              datasets: [
-                {
-                    label: "IV曲線",
-                    data: data,
-                    showLine: true,
-                    fill: false,
-                    borderColor: "RGBA(0, 0, 0, 1)",
-                    borderWidth: 1,
-                    pointBorderColor: "RGBA(0, 0, 0, 0)",
-                    pointBackgroundColor: "RGBA(0, 0, 0, 0)",
-                }]
+              datasets: datasets
             },
             options:{
               scales: {
@@ -420,7 +439,21 @@ function drawGraph(data) {
                 }]
               },
               responsive: true,
-              maintainAspectRatio: false
+              maintainAspectRatio: false,
+              // 凡例を表示
+              legend: {
+                  display: true,
+                  position: 'top',
+              },
+              tooltips: {
+                  callbacks: {
+                      label: function(tooltipItem, data) {
+                          const datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+                          const invValue = datasetLabel.replace('INV: ', ''); // ラベルからINV値を抽出
+                          return `${datasetLabel}: (x: ${tooltipItem.xLabel}, y: ${tooltipItem.yLabel})`;
+                      }
+                  }
+              }
             },
         });
     }else if (dataType === "EIS") {

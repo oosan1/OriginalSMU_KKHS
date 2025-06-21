@@ -1,0 +1,6 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "2025-06-01_06-39-10")(type "KiCad")(uri "${KIPRJMOD}/TLP241A_F/KiCADv6/2025-06-01_06-39-10.kicad_sym")(options "")(descr ""))
+  (lib (name "RPi_Pico")(type "Legacy")(uri "${KIPRJMOD}/RaspberrypiPico/RPi_Pico.lib")(options "")(descr ""))
+  (lib (name "TPS65131")(type "KiCad")(uri "${KIPRJMOD}/TPS65131/TPS65131.kicad_sym")(options "")(descr ""))
+)

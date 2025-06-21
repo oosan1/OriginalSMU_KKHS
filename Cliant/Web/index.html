@@ -20,7 +20,6 @@
                 <label id="baudrate_label">ボーレート:<input type="text" id="baudrate" value="115200"></label>
             </div>
         </header>
-
         <main class="main-content">
             <div id="control_panel">
                 <div class="control-group">
@@ -35,7 +34,7 @@
                 <div class="control-group">
                     <div><button type="button" id="IV_btn" class="action-button" disabled>IVカーブ</button></div>
                     <div class="inputs_list">
-                        <div><label class="input-label">掃引速度(mV/s):<input type="text" id="IV_speed" value="1000"></label></div>
+                        <div><label class="input-label">掃引速度(mV/s):<input type="text" id="IV_speed" value="100"></label></div>
                         <div><label class="input-label">最大電圧(V):<input type="text" id="IV_vol" value="0.7"></label></div>
                     </div>
                 </div>
@@ -44,10 +43,10 @@
                     <button type="button" id="EIS_btn" class="action-button" disabled>EIS</button>
                     <div class="inputs_list">
                         <div><label>振幅(mV):<input type="text" id="EIS_amp" value="20"></label></div>
-                        <div><label>オフセット電圧(mV):<input type="text" id="EIS_offset_vol" value="60"></label></div>
-                        <div><label>最低周波数(Hz):<input type="text" id="EIS_input_freq" value="1"></label></div>
-                        <div><label>周波数倍率:<input type="text" id="EIS_input_freq_amp" value="10"></label></div>
-                        <div><label>測定回数:<input type="text" id="EIS_times" value="3"></label></div>
+                        <div><label>オフセット電圧(mV):<input type="text" id="EIS_offset_vol" value="250"></label></div>
+                        <div><label>最低周波数(Hz):<input type="text" id="EIS_input_freq" value="0.9"></label></div>
+                        <div><label>周波数倍率:<input type="text" id="EIS_input_freq_amp" value="3"></label></div>
+                        <div><label>測定回数:<input type="text" id="EIS_times" value="5"></label></div>
                         </div>
                     </div>
                 <hr>
