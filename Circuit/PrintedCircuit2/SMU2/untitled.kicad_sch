@@ -1680,6 +1680,16 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "推奨電流に足りていない可能性"
+		(exclude_from_sim no)
+		(at 214.122 28.956 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "0105541d-c2b7-4a74-b486-66523d5e515d")
+	)
 	(junction
 		(at 229.87 55.88)
 		(diameter 0)
