@@ -6501,7 +6501,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "50"
+		(property "Value" "51"
 			(at 83.82 153.6701 0)
 			(effects
 				(font
@@ -6606,7 +6606,7 @@
 				)
 			)
 		)
-		(property "Value" "50"
+		(property "Value" "51"
 			(at 139.7 143.51 90)
 			(effects
 				(font
@@ -7438,7 +7438,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "50"
+		(property "Value" "51"
 			(at 146.05 162.5601 0)
 			(effects
 				(font

@@ -684,7 +684,7 @@
       "plot": "",
       "pos_files": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "SMU.step",
       "svg": "",
       "vrml": ""
     },
