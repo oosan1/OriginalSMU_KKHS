@@ -4,7 +4,7 @@
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "hardware/timer.h"
-// #include "hardware/rtc.h"
+#include "hardware/rtc.h"
 #include "hardware/spi.h"
 #include "hardware/adc.h"
 #include "hardware/clocks.h"
@@ -12,14 +12,14 @@
 #include "pico/util/datetime.h"
 
 // SPIピン設定
-#define SPI_PORT spi0
-#define PIN_MISO 16
-#define PIN_CS   17
-#define PIN_SCK  18
-#define PIN_MOSI 19
+#define SPI_PORT spi1
+#define PIN_MISO 12
+#define PIN_CS   15
+#define PIN_SCK  14
+#define PIN_MOSI 11
 
 // DAC設定
-#define PIN_LDAC 20
+#define PIN_LDAC 9
 #define SPI_CLOCK_SPEED 15 * MHZ
 #define LDAC_MASK (1u << PIN_LDAC)
 
@@ -32,21 +32,24 @@
 #define SYSTEM_CLOCK_MHZ 270
 
 // プロトタイプ宣言
-// int INFO(datetime_t *t);
+int INFO(datetime_t *t);
 int sendLog(char *text, int level);
 
 // コマンド関係
 // INFO {t}
-/*int INFO(datetime_t *t) {
+int INFO(datetime_t *t) {
     char datetime_buf[256];
     char *datetime_str = &datetime_buf[0];
     char buffer[256];
+    /*
     rtc_get_datetime(t);
     datetime_to_str(datetime_str, sizeof(datetime_buf), t);
     sprintf(buffer, "%s\n", datetime_str);
+    */
+    sendLog("Can't use RTC yet.", 1);
 
     return 0;
-}*/
+}
 
 // setVol {channel(0:A, 1:B)} {Voltage(step表記)}
 int setVol(int channel, int voltage_step) {
@@ -553,13 +556,12 @@ int main() {
         scanf("%s", &com_command);
         if(strcmp(com_command, "INFO") == 0) {
             // INFO
-            /*success = INFO(&t);
+            success = INFO(&t);
             if(success==0) {
                 sendLog("INFO was executed\n", 0);
             }else {
                 sendLog("INFO was failed\n", 3);
-            }*/
-           sendLog("Can't use RTC yet.\n", 1);
+            }
         }
         else if(strcmp(com_command, "setVol") == 0) {
             // setVol {channel(0:A, 1:B)} {Voltage(step表記)}

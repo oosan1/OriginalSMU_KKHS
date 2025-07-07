@@ -113,8 +113,8 @@ function onIVcurveButtonClick() {
         let conv_speed = Math.round(speed * 1000) / 1000 / 1000
         let conv_voltage = Math.round(voltage * 4096 / SYS_VOL);
         conv_voltage = conv_voltage > 4095 ? 4095 : conv_voltage;
-        console.log(`IVcurve 0 0 ${conv_speed} 5 ${conv_voltage} 1`);
-        writeTextSerial(`IVcurve 0 0 ${conv_speed} 5 ${conv_voltage} 1`);
+        console.log(`IVcurve 0 0 ${conv_speed} 5 ${conv_voltage} 0`);
+        writeTextSerial(`IVcurve 0 0 ${conv_speed} 5 ${conv_voltage} 0`);
     }, 50);
 }
 
