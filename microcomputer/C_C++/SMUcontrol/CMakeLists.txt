@@ -23,7 +23,7 @@ if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 # ====================================================================================
-set(PICO_BOARD pico CACHE STRING "Board type")
+set(PICO_BOARD pico2 CACHE STRING "Board type")
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
@@ -56,7 +56,6 @@ target_include_directories(SMUcontrol PRIVATE
 
 # Add any user requested libraries
 target_link_libraries(SMUcontrol 
-        hardware_rtc
         hardware_spi
         hardware_timer
         hardware_adc
@@ -65,4 +64,3 @@ target_link_libraries(SMUcontrol
         )
 
 pico_add_extra_outputs(SMUcontrol)
-
