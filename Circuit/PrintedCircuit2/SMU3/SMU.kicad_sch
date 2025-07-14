@@ -3364,15 +3364,11 @@
 		)
 		(uuid "b8406ccd-83ef-4360-bf57-f6fca6d57fea")
 	)
-	(text "SHDNの接続ミス\nPCB未修正"
-		(exclude_from_sim no)
-		(at 94.234 55.626 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "c9ec0143-267b-4eb4-a1f4-b685889abb70")
+	(junction
+		(at 80.01 129.54)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "007eff4e-52a1-405e-9646-806f1c90f04f")
 	)
 	(junction
 		(at 44.45 27.94)
@@ -3794,6 +3790,16 @@
 	)
 	(wire
 		(pts
+			(xy 80.01 158.75) (xy 80.01 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4b9fb414-7e5d-4748-9c3f-d10b293e34a8")
+	)
+	(wire
+		(pts
 			(xy 223.52 113.03) (xy 231.14 113.03)
 		)
 		(stroke
@@ -4204,7 +4210,7 @@
 	)
 	(wire
 		(pts
-			(xy 74.93 129.54) (xy 86.36 129.54)
+			(xy 74.93 129.54) (xy 80.01 129.54)
 		)
 		(stroke
 			(width 0)
@@ -4261,6 +4267,26 @@
 			(type default)
 		)
 		(uuid "9b807feb-1f52-434c-8e35-d05c6edaa660")
+	)
+	(wire
+		(pts
+			(xy 80.01 167.64) (xy 80.01 166.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9fa3ddc5-5c1d-42e1-875f-2da2829ca6ff")
+	)
+	(wire
+		(pts
+			(xy 80.01 129.54) (xy 86.36 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a6d98c08-51c5-4fe1-b430-37daa6845681")
 	)
 	(wire
 		(pts
@@ -4856,7 +4882,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "00832bb8-e633-4c24-9bee-9b33ddd58d9f")
-		(property "Reference" "#PWR015"
+		(property "Reference" "#PWR016"
 			(at 152.4 177.8 0)
 			(effects
 				(font
@@ -4906,7 +4932,7 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4"
-					(reference "#PWR015")
+					(reference "#PWR016")
 					(unit 1)
 				)
 			)
@@ -6195,6 +6221,73 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+3.3V")
+		(at 80.01 167.64 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "81bf7d27-a481-4355-9f6c-ce3d9ccbcddc")
+		(property "Reference" "#PWR015"
+			(at 80.01 163.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 80.0099 171.45 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 80.01 167.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 80.01 167.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 80.01 167.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "85b27b16-426c-4810-aadc-ac17d94a5d2d")
+		)
+		(instances
+			(project "SMU"
+				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4"
+					(reference "#PWR015")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:-12V")
 		(at 80.01 41.91 270)
 		(unit 1)
@@ -6501,7 +6594,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "51"
+		(property "Value" "5.1k"
 			(at 83.82 153.6701 0)
 			(effects
 				(font
@@ -6510,7 +6603,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 88.138 154.94 90)
 			(effects
 				(font
@@ -6606,7 +6699,7 @@
 				)
 			)
 		)
-		(property "Value" "51Ω"
+		(property "Value" "51"
 			(at 139.7 143.51 90)
 			(effects
 				(font
@@ -6614,7 +6707,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 139.7 145.542 90)
 			(effects
 				(font
@@ -6776,7 +6869,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10"
+		(property "Value" "1k"
 			(at 82.042 143.51 0)
 			(effects
 				(font
@@ -6785,7 +6878,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 84.582 144.78 90)
 			(effects
 				(font
@@ -6964,6 +7057,110 @@
 			(project ""
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4"
 					(reference "U3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 80.01 162.56 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d0a89d5a-8403-40fc-8c83-c1a1246ff935")
+		(property "Reference" "R6"
+			(at 73.66 162.56 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "51"
+			(at 76.2 162.56 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 78.232 162.56 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.01 162.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 80.01 162.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Device" "R"
+			(at 80.01 162.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Type" "="
+			(at 80.01 162.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Params" "r=30k"
+			(at 80.01 162.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Pins" "1=+ 2=-"
+			(at 80.01 162.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "ba2957de-54c1-48f7-928f-22b4dfb24fe9")
+		)
+		(pin "1"
+			(uuid "36e03180-827f-4535-afca-97cf256a5e75")
+		)
+		(instances
+			(project "SMU"
+				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4"
+					(reference "R6")
 					(unit 1)
 				)
 			)
@@ -7428,7 +7625,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e5dbb005-8c42-458e-9769-7c4a89b76f74")
-		(property "Reference" "R6"
+		(property "Reference" "R7"
 			(at 142.494 162.306 0)
 			(effects
 				(font
@@ -7437,7 +7634,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "51Ω"
+		(property "Value" "5.1k"
 			(at 142.494 164.846 0)
 			(effects
 				(font
@@ -7446,7 +7643,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 150.368 163.83 90)
 			(effects
 				(font
@@ -7518,7 +7715,7 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4"
-					(reference "R6")
+					(reference "R7")
 					(unit 1)
 				)
 			)
@@ -7615,7 +7812,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10Ω"
+		(property "Value" "1k"
 			(at 142.748 152.4 0)
 			(effects
 				(font
@@ -7624,7 +7821,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 146.812 153.67 90)
 			(effects
 				(font

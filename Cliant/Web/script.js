@@ -61,7 +61,7 @@ DACaButton.addEventListener("click", () => {
     const voltage = Number(DACaTextbox.value)
     let conv_voltage = Math.round(voltage * 4096 / SYS_VOL);
     conv_voltage = conv_voltage > 4095 ? 4095 : conv_voltage;
-    writeTextSerial(`setVolA ${conv_voltage}`);
+    writeTextSerial(`setVol 0 ${conv_voltage}`);
 });
 // CSVファイル出力
 CSVButton.addEventListener("click", () => {
