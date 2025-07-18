@@ -1085,16 +1085,6 @@
 	)
 	(wire
 		(pts
-			(xy 170.18 127) (xy 170.18 129.54)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0ba0b3ec-6d24-4201-951a-c9bb598c6ecc")
-	)
-	(wire
-		(pts
 			(xy 118.11 162.56) (xy 133.35 162.56)
 		)
 		(stroke
@@ -1135,7 +1125,7 @@
 	)
 	(wire
 		(pts
-			(xy 153.67 138.43) (xy 146.05 138.43)
+			(xy 153.67 138.43) (xy 147.32 138.43)
 		)
 		(stroke
 			(width 0)
@@ -1182,6 +1172,16 @@
 			(type default)
 		)
 		(uuid "5ae6f120-dfba-4311-a7e9-47ee8c4ed364")
+	)
+	(wire
+		(pts
+			(xy 118.11 142.24) (xy 118.11 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5feb503f-5a42-42b7-aafc-86965093040a")
 	)
 	(wire
 		(pts
@@ -1255,16 +1255,6 @@
 	)
 	(wire
 		(pts
-			(xy 118.11 149.86) (xy 118.11 152.4)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9f4ea010-b033-4c34-acaf-59b29d0c0bf9")
-	)
-	(wire
-		(pts
 			(xy 138.43 163.83) (xy 138.43 152.4)
 		)
 		(stroke
@@ -1295,6 +1285,16 @@
 	)
 	(wire
 		(pts
+			(xy 118.11 151.13) (xy 118.11 152.4)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c1ed69de-a239-454c-a332-3791e8ca5a71")
+	)
+	(wire
+		(pts
 			(xy 170.18 157.48) (xy 170.18 160.02)
 		)
 		(stroke
@@ -1305,7 +1305,7 @@
 	)
 	(wire
 		(pts
-			(xy 138.43 138.43) (xy 133.35 138.43)
+			(xy 139.7 138.43) (xy 133.35 138.43)
 		)
 		(stroke
 			(width 0)
@@ -1335,6 +1335,16 @@
 	)
 	(wire
 		(pts
+			(xy 118.11 115.57) (xy 118.11 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e67276d7-3081-4538-a639-ff863d4bb7cf")
+	)
+	(wire
+		(pts
 			(xy 151.13 160.02) (xy 153.67 160.02)
 		)
 		(stroke
@@ -1342,6 +1352,26 @@
 			(type default)
 		)
 		(uuid "ee4d4858-9629-4a6e-8629-ad06f3b8d12e")
+	)
+	(wire
+		(pts
+			(xy 118.11 133.35) (xy 118.11 134.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f001f6f7-2504-41c1-ba6b-4799da05ed66")
+	)
+	(wire
+		(pts
+			(xy 118.11 124.46) (xy 118.11 125.73)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f0c668f6-b6ea-4933-a346-6a08020f900b")
 	)
 	(wire
 		(pts
@@ -1503,7 +1533,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1f1802ff-a3b5-407f-b603-a02ec1547e69")
-		(property "Reference" "R19"
+		(property "Reference" "R18"
 			(at 146.05 182.88 90)
 			(effects
 				(font
@@ -1591,7 +1621,201 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "R19")
+					(reference "R18")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Simulation_SPICE:D")
+		(at 118.11 129.54 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "2b0f631a-ddce-4d62-beb0-87a2633c0b59")
+		(property "Reference" "D2"
+			(at 120.65 128.2699 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "D"
+			(at 120.65 130.8099 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Diode_THT:D_DO-34_SOD68_P2.54mm_Vertical_KathodeUp"
+			(at 118.11 129.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#cha_DIODEs"
+			(at 118.11 129.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Diode for simulation or PCB"
+			(at 118.11 129.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Device" "D"
+			(at 118.11 129.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Pins" "1=K 2=A"
+			(at 118.11 129.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Params" "rs=50m cjo=10p"
+			(at 118.11 129.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "9df96c1d-c070-42a7-aa0a-358d9106bb11")
+		)
+		(pin "1"
+			(uuid "f3a21ecc-8cef-44bc-a04e-21fe287d54a7")
+		)
+		(instances
+			(project "SMU"
+				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
+					(reference "D2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Simulation_SPICE:D")
+		(at 118.11 120.65 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "34636729-fad2-4d55-ae19-45214a8b3f67")
+		(property "Reference" "D1"
+			(at 120.65 119.3799 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "D"
+			(at 120.65 121.9199 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Diode_THT:D_DO-34_SOD68_P2.54mm_Vertical_KathodeUp"
+			(at 118.11 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#cha_DIODEs"
+			(at 118.11 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Diode for simulation or PCB"
+			(at 118.11 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Device" "D"
+			(at 118.11 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Pins" "1=K 2=A"
+			(at 118.11 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Params" "rs=50m cjo=10p"
+			(at 118.11 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "6fa34ab2-61ba-48aa-b510-3a3ada1a487f")
+		)
+		(pin "1"
+			(uuid "60a6f337-9986-432c-b889-3ef0b2c48fbc")
+		)
+		(instances
+			(project "SMU"
+				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
+					(reference "D1")
 					(unit 1)
 				)
 			)
@@ -1607,7 +1831,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5e70d25b-8686-401d-a324-812b5cc88707")
-		(property "Reference" "#PWR030"
+		(property "Reference" "#PWR029"
 			(at 146.05 171.45 0)
 			(effects
 				(font
@@ -1657,7 +1881,104 @@
 		(instances
 			(project ""
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "#PWR030")
+					(reference "#PWR029")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Simulation_SPICE:D")
+		(at 118.11 156.21 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "5f53ad7b-e6fa-41ae-92c8-0a2a19d3f5bb")
+		(property "Reference" "D5"
+			(at 120.65 154.9399 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "D"
+			(at 120.65 157.4799 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Diode_THT:D_DO-34_SOD68_P2.54mm_Vertical_KathodeUp"
+			(at 118.11 156.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#cha_DIODEs"
+			(at 118.11 156.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Diode for simulation or PCB"
+			(at 118.11 156.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Device" "D"
+			(at 118.11 156.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Pins" "1=K 2=A"
+			(at 118.11 156.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Params" "rs=50m cjo=10p"
+			(at 118.11 156.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "18c09dfd-c1bd-4559-8c39-d1b23daeb21a")
+		)
+		(pin "1"
+			(uuid "feb07e2b-73a7-434a-b60a-5f0a1dcdbd28")
+		)
+		(instances
+			(project "SMU"
+				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
+					(reference "D5")
 					(unit 1)
 				)
 			)
@@ -1665,7 +1986,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 118.11 149.86 180)
+		(at 118.11 115.57 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1673,8 +1994,8 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "63ec4063-c538-44b8-a323-1535ef489cee")
-		(property "Reference" "#PWR028"
-			(at 118.11 143.51 0)
+		(property "Reference" "#PWR027"
+			(at 118.11 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1683,7 +2004,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 118.11 144.78 0)
+			(at 118.11 110.49 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1691,7 +2012,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 118.11 149.86 0)
+			(at 118.11 115.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1700,7 +2021,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 118.11 149.86 0)
+			(at 118.11 115.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1709,7 +2030,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 118.11 149.86 0)
+			(at 118.11 115.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1723,7 +2044,7 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "#PWR028")
+					(reference "#PWR027")
 					(unit 1)
 				)
 			)
@@ -1731,7 +2052,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 170.18 127 180)
+		(at 170.18 137.16 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1739,8 +2060,8 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "751b4fd6-9702-45d6-b445-6b6027b3dee3")
-		(property "Reference" "#PWR027"
-			(at 170.18 120.65 0)
+		(property "Reference" "#PWR031"
+			(at 170.18 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1749,7 +2070,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 170.18 121.92 0)
+			(at 170.18 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1757,7 +2078,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 170.18 127 0)
+			(at 170.18 137.16 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1766,7 +2087,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 170.18 127 0)
+			(at 170.18 137.16 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1775,7 +2096,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 170.18 127 0)
+			(at 170.18 137.16 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1789,7 +2110,104 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "#PWR027")
+					(reference "#PWR031")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Simulation_SPICE:D")
+		(at 118.11 138.43 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7dc576ac-5e3f-4632-8e2c-f8ffbaf71b82")
+		(property "Reference" "D3"
+			(at 120.65 137.1599 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "D"
+			(at 120.65 139.6999 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Diode_THT:D_DO-34_SOD68_P2.54mm_Vertical_KathodeUp"
+			(at 118.11 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#cha_DIODEs"
+			(at 118.11 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Diode for simulation or PCB"
+			(at 118.11 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Device" "D"
+			(at 118.11 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Pins" "1=K 2=A"
+			(at 118.11 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Params" "rs=50m cjo=10p"
+			(at 118.11 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "c9b80b97-7381-4f50-a698-52135df21591")
+		)
+		(pin "1"
+			(uuid "d618c452-129e-4fb8-a65e-c4dcc632b0f1")
+		)
+		(instances
+			(project "SMU"
+				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
+					(reference "D3")
 					(unit 1)
 				)
 			)
@@ -1805,7 +2223,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "82a066a1-f42f-431b-a8e2-ba5f2bae0938")
-		(property "Reference" "#PWR029"
+		(property "Reference" "#PWR028"
 			(at 146.05 154.94 0)
 			(effects
 				(font
@@ -1855,7 +2273,7 @@
 		(instances
 			(project ""
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "#PWR029")
+					(reference "#PWR028")
 					(unit 1)
 				)
 			)
@@ -1871,7 +2289,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "9073e94e-8fef-4dd4-9047-f2b587db8b6f")
-		(property "Reference" "D2"
+		(property "Reference" "D6"
 			(at 172.72 142.2399 90)
 			(effects
 				(font
@@ -1889,7 +2307,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Diode_THT:D_DO-34_SOD68_P7.62mm_Horizontal"
+		(property "Footprint" "Diode_THT:D_DO-34_SOD68_P2.54mm_Vertical_KathodeUp"
 			(at 170.18 143.51 0)
 			(effects
 				(font
@@ -1952,7 +2370,7 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "D2")
+					(reference "D6")
 					(unit 1)
 				)
 			)
@@ -1968,7 +2386,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "90ffbef8-9306-4572-8522-c51d22400bf6")
-		(property "Reference" "R18"
+		(property "Reference" "R19"
 			(at 161.29 153.67 90)
 			(effects
 				(font
@@ -2020,7 +2438,7 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "R18")
+					(reference "R19")
 					(unit 1)
 				)
 			)
@@ -2036,7 +2454,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "aaf4a099-62a9-41c3-b4da-15c8277aff67")
-		(property "Reference" "#PWR031"
+		(property "Reference" "#PWR030"
 			(at 173.99 189.23 0)
 			(effects
 				(font
@@ -2087,7 +2505,7 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "#PWR031")
+					(reference "#PWR030")
 					(unit 1)
 				)
 			)
@@ -2163,105 +2581,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Simulation_SPICE:D")
-		(at 170.18 133.35 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "b4a4530b-05a9-4f64-a0a6-6dd6de536838")
-		(property "Reference" "D1"
-			(at 172.72 132.0799 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "D"
-			(at 172.72 134.6199 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Diode_THT:D_DO-34_SOD68_P7.62mm_Horizontal"
-			(at 170.18 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#cha_DIODEs"
-			(at 170.18 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Diode for simulation or PCB"
-			(at 170.18 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" "D"
-			(at 170.18 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 170.18 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Params" "rs=50m cjo=10p"
-			(at 170.18 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "7d408021-42bd-495f-872d-2bed03ccefaf")
-		)
-		(pin "1"
-			(uuid "7c116afe-6569-42ef-8bb1-56538e01340e")
-		)
-		(instances
-			(project "SMU"
-				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "D1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
-		(at 142.24 138.43 90)
+		(at 143.51 138.43 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2270,7 +2591,7 @@
 		(fields_autoplaced yes)
 		(uuid "be7ebca8-5b41-4dfd-ae2c-82c9ff5dda18")
 		(property "Reference" "R17"
-			(at 142.24 132.08 90)
+			(at 143.51 132.08 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2278,7 +2599,7 @@
 			)
 		)
 		(property "Value" "10k"
-			(at 142.24 134.62 90)
+			(at 143.51 134.62 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2286,7 +2607,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 142.24 140.208 90)
+			(at 143.51 140.208 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2295,7 +2616,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 142.24 138.43 0)
+			(at 143.51 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2304,7 +2625,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 142.24 138.43 0)
+			(at 143.51 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2322,103 +2643,6 @@
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
 					(reference "R17")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Simulation_SPICE:D")
-		(at 118.11 156.21 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "c47215f0-0be8-4051-b97c-4f1e7fee5ea8")
-		(property "Reference" "D4"
-			(at 120.65 154.9399 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "ZeD"
-			(at 120.65 157.4799 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Diode_THT:D_DO-34_SOD68_P7.62mm_Horizontal"
-			(at 118.11 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#cha_DIODEs"
-			(at 118.11 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Diode for simulation or PCB"
-			(at 118.11 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" "D"
-			(at 118.11 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 118.11 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Params" "rs=50m cjo=10p"
-			(at 118.11 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "7914b2d7-67f4-4238-9002-95da67425c77")
-		)
-		(pin "1"
-			(uuid "9ccffb7e-3abb-4df3-931e-62693db86da7")
-		)
-		(instances
-			(project "SMU"
-				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "D4")
 					(unit 1)
 				)
 			)
@@ -2530,6 +2754,103 @@
 	)
 	(symbol
 		(lib_id "Simulation_SPICE:D")
+		(at 118.11 147.32 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "f1769a5d-740a-4b4f-b5d2-801a9ae6c8d5")
+		(property "Reference" "D4"
+			(at 120.65 146.0499 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "D"
+			(at 120.65 148.5899 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Diode_THT:D_DO-34_SOD68_P2.54mm_Vertical_KathodeUp"
+			(at 118.11 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#cha_DIODEs"
+			(at 118.11 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Diode for simulation or PCB"
+			(at 118.11 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Device" "D"
+			(at 118.11 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Pins" "1=K 2=A"
+			(at 118.11 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Params" "rs=50m cjo=10p"
+			(at 118.11 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "ec720936-104b-4610-b616-be4c2c3f8350")
+		)
+		(pin "1"
+			(uuid "12d6c86b-b3fe-44c4-b9bd-9298db1ea7bf")
+		)
+		(instances
+			(project "SMU"
+				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
+					(reference "D4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Simulation_SPICE:D")
 		(at 170.18 153.67 270)
 		(unit 1)
 		(exclude_from_sim no)
@@ -2538,7 +2859,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "fa71c488-06b4-4408-914a-3c4afa43ca49")
-		(property "Reference" "D3"
+		(property "Reference" "D7"
 			(at 172.72 152.3999 90)
 			(effects
 				(font
@@ -2556,7 +2877,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Diode_THT:D_DO-34_SOD68_P7.62mm_Horizontal"
+		(property "Footprint" "Diode_THT:D_DO-34_SOD68_P2.54mm_Vertical_KathodeUp"
 			(at 170.18 153.67 0)
 			(effects
 				(font
@@ -2619,7 +2940,7 @@
 		(instances
 			(project "SMU"
 				(path "/736408a4-d995-4f38-bf98-0d13d4319ec4/8f19bf3f-2a5c-4ec7-a8ba-4d3313b86a71"
-					(reference "D3")
+					(reference "D7")
 					(unit 1)
 				)
 			)
