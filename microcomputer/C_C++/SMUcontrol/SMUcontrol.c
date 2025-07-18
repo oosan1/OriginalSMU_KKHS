@@ -22,10 +22,12 @@
 #define PIN_LDAC 20
 #define SPI_CLOCK_SPEED 15 * MHZ
 #define LDAC_MASK (1u << PIN_LDAC)
+float DAC_REF = 2.048;
 
 // ADC設定
 #define ADC_STEP 4096
-#define ADC_REF  3.3
+float ADC_REF = 2.96;
+
 #define IV_BUF_SIZE 10000
 
 // システムクロック設定 (100~400MHz)
@@ -71,7 +73,7 @@ int readVol(int channel) {
         return -1;
     }
     char buffer[512];
-    const float conversionFactor = 3.3f / (1 << 12);
+    const float conversionFactor = ADC_REF / (1 << 12);
     adc_select_input(channel);
     float adc = (float)adc_read() * conversionFactor;
     sprintf(buffer, "ADC%d=%f V\n", channel, adc);
@@ -170,7 +172,7 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_VperS, int waiting_time,
     uint16_t write_data;
 
     // ADC設定
-    const float conversionFactor = 3.3f / (1 << 12);
+    const float conversionFactor = ADC_REF / (1 << 12);
     adc_select_input(ADCchannel);
     uint16_t ADCvalue;
     int ADCvoltage_step;
@@ -242,7 +244,7 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_VperS, int waiting_time,
             ADCvoltage = (ADCvoltage - ADC_REF) * -1;
         }
         ADCvoltage += ADC_REF * ((float)offset_voltage_step / ADC_STEP);
-        printf("%f %f 0\n", 3.3 / 4096 * i, ADCvoltage);
+        printf("%f %f 0\n", DAC_REF / 4096 * i, ADCvoltage);
     }
     if (INV) {
         for (int i = voltage_step_max - 1; i > 0; i--) {
@@ -252,7 +254,7 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_VperS, int waiting_time,
                 ADCvoltage = (ADCvoltage - ADC_REF) * -1;
             }
             ADCvoltage += ADC_REF * ((float)offset_voltage_step / ADC_STEP);
-            printf("%f %f 1\n", 3.3 / 4096 * i, ADCvoltage);
+            printf("%f %f 1\n", DAC_REF / 4096 * i, ADCvoltage);
         }
     }
     printf("END\n");
@@ -279,7 +281,7 @@ int IVcal(float resistance, float VtoIresistance, int offset_voltage_step, bool 
         cal_list[i] = -ADC_STEP;
     }
 
-    const float conversionFactor = 3.3f / (1 << 12);
+    const float conversionFactor = ADC_REF / (1 << 12);
     int theoretical_vol;
     int vol_diff;
     int vol_step;
@@ -288,7 +290,7 @@ int IVcal(float resistance, float VtoIresistance, int offset_voltage_step, bool 
     for (int i = 0; i < *IV_size; i++) {
         vol_step = IV_list[i];
 
-        theoretical_vol = ((3.3 / ADC_STEP * i) / resistance * VtoIresistance) / 3.3 * ADC_STEP;
+        theoretical_vol = ((ADC_REF / ADC_STEP * i) / resistance * VtoIresistance) / ADC_REF * ADC_STEP;
         theoretical_vol -= offset_voltage_step;
         if (isInvert) {
             theoretical_vol = (theoretical_vol - ADC_STEP) * -1;
@@ -354,7 +356,7 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
 
 
     // ADC設定
-    const float conversionFactor = 3.3f / (1 << 12);
+    const float conversionFactor = ADC_REF / (1 << 12);
     adc_select_input(ADCchannel);
     uint16_t ADCvalue;
     int ADCvoltage_step;
@@ -647,6 +649,17 @@ int main() {
             sprintf(buffer, "offset_voltage:%d, isInvert:%d\n", offset_voltage_step, isInvert);
             sendLog(buffer, 0);
             sendLog("setOffsets was executed\n", 0);
+        }
+        else if(strcmp(com_command, "setRefVoltage") == 0) {
+            // setRefVoltage {ADC_REF(V)} {DAC_REF(V)}
+            scanf("%f", &float_com_arg1);
+            scanf("%f", &float_com_arg2);
+
+            ADC_REF = float_com_arg1;
+            DAC_REF = float_com_arg2;
+            sprintf(buffer, "ADC_REF:%f, DAC_REF:%f\n", ADC_REF, DAC_REF);
+            sendLog(buffer, 0);
+            sendLog("setRefVoltage was executed\n", 0);
         }
         else {
             sprintf(buffer, "Unknown command:%s\n", com_command);

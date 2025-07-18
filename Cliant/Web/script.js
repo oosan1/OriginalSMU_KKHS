@@ -2,7 +2,9 @@ let port;
 let MODE = "NORMAL";
 let recording = false;
 const SYS_VOL = 3.3;
-const IconvR = 1000; // カレントフォロア回路の変換抵抗値
+const ADC_VOL = 2.96; // ADCの基準電圧
+const DAC_VOL = 2.048; // DACの基準電圧
+const IconvR = 100; // カレントフォロア回路の変換抵抗値
 const IunitM = 1000; //A:1, mA:1000
 const EIS_max_data = 9000; // EIS計測の最大データ個数
 const EIS_max_sampling_freq = 250000; // EIS計測の最大サンプリングレート
@@ -59,7 +61,7 @@ let graph;
 // DAC制御
 DACaButton.addEventListener("click", () => {
     const voltage = Number(DACaTextbox.value)
-    let conv_voltage = Math.round(voltage * 4096 / SYS_VOL);
+    let conv_voltage = Math.round(voltage * 4096 / DAC_VOL);
     conv_voltage = conv_voltage > 4095 ? 4095 : conv_voltage;
     writeTextSerial(`setVol 0 ${conv_voltage}`);
 });
@@ -111,7 +113,7 @@ function onIVcurveButtonClick() {
         const voltage = Number(IV_maxTextbox.value);
         const speed = Number(IV_speedTextbox.value);
         let conv_speed = Math.round(speed * 1000) / 1000 / 1000
-        let conv_voltage = Math.round(voltage * 4096 / SYS_VOL);
+        let conv_voltage = Math.round(voltage * 4096 / DAC_VOL);
         conv_voltage = conv_voltage > 4095 ? 4095 : conv_voltage;
         console.log(`IVcurve 0 0 ${conv_speed} 5 ${conv_voltage} 0`);
         writeTextSerial(`IVcurve 0 0 ${conv_speed} 5 ${conv_voltage} 0`);
@@ -123,9 +125,9 @@ EISButton.addEventListener("click", onEISButtonClick, false);
 async function onEISButtonClick() {
     writeTextSerial("setOffsets -2048 1");
     const mesure_times = Number(EIStimes.value);
-    let amp_voltage = Math.round(Number(EISampText.value) * 4096 / SYS_VOL / 1000);
+    let amp_voltage = Math.round(Number(EISampText.value) * 4096 / DAC_VOL / 1000);
     amp_voltage = amp_voltage > 4095 ? 4095 : amp_voltage;
-    let offset_voltage = Math.round(Number(EISoffsetVolText.value) * 4096 / SYS_VOL / 1000);
+    let offset_voltage = Math.round(Number(EISoffsetVolText.value) * 4096 / DAC_VOL / 1000);
     let high_voltage = Math.round(offset_voltage + amp_voltage / 2);
     let low_voltage = Math.round(offset_voltage - amp_voltage / 2);
     offset_voltage = offset_voltage > 4095 ? 4095 : offset_voltage;
