@@ -29,6 +29,10 @@ float DAC_REF = 2.048;
 #define ADC_STEP 4096
 float ADC_REF = 2.96;
 
+//GPIO設定
+#define PIN_1k 6
+#define PIN_100 7
+
 #define IV_BUF_SIZE 10000
 
 // システムクロック設定 (100~400MHz)
@@ -511,6 +515,15 @@ int main() {
     adc_init();
     adc_set_temp_sensor_enabled(true);
 
+    // GPIO初期化
+    gpio_init(PIN_1k);
+    gpio_set_dir(PIN_1k, GPIO_OUT);
+    gpio_set_drive_strength(PIN_1k, GPIO_DRIVE_STRENGTH_12MA);
+
+    gpio_init(PIN_100);
+    gpio_set_dir(PIN_100, GPIO_OUT);
+    gpio_set_drive_strength(PIN_100, GPIO_DRIVE_STRENGTH_12MA);
+
     // RTC初期化
     // !=====RTCはRP2350で使用できないため、対応待ち=====!
     /*
@@ -661,10 +674,23 @@ int main() {
             sprintf(buffer, "ADC_REF:%f, DAC_REF:%f\n", ADC_REF, DAC_REF);
             sendLog(buffer, 0);
             sendLog("setRefVoltage was executed\n", 0);
+        }else if(strcmp(com_command, "setReg") == 0) {
+            // setReg {1k:0, 100:1} {off:0, on:1}
+            scanf("%f", &int_com_arg1);
+            scanf("%f", &int_com_arg2);
+            if (int_com_arg1 == 0) {
+                gpio_put(PIN_1k, int_com_arg2);
+            }else if (int_com_arg1 == 1) {
+                gpio_put(PIN_100, int_com_arg2);
+            }else {
+                sendLog("Unknown Channel\n", 3);
+            }
+            sendLog("setReg was executed\n", 0);
         }
         else {
             sprintf(buffer, "Unknown command:%s\n", com_command);
             sendLog(buffer, 3);
         }
+        
     }
 }
