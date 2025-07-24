@@ -41,14 +41,32 @@
                 <hr>
                 <div class="control-group eis-controls">
                     <button type="button" id="EIS_btn" class="action-button" disabled>EIS</button>
-                    <div class="inputs_list">
+                    <div class="inputs_list wide">
                         <div><label>振幅(mV):<input type="text" id="EIS_amp" value="20"></label></div>
                         <div><label>オフセット電圧(mV):<input type="text" id="EIS_offset_vol" value="250"></label></div>
-                        <div><label>最低周波数(Hz):<input type="text" id="EIS_input_freq" value="0.9"></label></div>
-                        <div><label>周波数倍率:<input type="text" id="EIS_input_freq_amp" value="3"></label></div>
-                        <div><label>測定回数:<input type="text" id="EIS_times" value="5"></label></div>
+                        <div><input type="checkbox" id="EIS_save_bool" checked/>CSV保存の有無</div>
+
+                        <div id="eis_freq_list_container">
+                            <table id="eis_freq_table">
+                                <thead>
+                                    <tr>
+                                        <th>周波数(Hz)</th>
+                                        <th>平均回数</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="eis_freq_list">
+                                    <tr>
+                                        <td><input type="text" name="eis_freq" value="12.5"></td>
+                                        <td><input type="text" name="eis_avg_count" value="2"></td>
+                                        <td><button type="button" class="remove_freq_btn">×</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
+                        <button type="button" id="add_freq_btn">パラメータを追加</button>
                     </div>
+                </div>
                 <hr>
                 <div class="control-group">
                     <button type="button" id="csv_btn" disabled>CSV保存</button>

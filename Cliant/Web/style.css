@@ -130,7 +130,12 @@ body {
     flex-direction: column;
     gap: 8px; /* Space between each EIS input line */
 }
-.inputs_list > div {
+/* ▼▼▼ ここから変更・追加 ▼▼▼ */
+.inputs_list.wide {
+    flex-grow: 1;
+}
+
+.inputs_list > div:not(#eis_freq_list_container) {
     display: flex;
     align-items: center;
 }
@@ -142,9 +147,85 @@ body {
     justify-content: flex-end; /* Right-align label text */
     font-size: 0.9em;
 }
-.inputs_list input[type="text"] {
+.inputs_list > div > label > input[type="text"] {
     width: 70px; /* Smaller inputs for EIS values */
 }
+
+#eis_freq_list_container {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 5px;
+    background-color: #f9f9f9;
+}
+
+#eis_freq_table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#eis_freq_table th:nth-child(3),
+#eis_freq_table td:nth-child(3) {
+    width: 40px;
+}
+
+#eis_freq_table th,
+#eis_freq_table td {
+    padding: 4px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#eis_freq_table th {
+    font-size: 0.85em;
+    color: #555;
+    padding-bottom: 8px;
+}
+
+#eis_freq_table input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    text-align: center;
+}
+
+#eis_freq_table .remove_freq_btn {
+    background-color: #ff5252;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    min-width: 0;
+    cursor: pointer;
+    font-weight: bold;
+    line-height: 24px;
+    padding: 0;
+    flex-shrink: 0;
+    display: block; /* margin: autoが効くようにブロック要素にする */
+    margin: 0 auto; /* 水平方向の中央寄せ */
+}
+#eis_freq_table .remove_freq_btn:hover {
+    background-color: #e04848;
+}
+
+#add_freq_btn {
+    align-self: flex-start;
+    margin-top: 5px;
+    padding: 6px 12px;
+    font-size: 0.9em;
+    background-color: #4CAF50; /* Green */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+#add_freq_btn:hover {
+    background-color: #45a049;
+}
+/* ▲▲▲ ここまで変更・追加 ▲▲▲ */
 
 
 .action-button {

@@ -9,6 +9,7 @@
 #include "hardware/adc.h"
 #include "hardware/clocks.h"
 #include "hardware/pll.h"
+#include "hardware/vreg.h"
 #include "pico/util/datetime.h"
 
 // SPIピン設定
@@ -31,7 +32,7 @@ float ADC_REF = 2.96;
 #define IV_BUF_SIZE 10000
 
 // システムクロック設定 (100~400MHz)
-#define SYSTEM_CLOCK_MHZ 270
+#define SYSTEM_CLOCK_MHZ 300
 
 // プロトタイプ宣言
 // int INFO(datetime_t *t);
