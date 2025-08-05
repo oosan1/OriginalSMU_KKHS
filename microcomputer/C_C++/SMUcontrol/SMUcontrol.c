@@ -403,7 +403,7 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
         }
         target_time_us = start_time_us + wait_time_us;
         if (time_us_32() > target_time_us && i != 0) {
-            overCount++;
+            overCount++; // 処理速度的にサンプリングレートを守れなかった場合はカウントアップ。
         }
         busy_wait_until(target_time_us); // サンプリングレートに合わせて待機。
         start_time_us = time_us_32();
