@@ -1,0 +1,16 @@
+.title KiCad schematic
+.include "E:/project_folder/git_repository/OriginalSMU_KKHS/Circuit/Sim4/OP07D.LIB"
+V1 0 -15V DC 12 
+V2 +15V -15V DC 30 
+V3 INPUT 0 PULSE( 0 1 1m 5u 5u 1m 2m 0 ) 
+R6 Net-_U3--_ Vcrr 100
+R5 Net-_U3--_ Net-_C1-Pad1_ 1k
+XU3 0 Net-_U3--_ +15V -15V Vcrr OP07D
+C1 Net-_C1-Pad1_ Net-_U3--_ 1u
+XU2 Net-_U2-+_ Vre +15V -15V Vre OP07D
+R3 Net-_R3-Pad1_ Net-_U2-+_ 100
+R4 Net-_C1-Pad1_ Net-_R3-Pad1_ 100
+R2 Vre Net-_U1--_ 10k
+XU1 0 Net-_U1--_ +15V -15V Net-_U2-+_ OP07D
+R1 INPUT Net-_U1--_ 10k
+.end
