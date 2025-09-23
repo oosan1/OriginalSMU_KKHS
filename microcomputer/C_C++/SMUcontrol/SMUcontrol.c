@@ -78,10 +78,9 @@ int readVol(int channel) {
         return -1;
     }
     char buffer[512];
-    const float conversionFactor = ADC_REF / (1 << 12);
     adc_select_input(channel);
-    float adc = (float)adc_read() * conversionFactor;
-    sprintf(buffer, "ADC%d=%f V\n", channel, adc);
+    float adc = adc_read();
+    sprintf(buffer, "ADC%d=%d\n", channel, adc);
     sendLog(buffer, 1);
 
     return 0;
@@ -141,8 +140,8 @@ int IVsweep(int channel, float speed_VperS, int voltage_step_max) {
     return 0;
 }
 
-// IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(V/s)} {waitingTime(us)} {maxVoltageStep(step表記)} {offset_voltage_step}(step表記) {isInvert} {反転の有無(0: false, 1: true)} {&result_list} {&result_size} {&cal_list} {&isCalibrated}
-int IVcurve(int DACchannel, int ADCchannel, float speed_VperS, int waiting_time, int voltage_step_max, int offset_voltage_step, bool isInvert, int INV, uint16_t *result_list, int *result_size, int *cal_list, bool *isCalibrated) {
+// IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {反転の有無(0: false, 1: true)} {&result_list} {&result_size} {&cal_list} {&isCalibrated}
+int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, int waiting_time, int voltage_step_min, int voltage_step_max, int INV, uint16_t *result_list, int *result_size, int *cal_list, bool *isCalibrated) {
     char buffer[512];
     if(ADCchannel < 0 || ADCchannel > 4) {
         sendLog("Available ADC channels are 1 to 3.", 3);
@@ -166,7 +165,7 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_VperS, int waiting_time,
         voltage_step_max = 4095;
     }
 
-    absolute_time_t wait_time_us = 1/(speed_VperS / ADC_REF * ADC_STEP) * 1000 * 1000;
+    absolute_time_t wait_time_us = per_step / (float)speed_stepPerS * 1000 * 1000;
     uint32_t start_time_us = time_us_32();
     absolute_time_t target_time_us;
     bool over_time_flag = false;
@@ -177,16 +176,16 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_VperS, int waiting_time,
     uint16_t write_data;
 
     // ADC設定
-    const float conversionFactor = ADC_REF / (1 << 12);
     adc_select_input(ADCchannel);
     uint16_t ADCvalue;
     int ADCvoltage_step;
     float ADCvoltage;
-    *result_size = voltage_step_max + 1;
-
+    *result_size = (voltage_step_max - voltage_step_min);
+    if (INV) { *result_size = *result_size * 2; }
+    
     // IVcurve測定
     sendLog("Start measurement.\n", 1);
-    for (int i = 0; i < voltage_step_max; i++) {
+    for (int i = voltage_step_min; i < voltage_step_max; i+=per_step) {
         write_data = DAC_setting_data + i;
         gpio_put(PIN_CS, 0);
         spi_write16_blocking(SPI_PORT, &write_data, 2);
@@ -205,7 +204,7 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_VperS, int waiting_time,
         result_list[i] = ADCvalue;
     }
     if (INV) {
-        for (int i = voltage_step_max - 1; i > 0; i--) {
+        for (int i = voltage_step_max - 2; i >= voltage_step_min; i-=per_step) {
             write_data = DAC_setting_data + i;
             gpio_put(PIN_CS, 0);
             spi_write16_blocking(SPI_PORT, &write_data, 2);
@@ -226,8 +225,8 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_VperS, int waiting_time,
     }
     sendLog("Finish measurement.\n", 1);
 
-    // 計測後は安全のため、出力電圧を0Vに戻す。
-    write_data = DAC_setting_data + 0;
+    // 計測後は安全のため、ハイインピーダンスモードにする。
+    write_data = 0x2000 + DACchannel * 0x8000 + 0;
     gpio_put(PIN_CS, 0);
     spi_write16_blocking(SPI_PORT, &write_data, 2);
     gpio_put(PIN_CS, 1);
@@ -589,7 +588,7 @@ int main() {
             }
         }
         else if(strcmp(com_command, "readVol") == 0) {
-            // setVol {channel(0:A, 1:B)} {Voltage(step表記)}
+            // readVol {channel(0:A, 1:B)}
             scanf("%d", &int_com_arg1);
             success = readVol(int_com_arg1);
             if(success==0) {
@@ -599,6 +598,7 @@ int main() {
             }
         }
         else if(strcmp(com_command, "IVsweep") == 0) {
+            // 非推奨コマンド
             // IVsweep {channel(0:A, 1:B)} {speed(V/s)} {maxVoltageStep} {Inverse}
             scanf("%d", &int_com_arg1);
             scanf("%f", &float_com_arg1);
@@ -611,7 +611,7 @@ int main() {
             }
         }
         else if(strcmp(com_command, "IVcurve") == 0) {
-            // IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(V/s)} {waitingTime(us)} {maxVoltageStep(step表記)} {反転の有無(0: false, 1: true)}
+            // IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {waitingTime(us)} {maxVoltageStep(step)} {反転の有無(0: false, 1: true)}
             scanf("%d", &int_com_arg1);
             scanf("%d", &int_com_arg2);
             scanf("%f", &float_com_arg1);
