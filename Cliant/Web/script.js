@@ -1,10 +1,9 @@
 let port;
 let MODE = "NORMAL";
 let recording = false;
-const SYS_VOL = 3.3;
-const ADC_VOL = 2.96; // ADCの基準電圧
-const DAC_VOL = 2.048; // DACの基準電圧
-const IconvR = 10000; // カレントフォロア回路の変換抵抗値
+//const ADC_VOL = 2.96; // ADCの基準電圧
+//const DAC_VOL = 2.048; // DACの基準電圧
+//const IconvR = 10000; // カレントフォロア回路の変換抵抗値
 const IunitM = 1000; //A:1, mA:1000
 const EIS_max_data = 9000; // EIS計測の最大データ個数
 const EIS_max_sampling_freq = 250000; // EIS計測の最大サンプリングレート
@@ -24,6 +23,16 @@ let dataType = "none"
 let data_increase = 0;
 let isCalibrated = false;
 
+let DAC_absVol;
+let DAC_absMinVol;
+let DAC_step;
+let ADC_absVol;
+let ADC_absMinVol;
+let ADC_step;
+let ADC_invert;
+let I_convertion_R;
+
+
 const connectButton = document.getElementById("connect_btn");
 const baudrateTextbox = document.getElementById("baudrate");
 const serialConsoleTextbox = document.getElementById("send_text");
@@ -31,22 +40,39 @@ const sendButton = document.getElementById("send_btn");
 const connectivity_text = document.getElementById("connectivity");
 const calibrated_text = document.getElementById("calibrated");
 const status_text = document.getElementById("status");
+
 const DACaButton = document.getElementById("setVolA_btn");
 const DACaTextbox = document.getElementById("A_vol");
 const DACbButton = document.getElementById("setVolB_btn");
 const DACbTextbox = document.getElementById("B_vol");
+
 const IVButton = document.getElementById("IV_btn");
-const IV_maxTextbox = document.getElementById("IV_vol");
 const IV_speedTextbox = document.getElementById("IV_speed");
+const IV_waitingTimeTextbox = document.getElementById("IV_waiting_time");
+const IV_minTextbox = document.getElementById("IV_vol_min");
+const IV_maxTextbox = document.getElementById("IV_vol_max");
+const IV_stepTextbox = document.getElementById("IV_vol_step");
+const IV_invertCheckbox = document.getElementById("IV_invert");
+
 const EISButton = document.getElementById("EIS_btn");
 const EISampText = document.getElementById("EIS_amp");
 const EISoffsetVolText = document.getElementById("EIS_offset_vol");
 const EISsaveBox = document.getElementById("EIS_save_bool");
+const freq_table = document.getElementById("eis_freq_table");
+
 const CSVButton = document.getElementById("csv_btn");
 const CSVTextbox = document.getElementById("csv_name");
 const calButton = document.getElementById("cal_btn");
 const calTextbox = document.getElementById("cal_reg");
-const freq_table = document.getElementById("eis_freq_table");
+
+const ADC_minVolTextbox = document.getElementById("ADC_min_vol");
+const ADC_maxVolTextbox = document.getElementById("ADC_max_vol");
+const ADC_stepTextbox = document.getElementById("ADC_step");
+const ADC_invertMeasCheckbox = document.getElementById("ADC_invert_meas");
+const IconvRTextbox = document.getElementById("IconvR");
+const DAC_minVolTextbox = document.getElementById("DAC_min_vol");
+const DAC_maxVolTextbox = document.getElementById("DAC_max_vol");
+const DAC_stepTextbox = document.getElementById("DAC_step");
 
 connectButton.addEventListener("click", onConnectButtonClick, false);
 serialConsoleTextbox.addEventListener('keydown', onConsoleKeypress);
@@ -93,10 +119,23 @@ let graph;
 // DAC制御
 DACaButton.addEventListener("click", () => {
     const voltage = Number(DACaTextbox.value)
-    let conv_voltage = Math.round(voltage * 4096 / DAC_VOL);
-    conv_voltage = conv_voltage > 4095 ? 4095 : conv_voltage;
-    writeTextSerial(`setVol 0 ${conv_voltage}`);
+    DAC_absVol = Number(DAC_maxVolTextbox.value) - Number(DAC_minVolTextbox.value);
+    DAC_absMinVol = Math.abs(Number(DAC_minVolTextbox.value));
+    DAC_step = Number(DAC_stepTextbox.value);
+    let step_voltage = Math.round(((voltage + DAC_absMinVol) / DAC_absVol) * DAC_step);
+    step_voltage = step_voltage > DAC_step ? DAC_step : step_voltage;
+    writeTextSerial(`setVol 0 ${step_voltage}`);
 });
+DACaButton.addEventListener("click", () => {
+    const voltage = Number(DACaTextbox.value)
+    const DAC_absVol = Number(DAC_maxVolTextbox.value) - Number(DAC_minVolTextbox.value);
+    const DAC_absMinVol = Math.abs(Number(DAC_minVolTextbox.value));
+    const DAC_step = Number(DAC_stepTextbox.value);
+    let step_voltage = Math.round(((voltage + DAC_absMinVol) / DAC_absVol) * DAC_step);
+    step_voltage = step_voltage > DAC_step ? DAC_step : step_voltage;
+    writeTextSerial(`setVol 1 ${step_voltage}`);
+});
+
 // CSVファイル出力
 CSVButton.addEventListener("click", () => {
     saveCSV(CSVTextbox.value)
@@ -137,19 +176,35 @@ function ListToCSV(list, header) {
 
 // IVカーブ計測
 IVButton.addEventListener("click", onIVcurveButtonClick, false);
+// IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {反転の有無(0: false, 1: true)}
 function onIVcurveButtonClick() {
     MODE = "IVcurve";
     status_text.innerText = "IVカーブ測定中...";
-    writeTextSerial("setOffsets -2048 1");
-    setTimeout(() => {
-        const voltage = Number(IV_maxTextbox.value);
-        const speed = Number(IV_speedTextbox.value);
-        let conv_speed = Math.round(speed * 1000) / 1000 / 1000
-        let conv_voltage = Math.round(voltage * 4096 / DAC_VOL);
-        conv_voltage = conv_voltage > 4095 ? 4095 : conv_voltage;
-        console.log(`IVcurve 0 0 ${conv_speed} 5 ${conv_voltage} 0`);
-        writeTextSerial(`IVcurve 0 0 ${conv_speed} 100 ${conv_voltage} 0`);
-    }, 50);
+    const speed = Number(IV_speedTextbox.value) / 1000;
+    const stepVol = Number(IV_stepTextbox.value);
+    const minVol = Number(IV_minTextbox.value);
+    const maxVol = Number(IV_maxTextbox.value);
+    DAC_absVol = Number(DAC_maxVolTextbox.value) - Number(DAC_minVolTextbox.value);
+    DAC_absMinVol = Math.abs(Number(DAC_minVolTextbox.value));
+    DAC_step = Number(DAC_stepTextbox.value);
+
+    // この関数では使わないが、データ取得時のために更新しておく
+    ADC_absVol = Number(ADC_maxVolTextbox.value) - Number(ADC_minVolTextbox.value);
+    ADC_absMinVol = Math.abs(Number(ADC_minVolTextbox.value));
+    ADC_step = Number(ADC_stepTextbox.value);
+    I_convertion_R = Number(IconvRTextbox.value);
+
+    const waiting_time = Number(IV_waitingTimeTextbox.value);
+    const invert = IV_invertCheckbox.checked ? 1 : 0;
+    ADC_invert = ADC_invertMeasCheckbox.checked ? -1 : 1;
+
+    const step_speed = Math.round((speed / DAC_absVol) * DAC_step);
+    const step_stepVol = Math.round((stepVol / DAC_absVol) * DAC_step);
+    const step_minVol = Math.round(((minVol + DAC_absMinVol) / DAC_absVol) * DAC_step);
+    const step_maxVol = Math.round(((maxVol + DAC_absMinVol) / DAC_absVol) * DAC_step);
+
+    console.log(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${invert}`);
+    writeTextSerial(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${invert}`);
 }
 
 // EIS計測
@@ -404,6 +459,7 @@ function SerialControl(text) {
                 console.log("destroyed");
             }
             drawGraph(drawDataList);
+            console.log(drawDataList);
             ButtonEnDi("IVcurve_finish");
         }else if (noCtrlCharText === "CALIBRATION:ON") {
             isCalibrated = true;
@@ -412,12 +468,16 @@ function SerialControl(text) {
             isCalibrated = false;
             calibrated_text.innerText = "校正: 無効"
         }else if (recording) {
-            const REF = noCtrlCharText.split(" ")[0];
-            const VOL = noCtrlCharText.split(" ")[1];
+            const rawInputStepVol = noCtrlCharText.split(" ")[0];
+            const rawOutputStepVol = noCtrlCharText.split(" ")[1];
+            const outputStepVol = (rawOutputStepVol - (ADC_absMinVol / ADC_absVol) * ADC_step) * ADC_invert;
             const INV = noCtrlCharText.split(" ")[2];
-            drawDataList.push({"x": REF, "y": VOL / IconvR * IunitM, "INV": INV});
+            drawDataList.push({
+                "x": (rawInputStepVol / DAC_step) * DAC_absVol - DAC_absMinVol,
+                "y": ((outputStepVol / ADC_step) * ADC_absVol) / I_convertion_R * IunitM,
+                "INV": INV
+            });
             dataType = "IVcurve";
-            //drawDataList.push({"x": REF, "y": VOL});
         }else {
             parseSerial(text);
         }

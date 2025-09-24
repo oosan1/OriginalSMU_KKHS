@@ -237,7 +237,7 @@ body {
 }
 
 .full-width-label {
-    display: flex;
+    display: flex;  
     align-items: center;
     gap: 5px;
     width: 100%;
