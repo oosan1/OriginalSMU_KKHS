@@ -33,6 +33,8 @@ float ADC_REF = 2.96;
 #define PIN_1k 6
 #define PIN_100 7
 
+#define LED_PIN 25
+
 #define IV_BUF_SIZE 10000
 
 // システムクロック設定 (100~400MHz)
@@ -179,7 +181,6 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
     adc_select_input(ADCchannel);
     uint16_t ADCvalue;
     int ADCvoltage_step;
-    float ADCvoltage;
     *result_size = (voltage_step_max - voltage_step_min);
     if (INV) { *result_size = *result_size * 2; }
     
@@ -241,24 +242,14 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
         printf("CALIBRATION:OFF\n");
     }
     printf("START\n");
-    for (int i = 0; i < voltage_step_max; i++) {
+    for (int i = voltage_step_min; i < voltage_step_max; i+=per_step) {
         ADCvoltage_step =  result_list[i] - cal_list[result_list[i]];
-        ADCvoltage = ADCvoltage_step * conversionFactor;
-        if (isInvert) {
-            ADCvoltage = (ADCvoltage - ADC_REF) * -1;
-        }
-        ADCvoltage += ADC_REF * ((float)offset_voltage_step / ADC_STEP);
-        printf("%f %f 0\n", DAC_REF / 4096 * i, ADCvoltage);
+        printf("%d %d 0\n", i, ADCvoltage_step);
     }
     if (INV) {
-        for (int i = voltage_step_max - 1; i > 0; i--) {
+        for (int i = voltage_step_max - 2; i >= voltage_step_min; i-=per_step) {
             ADCvoltage_step =  result_list[i + voltage_step_max] - cal_list[result_list[i + voltage_step_max]];
-            ADCvoltage = ADCvoltage_step * conversionFactor;
-            if (isInvert) {
-                ADCvoltage = (ADCvoltage - ADC_REF) * -1;
-            }
-            ADCvoltage += ADC_REF * ((float)offset_voltage_step / ADC_STEP);
-            printf("%f %f 1\n", DAC_REF / 4096 * i, ADCvoltage);
+            printf("%d %d 1\n", i, ADCvoltage_step);
         }
     }
     printf("END\n");
@@ -523,6 +514,9 @@ int main() {
     gpio_set_dir(PIN_100, GPIO_OUT);
     gpio_set_drive_strength(PIN_100, GPIO_DRIVE_STRENGTH_12MA);
 
+    gpio_init(LED_PIN);
+    gpio_set_dir(LED_PIN, GPIO_OUT);
+
     // RTC初期化
     // !=====RTCはRP2350で使用できないため、対応待ち=====!
     /*
@@ -551,6 +545,7 @@ int main() {
     int int_com_arg5;
     int int_com_arg6;
     int int_com_arg7;
+    int int_com_arg8;
     int success;
     char buffer[512];
 
@@ -563,6 +558,7 @@ int main() {
     bool isInvert = false;
 
     sendLog("system started\n", 1);
+    gpio_put(LED_PIN, 1);
 
     while (true) {
         scanf("%s", &com_command);
@@ -611,14 +607,16 @@ int main() {
             }
         }
         else if(strcmp(com_command, "IVcurve") == 0) {
-            // IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {waitingTime(us)} {maxVoltageStep(step)} {反転の有無(0: false, 1: true)}
+            // IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {反転の有無(0: false, 1: true)}
             scanf("%d", &int_com_arg1);
             scanf("%d", &int_com_arg2);
             scanf("%f", &float_com_arg1);
             scanf("%d", &int_com_arg3);
             scanf("%d", &int_com_arg4);
             scanf("%d", &int_com_arg5);
-            success = IVcurve(int_com_arg1, int_com_arg2, float_com_arg1, int_com_arg3, int_com_arg4, offset_voltage_step, isInvert, int_com_arg5, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
+            scanf("%d", &int_com_arg6);
+            scanf("%d", &int_com_arg7);
+            success = IVcurve(int_com_arg1, int_com_arg2, float_com_arg1, int_com_arg3, int_com_arg4, int_com_arg5, int_com_arg6, int_com_arg7, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
             if(success==0) {
                 sendLog("IVcurve was executed\n", 0);
             }else {
