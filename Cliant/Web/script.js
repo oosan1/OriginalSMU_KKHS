@@ -30,7 +30,6 @@ let ADC_absVol;
 let ADC_absMinVol;
 let ADC_step;
 let ADC_invert;
-let I_convertion_R;
 
 
 const connectButton = document.getElementById("connect_btn");
@@ -69,10 +68,12 @@ const ADC_minVolTextbox = document.getElementById("ADC_min_vol");
 const ADC_maxVolTextbox = document.getElementById("ADC_max_vol");
 const ADC_stepTextbox = document.getElementById("ADC_step");
 const ADC_invertMeasCheckbox = document.getElementById("ADC_invert_meas");
-const IconvRTextbox = document.getElementById("IconvR");
+const ADC_IconvRTextbox = document.getElementById("ADC_IconvR");
+const ADC_IconvRtimeTextbox = document.getElementById("ADC_IconvR_time");
 const DAC_minVolTextbox = document.getElementById("DAC_min_vol");
 const DAC_maxVolTextbox = document.getElementById("DAC_max_vol");
 const DAC_stepTextbox = document.getElementById("DAC_step");
+
 
 connectButton.addEventListener("click", onConnectButtonClick, false);
 serialConsoleTextbox.addEventListener('keydown', onConsoleKeypress);
@@ -126,7 +127,7 @@ DACaButton.addEventListener("click", () => {
     step_voltage = step_voltage > DAC_step ? DAC_step : step_voltage;
     writeTextSerial(`setVol 0 ${step_voltage}`);
 });
-DACaButton.addEventListener("click", () => {
+DACbButton.addEventListener("click", () => {
     const voltage = Number(DACaTextbox.value)
     const DAC_absVol = Number(DAC_maxVolTextbox.value) - Number(DAC_minVolTextbox.value);
     const DAC_absMinVol = Math.abs(Number(DAC_minVolTextbox.value));
@@ -187,12 +188,13 @@ function onIVcurveButtonClick() {
     DAC_absVol = Number(DAC_maxVolTextbox.value) - Number(DAC_minVolTextbox.value);
     DAC_absMinVol = Math.abs(Number(DAC_minVolTextbox.value));
     DAC_step = Number(DAC_stepTextbox.value);
+    const ADC_IconvR = Number(ADC_IconvRTextbox.value);
+    const ADC_IconvR_time = Number(ADC_IconvRtimeTextbox.value);
 
     // この関数では使わないが、データ取得時のために更新しておく
     ADC_absVol = Number(ADC_maxVolTextbox.value) - Number(ADC_minVolTextbox.value);
     ADC_absMinVol = Math.abs(Number(ADC_minVolTextbox.value));
     ADC_step = Number(ADC_stepTextbox.value);
-    I_convertion_R = Number(IconvRTextbox.value);
 
     const waiting_time = Number(IV_waitingTimeTextbox.value);
     const invert = IV_invertCheckbox.checked ? 1 : 0;
@@ -203,8 +205,8 @@ function onIVcurveButtonClick() {
     const step_minVol = Math.round(((minVol + DAC_absMinVol) / DAC_absVol) * DAC_step);
     const step_maxVol = Math.round(((maxVol + DAC_absMinVol) / DAC_absVol) * DAC_step);
 
-    console.log(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${invert}`);
-    writeTextSerial(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${invert}`);
+    console.log(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${ADC_IconvR} ${ADC_IconvR_time} ${invert}`);
+    writeTextSerial(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${ADC_IconvR} ${ADC_IconvR_time} ${invert}`);
 }
 
 // EIS計測
@@ -471,7 +473,15 @@ function SerialControl(text) {
             const rawInputStepVol = noCtrlCharText.split(" ")[0];
             const rawOutputStepVol = noCtrlCharText.split(" ")[1];
             const outputStepVol = (rawOutputStepVol - (ADC_absMinVol / ADC_absVol) * ADC_step) * ADC_invert;
-            const INV = noCtrlCharText.split(" ")[2];
+            let I_convertion_R = noCtrlCharText.split(" ")[2];
+
+            // 並列抵抗を考慮した補正
+            if (I_convertion_R == 100) {
+                I_convertion_R = 99.009900990099;
+            }else if (I_convertion_R == 1000) {
+                I_convertion_R = 909.09090909091;
+            }
+            const INV = noCtrlCharText.split(" ")[3];
             drawDataList.push({
                 "x": (rawInputStepVol / DAC_step) * DAC_absVol - DAC_absMinVol,
                 "y": ((outputStepVol / ADC_step) * ADC_absVol) / I_convertion_R * IunitM,
