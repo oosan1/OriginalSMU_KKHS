@@ -41,6 +41,7 @@
         "stdio.h": "c",
         "stdlib.h": "c",
         "datetime.h": "c",
-        "pll.h": "c"
+        "pll.h": "c",
+        "string.h": "c"
     }
 }

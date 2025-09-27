@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <string.h>
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
@@ -28,6 +29,11 @@ float DAC_REF = 2.048;
 // ADC設定
 #define ADC_STEP 4096
 float ADC_REF = 2.96;
+// ADCの抵抗切り替え閾値(2048を0とした場合の絶対値)
+#define ADC_100to1k_THRESHOLD 168 // 100Ωから1kΩ
+#define ADC_100to10k_THRESHOLD 11 // 100Ωから10kΩ
+#define ADC_1kto10k_THRESHOLD 215 // 1kΩから10kΩ
+#define ADC_UP_THRESHOLD 2046 // レンジを一つ上げる
 
 //GPIO設定
 #define PIN_1k 6
@@ -142,8 +148,8 @@ int IVsweep(int channel, float speed_VperS, int voltage_step_max) {
     return 0;
 }
 
-// IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {反転の有無(0: false, 1: true)} {&result_list} {&result_size} {&cal_list} {&isCalibrated}
-int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, int waiting_time, int voltage_step_min, int voltage_step_max, int INV, uint16_t *result_list, int *result_size, int *cal_list, bool *isCalibrated) {
+// IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {conversionRegistor(Ω)(0でオートレンジ)} {reg_waitingTime(us)} {測定方向(0: 最小→最大, 1: 両方向)} {&result_list} {&result_size} {&cal_list} {&isCalibrated}
+int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, int waiting_time, int voltage_step_min, int voltage_step_max, int conv_reg, int reg_waiting_time, int INV, uint16_t result_list[][2], int *result_size, int *cal_list, bool *isCalibrated) {
     char buffer[512];
     if(ADCchannel < 0 || ADCchannel > 4) {
         sendLog("Available ADC channels are 1 to 3.", 3);
@@ -161,11 +167,6 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
         sendLog("DAC channel is 1 or 2.", 3);
         return -1;
     }
-    if(voltage_step_max > 4095) {
-        sprintf(buffer, "%d is greater than the DAC's maximum voltage step of %d. The maximum voltage step of %d is used.\n", voltage_step_max, ADC_STEP - 1, ADC_STEP - 1);
-        sendLog(buffer, 2);
-        voltage_step_max = 4095;
-    }
 
     absolute_time_t wait_time_us = per_step / (float)speed_stepPerS * 1000 * 1000;
     uint32_t start_time_us = time_us_32();
@@ -180,10 +181,34 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
     // ADC設定
     adc_select_input(ADCchannel);
     uint16_t ADCvalue;
-    int ADCvoltage_step;
+    int ADC_abs_value;
     *result_size = (voltage_step_max - voltage_step_min);
-    if (INV) { *result_size = *result_size * 2; }
+    if (INV == 1) { *result_size = *result_size * 2; }
     
+    // 電流電圧変換抵抗の設定
+    int current_reg;
+    if (conv_reg == 10000) {
+        gpio_put(PIN_1k, 0);
+        gpio_put(PIN_100, 0);
+        current_reg = 10000;
+    }else if (conv_reg == 1000) {
+        gpio_put(PIN_1k, 1);
+        gpio_put(PIN_100, 0);
+        current_reg = 1000;
+    }else if (conv_reg == 100) {
+        gpio_put(PIN_1k, 0);
+        gpio_put(PIN_100, 1);
+        current_reg = 100;
+    }else if (conv_reg == 0) {
+        // オートレンジ
+        gpio_put(PIN_1k, 0);
+        gpio_put(PIN_100, 1);
+        current_reg = 100;
+    }else {
+        sendLog("The available conversion resistors are 100Ω, 1kΩ, 10kΩ, and 0(automatic range).\n", 3);
+        return -1;
+    }
+
     // IVcurve測定
     sendLog("Start measurement.\n", 1);
     for (int i = voltage_step_min; i < voltage_step_max; i+=per_step) {
@@ -191,7 +216,6 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
         gpio_put(PIN_CS, 0);
         spi_write16_blocking(SPI_PORT, &write_data, 2);
         gpio_put(PIN_CS, 1);
-
         target_time_us = start_time_us + wait_time_us;
         if (time_us_32() > target_time_us && i != 0) {
             over_time_flag = true; // 処理速度的に掃引速度を守れなかった場合はフラグを立てる。
@@ -202,9 +226,64 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
         gpio_put(PIN_LDAC, 1);
         sleep_us(waiting_time);
         ADCvalue = adc_read();
-        result_list[i] = ADCvalue;
+        ADC_abs_value = abs(ADCvalue - 2048);
+        //printf("|RAW| reg: %d, ADC: %d, abs: %d || ", current_reg, ADCvalue, ADC_abs_value);
+        if (conv_reg == 0) {
+            // オートレンジ
+            if (ADC_abs_value > ADC_UP_THRESHOLD) {
+                // 測定範囲に収まるまでレンジを上げる
+                while (ADC_abs_value > ADC_UP_THRESHOLD) {
+                    if (current_reg == 10000) {
+                        gpio_put(PIN_1k, 1);
+                        gpio_put(PIN_100, 0);
+                        current_reg = 1000;
+                        sleep_us(reg_waiting_time);
+                        ADCvalue = adc_read();
+                        ADC_abs_value = abs(ADCvalue - 2048);
+                    }else if (current_reg == 1000) {
+                        gpio_put(PIN_100, 1); // 安全のため、100Ωを先にON
+                        gpio_put(PIN_1k, 0);
+                        current_reg = 100;
+                        sleep_us(reg_waiting_time);
+                        ADCvalue = adc_read();
+                        ADC_abs_value = abs(ADCvalue - 2048);
+                    }else if (current_reg == 100) {
+                        // 測定不能
+                        // 保護機能が必要であればここに追加
+                        break;
+                    }
+                }
+            }else if (current_reg == 1000) {
+                if (ADC_abs_value < ADC_1kto10k_THRESHOLD) {
+                    // レンジを一つ下げる
+                    gpio_put(PIN_1k, 0);
+                    gpio_put(PIN_100, 0);
+                    current_reg = 10000;
+                    sleep_us(reg_waiting_time);
+                    ADCvalue = adc_read();
+                }
+            }else if (current_reg == 100) {
+                if (ADC_abs_value < ADC_100to1k_THRESHOLD) {
+                    // レンジを一つ下げる
+                    gpio_put(PIN_1k, 1);
+                    gpio_put(PIN_100, 0);
+                    current_reg = 1000;
+                    sleep_us(reg_waiting_time);
+                    ADCvalue = adc_read();
+                }else if (ADC_abs_value < ADC_100to10k_THRESHOLD) {
+                    // レンジを二つ下げる
+                    gpio_put(PIN_1k, 0);
+                    gpio_put(PIN_100, 0);
+                    current_reg = 10000;
+                    sleep_us(reg_waiting_time);
+                    ADCvalue = adc_read();
+                }
+            }
+        }
+        result_list[i][0] = ADCvalue;
+        result_list[i][1] = current_reg;
     }
-    if (INV) {
+    if (INV == 1) {
         for (int i = voltage_step_max - 2; i >= voltage_step_min; i-=per_step) {
             write_data = DAC_setting_data + i;
             gpio_put(PIN_CS, 0);
@@ -221,7 +300,61 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
             gpio_put(PIN_LDAC, 1);
             sleep_us(waiting_time);
             ADCvalue = adc_read();
-            result_list[i + voltage_step_max] = ADCvalue;
+            ADC_abs_value = abs(ADCvalue - 2048);
+            if (conv_reg == 0) {
+                // オートレンジ
+                if (ADC_abs_value > ADC_UP_THRESHOLD) {
+                    // 測定範囲に収まるまでレンジを上げる
+                    while (ADC_abs_value > ADC_UP_THRESHOLD) {
+                        if (current_reg == 10000) {
+                            gpio_put(PIN_1k, 1);
+                            gpio_put(PIN_100, 0);
+                            current_reg = 1000;
+                            sleep_ms(reg_waiting_time);
+                            ADCvalue = adc_read();
+                            ADC_abs_value = abs(ADCvalue - 2048);
+                        }else if (current_reg == 1000) {
+                            gpio_put(PIN_100, 1); // 安全のため、100Ωを先にON
+                            gpio_put(PIN_1k, 0);
+                            current_reg = 100;
+                            sleep_ms(reg_waiting_time);
+                            ADCvalue = adc_read();
+                            ADC_abs_value = abs(ADCvalue - 2048);
+                        }else if (current_reg == 100) {
+                            // 測定不能
+                            // 保護機能が必要であればここに追加
+                            break;
+                        }
+                    }
+                }else if (current_reg == 1000) {
+                    if (ADC_abs_value < ADC_1kto10k_THRESHOLD) {
+                        // レンジを一つ下げる
+                        gpio_put(PIN_1k, 0);
+                        gpio_put(PIN_100, 0);
+                        current_reg = 10000;
+                        sleep_ms(reg_waiting_time);
+                        ADCvalue = adc_read();
+                    }
+                }else if (current_reg == 100) {
+                    if (ADC_abs_value < ADC_100to1k_THRESHOLD) {
+                        // レンジを一つ下げる
+                        gpio_put(PIN_1k, 1);
+                        gpio_put(PIN_100, 0);
+                        current_reg = 1000;
+                        sleep_ms(reg_waiting_time);
+                        ADCvalue = adc_read();
+                    }else if (ADC_abs_value < ADC_100to10k_THRESHOLD) {
+                        // レンジを一つ下げる
+                        gpio_put(PIN_1k, 0);
+                        gpio_put(PIN_100, 0);
+                        current_reg = 10000;
+                        sleep_ms(reg_waiting_time);
+                        ADCvalue = adc_read();
+                    }
+                }
+            }
+            result_list[i + voltage_step_max][0] = ADCvalue;
+            result_list[i + voltage_step_max][1] = current_reg;
         }
     }
     sendLog("Finish measurement.\n", 1);
@@ -243,19 +376,17 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
     }
     printf("START\n");
     for (int i = voltage_step_min; i < voltage_step_max; i+=per_step) {
-        ADCvoltage_step =  result_list[i] - cal_list[result_list[i]];
-        printf("%d %d 0\n", i, ADCvoltage_step);
+        printf("%d %d %d 0\n", i, result_list[i][0], result_list[i][1]);
     }
-    if (INV) {
+    if (INV == 1) {
         for (int i = voltage_step_max - 2; i >= voltage_step_min; i-=per_step) {
-            ADCvoltage_step =  result_list[i + voltage_step_max] - cal_list[result_list[i + voltage_step_max]];
-            printf("%d %d 1\n", i, ADCvoltage_step);
+            printf("%d %d %d 1\n", i, result_list[i + voltage_step_max][0], result_list[i + voltage_step_max][1]);
         }
     }
     printf("END\n");
 
     if(over_time_flag) {
-        sendLog("The specified sweep speed could not be achieved. Reduce the sweep speed.", 2);
+        sendLog("The specified sweep speed could not be achieved. Reduce the sweep speed.\n", 2);
     }
     return 0;
 }
@@ -514,6 +645,11 @@ int main() {
     gpio_set_dir(PIN_100, GPIO_OUT);
     gpio_set_drive_strength(PIN_100, GPIO_DRIVE_STRENGTH_12MA);
 
+    // 3.3VレギュレーターをPWMモードに固定
+    gpio_init(23);
+    gpio_set_dir(23, GPIO_OUT);
+    gpio_put(23, 1);
+
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
 
@@ -546,11 +682,12 @@ int main() {
     int int_com_arg6;
     int int_com_arg7;
     int int_com_arg8;
+    int int_com_arg9;
     int success;
     char buffer[512];
 
     //IVcurve変数
-    uint16_t IVcurve_list[IV_BUF_SIZE] = {0};
+    uint16_t IVcurve_list[IV_BUF_SIZE][2] = {0};
     int IVcal_list[IV_BUF_SIZE] = {0};
     bool isCalibrated = false;
     int IVcurve_size = 0;
@@ -607,7 +744,7 @@ int main() {
             }
         }
         else if(strcmp(com_command, "IVcurve") == 0) {
-            // IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {反転の有無(0: false, 1: true)}
+            // IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {conversionResistor(Ω)(0でオートレンジ)} {reg_waitingTime(us)} {反転の有無(0: false, 1: true)}
             scanf("%d", &int_com_arg1);
             scanf("%d", &int_com_arg2);
             scanf("%f", &float_com_arg1);
@@ -616,7 +753,9 @@ int main() {
             scanf("%d", &int_com_arg5);
             scanf("%d", &int_com_arg6);
             scanf("%d", &int_com_arg7);
-            success = IVcurve(int_com_arg1, int_com_arg2, float_com_arg1, int_com_arg3, int_com_arg4, int_com_arg5, int_com_arg6, int_com_arg7, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
+            scanf("%d", &int_com_arg8);
+            scanf("%d", &int_com_arg9);
+            success = IVcurve(int_com_arg1, int_com_arg2, float_com_arg1, int_com_arg3, int_com_arg4, int_com_arg5, int_com_arg6, int_com_arg7, int_com_arg8, int_com_arg9, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
             if(success==0) {
                 sendLog("IVcurve was executed\n", 0);
             }else {
@@ -627,12 +766,13 @@ int main() {
             // IVcal {resistance(Ω)} {VtoIresistance(Ω)}{&IV_list} {&IV_size} {&cal_list}
             scanf("%f", &float_com_arg1);
             scanf("%f", &float_com_arg2);
-            success = IVcal(float_com_arg1, float_com_arg2, offset_voltage_step, isInvert, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
+            /*success = IVcal(float_com_arg1, float_com_arg2, offset_voltage_step, isInvert, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
             if(success==0) {
                 sendLog("IVcal was executed\n", 0);
             }else {
                 sendLog("IVcal was failed\n", 3);
-            }
+            }*/
+            sendLog("Can't use IVcal command.\n", 3);
         }
         else if(strcmp(com_command, "EIS") == 0) {
             // EIS {DACchannel(0:A, 1:B)} {ADCchannel} {samplingRate(Hz)} {raise_time(ms)} {Voltage_min(step)} {Voltage_max(step)} {repeat_count}
@@ -644,12 +784,13 @@ int main() {
             scanf("%d", &int_com_arg6);
             scanf("%d", &int_com_arg7);
 
-            success = EIS(int_com_arg1, int_com_arg2, float_com_arg1, float_com_arg2, int_com_arg5, int_com_arg6, int_com_arg7, offset_voltage_step, isInvert, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
+            /*success = EIS(int_com_arg1, int_com_arg2, float_com_arg1, float_com_arg2, int_com_arg5, int_com_arg6, int_com_arg7, offset_voltage_step, isInvert, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
             if(success==0) {
                 sendLog("EIS was executed\n", 0);
             }else {
                 sendLog("EIS was failed\n", 3);
-            }
+            }*/
+           sendLog("Can't use EIS command.\n", 3);
         }
         else if(strcmp(com_command, "setOffsets") == 0) {
             // setOffsets {offset_voltage(step)} {isInvert(0:false, 1:true)}
@@ -674,8 +815,8 @@ int main() {
             sendLog("setRefVoltage was executed\n", 0);
         }else if(strcmp(com_command, "setReg") == 0) {
             // setReg {1k:0, 100:1} {off:0, on:1}
-            scanf("%f", &int_com_arg1);
-            scanf("%f", &int_com_arg2);
+            scanf("%d", &int_com_arg1);
+            scanf("%d", &int_com_arg2);
             if (int_com_arg1 == 0) {
                 gpio_put(PIN_1k, int_com_arg2);
             }else if (int_com_arg1 == 1) {
