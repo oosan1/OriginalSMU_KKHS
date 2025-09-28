@@ -30,6 +30,7 @@ let ADC_absVol;
 let ADC_absMinVol;
 let ADC_step;
 let ADC_invert;
+let IV_R;
 
 
 const connectButton = document.getElementById("connect_btn");
@@ -51,6 +52,8 @@ const IV_waitingTimeTextbox = document.getElementById("IV_waiting_time");
 const IV_minTextbox = document.getElementById("IV_vol_min");
 const IV_maxTextbox = document.getElementById("IV_vol_max");
 const IV_stepTextbox = document.getElementById("IV_vol_step");
+const IV_repetitions = document.getElementById("IV_repetitions");
+const IV_resistance = document.getElementById("IV_resistance");
 const IV_invertCheckbox = document.getElementById("IV_invert");
 
 const EISButton = document.getElementById("EIS_btn");
@@ -185,9 +188,11 @@ function onIVcurveButtonClick() {
     const stepVol = Number(IV_stepTextbox.value);
     const minVol = Number(IV_minTextbox.value);
     const maxVol = Number(IV_maxTextbox.value);
+    const repetitions = Number(IV_repetitions.value);
     DAC_absVol = Number(DAC_maxVolTextbox.value) - Number(DAC_minVolTextbox.value);
     DAC_absMinVol = Math.abs(Number(DAC_minVolTextbox.value));
     DAC_step = Number(DAC_stepTextbox.value);
+    IV_R = Number(IV_resistance.value);
     const ADC_IconvR = Number(ADC_IconvRTextbox.value);
     const ADC_IconvR_time = Number(ADC_IconvRtimeTextbox.value);
 
@@ -205,8 +210,8 @@ function onIVcurveButtonClick() {
     const step_minVol = Math.round(((minVol + DAC_absMinVol) / DAC_absVol) * DAC_step);
     const step_maxVol = Math.round(((maxVol + DAC_absMinVol) / DAC_absVol) * DAC_step);
 
-    console.log(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${ADC_IconvR} ${ADC_IconvR_time} ${invert}`);
-    writeTextSerial(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${ADC_IconvR} ${ADC_IconvR_time} ${invert}`);
+    console.log(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${ADC_IconvR} ${ADC_IconvR_time} ${repetitions} ${invert}`);
+    writeTextSerial(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${ADC_IconvR} ${ADC_IconvR_time} ${repetitions} ${invert}`);
 }
 
 // EIS計測
@@ -475,16 +480,22 @@ function SerialControl(text) {
             const outputStepVol = (rawOutputStepVol - (ADC_absMinVol / ADC_absVol) * ADC_step) * ADC_invert;
             let I_convertion_R = noCtrlCharText.split(" ")[2];
 
-            // 並列抵抗を考慮した補正
+            // 電流電圧変換における並列抵抗を考慮した補正
             if (I_convertion_R == 100) {
                 I_convertion_R = 99.009900990099;
             }else if (I_convertion_R == 1000) {
                 I_convertion_R = 909.09090909091;
             }
+
+            // 安定用の直列抵抗を考慮した補正
+            const current = ((outputStepVol / ADC_step) * ADC_absVol) / I_convertion_R;
+            let converted_voltage = (rawInputStepVol / DAC_step) * DAC_absVol - DAC_absMinVol;
+            converted_voltage = converted_voltage - IV_R * current;
+
             const INV = noCtrlCharText.split(" ")[3];
             drawDataList.push({
-                "x": (rawInputStepVol / DAC_step) * DAC_absVol - DAC_absMinVol,
-                "y": ((outputStepVol / ADC_step) * ADC_absVol) / I_convertion_R * IunitM,
+                "x": converted_voltage,
+                "y": current * IunitM,
                 "INV": INV
             });
             dataType = "IVcurve";

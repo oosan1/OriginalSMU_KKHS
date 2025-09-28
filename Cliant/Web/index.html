@@ -39,11 +39,13 @@
                         <div><label class="input-label">最小電圧(V):<input type="text" id="IV_vol_min" value="-1"></label></div>
                         <div><label class="input-label">最大電圧(V):<input type="text" id="IV_vol_max" value="1"></label></div>
                         <div><label class="input-label">変更電圧幅(V)<input type="text" id="IV_vol_step" value="0.01"></label></div>
+                        <div><label class="input-label">平均回数<input type="text" id="IV_repetitions" value="5"></label></div>
+                        <div><label class="input-label">安定用直列抵抗値(Ω)<input type="text" id="IV_resistance" value="0"></label></div>
                         <div><label class="input-label">サイクリックモード:<input type="checkbox" id="IV_invert"></label></div>
                     </div>
                 </div>
-                <hr>
-                <div class="control-group eis-controls">
+                <hr style="display: none">
+                <div class="control-group eis-controls" style="display: none">
                     <button type="button" id="EIS_btn" class="action-button" disabled>EIS</button>
                     <div class="inputs_list wide">
                         <div><label>振幅(mV):<input type="text" id="EIS_amp" value="20"></label></div>
@@ -77,11 +79,11 @@
                     <label class="input-label">ファイル名:<input type="text" id="csv_name" value="Test.csv"></label>
                 </div>
                 <hr>
-                <div class="control-group">
+                <div class="control-group" style="display: none">
                     <button type="button" id="cal_btn" disabled>校正</button>
                     <label class="input-label">校正用抵抗値(Ω):<input type="text" id="cal_reg" value="1000"></label>
                 </div>
-                <hr>
+                <hr style="display: none">
                 <div class="control-group">
                     <div class="inputs_list">
                         <label class="input-label">ADC最低電圧(V):<input type="text" id="ADC_min_vol" value="-1.5"></label>
