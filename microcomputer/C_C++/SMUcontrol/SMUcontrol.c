@@ -310,14 +310,14 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
                             gpio_put(PIN_1k, 1);
                             gpio_put(PIN_100, 0);
                             current_reg = 1000;
-                            sleep_ms(reg_waiting_time);
+                            sleep_us(reg_waiting_time);
                             ADCvalue = adc_read();
                             ADC_abs_value = abs(ADCvalue - 2048);
                         }else if (current_reg == 1000) {
                             gpio_put(PIN_100, 1); // 安全のため、100Ωを先にON
                             gpio_put(PIN_1k, 0);
                             current_reg = 100;
-                            sleep_ms(reg_waiting_time);
+                            sleep_us(reg_waiting_time);
                             ADCvalue = adc_read();
                             ADC_abs_value = abs(ADCvalue - 2048);
                         }else if (current_reg == 100) {
@@ -332,7 +332,7 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
                         gpio_put(PIN_1k, 0);
                         gpio_put(PIN_100, 0);
                         current_reg = 10000;
-                        sleep_ms(reg_waiting_time);
+                        sleep_us(reg_waiting_time);
                         ADCvalue = adc_read();
                     }
                 }else if (current_reg == 100) {
@@ -341,14 +341,14 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
                         gpio_put(PIN_1k, 1);
                         gpio_put(PIN_100, 0);
                         current_reg = 1000;
-                        sleep_ms(reg_waiting_time);
+                        sleep_us(reg_waiting_time);
                         ADCvalue = adc_read();
                     }else if (ADC_abs_value < ADC_100to10k_THRESHOLD) {
                         // レンジを一つ下げる
                         gpio_put(PIN_1k, 0);
                         gpio_put(PIN_100, 0);
                         current_reg = 10000;
-                        sleep_ms(reg_waiting_time);
+                        sleep_us(reg_waiting_time);
                         ADCvalue = adc_read();
                     }
                 }
