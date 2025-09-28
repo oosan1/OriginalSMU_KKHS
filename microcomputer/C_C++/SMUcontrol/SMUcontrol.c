@@ -30,10 +30,10 @@ float DAC_REF = 2.048;
 #define ADC_STEP 4096
 float ADC_REF = 2.96;
 // ADCの抵抗切り替え閾値(2048を0とした場合の絶対値)
-#define ADC_100to1k_THRESHOLD 168 // 100Ωから1kΩ
+#define ADC_100to1k_THRESHOLD 190 // 100Ωから1kΩ
 #define ADC_100to10k_THRESHOLD 11 // 100Ωから10kΩ
-#define ADC_1kto10k_THRESHOLD 215 // 1kΩから10kΩ
-#define ADC_UP_THRESHOLD 2046 // レンジを一つ上げる
+#define ADC_1kto10k_THRESHOLD 175 // 1kΩから10kΩ 検証済み
+#define ADC_UP_THRESHOLD 1950 // レンジを一つ上げる
 
 //GPIO設定
 #define PIN_1k 6
@@ -148,8 +148,8 @@ int IVsweep(int channel, float speed_VperS, int voltage_step_max) {
     return 0;
 }
 
-// IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {conversionRegistor(Ω)(0でオートレンジ)} {reg_waitingTime(us)} {測定方向(0: 最小→最大, 1: 両方向)} {&result_list} {&result_size} {&cal_list} {&isCalibrated}
-int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, int waiting_time, int voltage_step_min, int voltage_step_max, int conv_reg, int reg_waiting_time, int INV, uint16_t result_list[][2], int *result_size, int *cal_list, bool *isCalibrated) {
+// IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {conversionRegistor(Ω)(0でオートレンジ)} {reg_waitingTime(us)} {repetitions(繰り返し回数)} {測定方向(0: 最小→最大, 1: 両方向)} {&result_list} {&result_size} {&cal_list} {&isCalibrated}
+int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, int waiting_time, int voltage_step_min, int voltage_step_max, int conv_reg, int reg_waiting_time, int repetitions, int INV, uint16_t result_list[][2], int *result_size, int *cal_list, bool *isCalibrated) {
     char buffer[512];
     if(ADCchannel < 0 || ADCchannel > 4) {
         sendLog("Available ADC channels are 1 to 3.", 3);
@@ -280,6 +280,12 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
                 }
             }
         }
+
+        for (int i = 0; i < repetitions - 1; i++) {
+            ADCvalue += adc_read();
+        }
+        ADCvalue = ADCvalue / repetitions;
+
         result_list[i][0] = ADCvalue;
         result_list[i][1] = current_reg;
     }
@@ -353,6 +359,12 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
                     }
                 }
             }
+
+            for (int i = 0; i < repetitions - 1; i++) {
+                ADCvalue += adc_read();
+            }
+            ADCvalue = ADCvalue / repetitions;
+
             result_list[i + voltage_step_max][0] = ADCvalue;
             result_list[i + voltage_step_max][1] = current_reg;
         }
@@ -683,6 +695,7 @@ int main() {
     int int_com_arg7;
     int int_com_arg8;
     int int_com_arg9;
+    int int_com_arg10;
     int success;
     char buffer[512];
 
@@ -755,7 +768,8 @@ int main() {
             scanf("%d", &int_com_arg7);
             scanf("%d", &int_com_arg8);
             scanf("%d", &int_com_arg9);
-            success = IVcurve(int_com_arg1, int_com_arg2, float_com_arg1, int_com_arg3, int_com_arg4, int_com_arg5, int_com_arg6, int_com_arg7, int_com_arg8, int_com_arg9, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
+            scanf("%d", &int_com_arg10);
+            success = IVcurve(int_com_arg1, int_com_arg2, float_com_arg1, int_com_arg3, int_com_arg4, int_com_arg5, int_com_arg6, int_com_arg7, int_com_arg8, int_com_arg9, int_com_arg10, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
             if(success==0) {
                 sendLog("IVcurve was executed\n", 0);
             }else {
