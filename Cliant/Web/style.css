@@ -4,7 +4,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: #f0f0f0; /* Light background for the page */
+    background-color: #f0f0f0;
 }
 
 .page-container {
@@ -18,24 +18,24 @@ body {
 .page-header {
     display: flex;
     gap: 10px;
-    align-items: stretch; /* Make items in header same height */
+    align-items: stretch;
 }
 
 #status_monitor {
-    background-color: dimgray; /* Darker gray like screenshot */
+    background-color: dimgray;
     color: white;
     padding: 15px;
     border-radius: 5px;
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 10px; /* Space between "通信" and "校正" */
-    min-width: 180px; /* Ensure it has some width */
+    gap: 10px;
+    min-width: 180px;
     font-size: 1.1em;
 }
 
 #status_monitor > div {
-    background-color: #5a5a5a; /* Slightly lighter background for individual items */
+    background-color: #5a5a5a;
     padding: 8px;
     border-radius: 3px;
 }
@@ -43,7 +43,7 @@ body {
 
 .connection-controls {
     display: flex;
-    flex-direction: row; /* Stack button and baudrate */
+    flex-direction: row;
     gap: 10px;
     padding: 10px;
     background-color: #e9e9e9;
@@ -60,41 +60,49 @@ body {
     gap: 5px;
 }
 .connection-controls input[type="text"] {
-    width: 80px; /* Adjust as needed */
+    width: 80px;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 3px;
 }
 
+.version-display {
+    margin-left: auto;
+    font-size: 14px;
+    color: #333;
+    align-self: flex-start;
+    padding-top: 10px;
+}
+
 
 .main-content {
     display: flex;
-    flex-grow: 1; /* Takes up available vertical space */
+    flex-grow: 1;
     gap: 10px;
-    min-height: 0; /* Important for flex children with overflow */
+    min-height: 0;
 }
 
 #control_panel {
-    background-color: #ffffff; /* White background for control panel */
+    background-color: #ffffff;
     padding: 15px;
     border-radius: 5px;
     border: 1px solid #ccc;
     display: flex;
     flex-direction: column;
-    gap: 12px; /* Spacing between control groups */
-    min-width: 400px; /* Increased width for control panel */
-    overflow-y: auto; /* Allow scrolling if content overflows */
+    gap: 12px;
+    min-width: 400px;
+    overflow-y: auto;
 }
 
 .control-group {
     display: flex;
     align-items: flex-start;
-    gap: 10px; /* Space between button and label/input */
+    gap: 10px;
 }
 
 .control-group button {
     padding: 8px 12px;
-    min-width: 120px; /* Common width for buttons */
+    min-width: 120px;
     border: 1px solid #ccc;
     background-color: #f9f9f9;
     border-radius: 3px;
@@ -110,27 +118,25 @@ body {
     display: flex;
     align-items: center;
     gap: 5px;
-    flex-grow: 1; /* Allow label/input to take remaining space */
+    flex-grow: 1;
 }
 
 .control-group input[type="text"] {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 3px;
-    width: 100px; /* Default width for most inputs */
+    width: 100px;
 }
 
-/* Special styling for EIS button and its inputs */
 .eis-controls {
-    align-items: flex-start; /* Align button to top of multi-line inputs */
+    align-items: flex-start;
 }
 
 .inputs_list {
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Space between each EIS input line */
+    gap: 8px;
 }
-/* ▼▼▼ ここから変更・追加 ▼▼▼ */
 .inputs_list.wide {
     flex-grow: 1;
 }
@@ -143,12 +149,12 @@ body {
     display: flex;
     align-items: center;
     gap: 5px;
-    min-width: 160px; /* Ensure labels align */
-    justify-content: flex-end; /* Right-align label text */
+    min-width: 160px;
+    justify-content: flex-end;
     font-size: 0.9em;
 }
 .inputs_list > div > label > input[type="text"] {
-    width: 70px; /* Smaller inputs for EIS values */
+    width: 70px;
 }
 
 #eis_freq_list_container {
@@ -204,8 +210,8 @@ body {
     line-height: 24px;
     padding: 0;
     flex-shrink: 0;
-    display: block; /* margin: autoが効くようにブロック要素にする */
-    margin: 0 auto; /* 水平方向の中央寄せ */
+    display: block;
+    margin: 0 auto;
 }
 #eis_freq_table .remove_freq_btn:hover {
     background-color: #e04848;
@@ -216,7 +222,7 @@ body {
     margin-top: 5px;
     padding: 6px 12px;
     font-size: 0.9em;
-    background-color: #4CAF50; /* Green */
+    background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 4px;
@@ -225,15 +231,14 @@ body {
 #add_freq_btn:hover {
     background-color: #45a049;
 }
-/* ▲▲▲ ここまで変更・追加 ▲▲▲ */
 
 
 .action-button {
-    background-color: #ff9800; /* Orange color like screenshot */
+    background-color: #ff9800;
     border: none;
 }
 .action-button:disabled {
-    background-color: #ffcc80; /* Lighter orange when disabled */
+    background-color: #ffcc80;
 }
 
 .full-width-label {
@@ -254,16 +259,16 @@ body {
 
 
 #graph_container {
-    flex-grow: 1; /* Takes remaining horizontal space */
+    flex-grow: 1;
     background-color: #ffffff;
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    display: flex; /* To help canvas fill it */
-    min-width: 0; /* Important for flex children */
+    display: flex;
+    min-width: 0;
 }
 #graph_container canvas {
-    width: 100% !important; /* Override chart.js inline style if necessary */
+    width: 100% !important;
     height: 100% !important;
 }
 
@@ -272,24 +277,23 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    height: 200px; /* Fixed height for footer, adjust as needed */
+    height: 200px;
 }
 
 #serial_console {
     border: 1px solid #ccc;
     background-color: #ffffff;
     padding: 10px;
-    flex-grow: 1; /* Takes available space in footer */
+    flex-grow: 1;
     overflow-y: auto;
     overflow-x: scroll;
     white-space: pre;
     display: flex;
-    flex-direction: column-reverse; /* To show newest messages at bottom and scroll up */
+    flex-direction: column-reverse;
     border-radius: 5px;
     font-size: 0.9em;
 }
 
-/* Serial console message styling (from original, can be expanded) */
 .message { padding: 2px 0; }
 .black { color: black; }
 .red { color: red; }
