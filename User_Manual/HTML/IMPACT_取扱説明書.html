@@ -1,0 +1,855 @@
+<html><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/><title>IMPACT 取扱説明書</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(134, 131, 126, 1);
+	fill: rgba(134, 131, 126, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(63, 126, 190, 1);
+	fill: rgba(63, 126, 190, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 111, 200, 0.09);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(134, 131, 126, 1);
+	fill: rgba(134, 131, 126, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(63, 126, 190, 1);
+	fill: rgba(63, 126, 190, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(232, 242, 250, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 99, 174, 0.172); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+
+
+        header {
+            display: none;
+        }
+
+        #top-page h1 {
+            margin-top: 10rem;
+            margin-bottom: 10rem;
+        }
+
+        #top-page .column-list {
+            display:block;
+            width: 100%;
+            text-align: center;
+        }
+        #top-page .column-list .column {
+                width: 100% !important;
+                padding: 0;
+                text-align: center;
+        }
+
+        #top-page .column-list .column .image {
+            margin-top: 5rem;
+            margin-bottom: 5rem;
+            text-align: center !important;
+        }
+
+        h1 {
+            page-break-before: always;
+        }
+		@media print {
+		  /* H1、H2、H3の見出しに対して設定 */
+		  h1, h2, h3 {
+		    /* 旧来のブラウザ向けプロパティ: 直後でのページ区切りを避ける */
+		    page-break-after: avoid;
+		
+		    /* 新しいブラウザ向けのプロパティ: 直後での区切りを避ける */
+		    break-after: avoid;
+		
+		    /* (オプション) 見出し自体が途中で分割されるのを防ぐ */
+		    page-break-inside: avoid;
+		    break-inside: avoid;
+		  }
+		  
+		  /* (補足) ページ区切りが発生しやすい要素にも設定すると、より体裁が整います */
+		  p, ul, ol, table {
+		    /* ページの切れ目で、行が孤立するのを防ぐ (印刷で最低限残す行数) */
+		    orphans: 3;
+		    widows: 3;
+		  }
+		}
+
+        hr {
+            page-break-after: always;
+            visibility: hidden !important;
+        }
+
+        a, a.visited {
+            color: #000;
+        }
+
+        .table_of_contents-link {
+            opacity: 1;
+            border-bottom: none;
+        }
+
+        .table_of_contents {
+            margin-top:1.5rem;
+        }
+
+        .table_of_contents-item {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        table {
+            width: 100%;
+            table-layout: fixed;
+            max-width: 100%;
+        }
+
+        tr, th, td {
+            color: #000 !important;
+            border-color: #000 !important;
+        }
+
+        th {
+            font-weight: bold !important;
+            background: rgb(247, 246, 243);
+        }
+        
+        ul li details td {
+            text-align: right;
+        }
+        
+        .toggle > li > details {
+            padding-left: 0;
+        }
+
+        .code:has(.mermaid) {
+            padding: 0 !important;
+        }
+
+        @media print {s
+            @page {
+                size: portrait;
+            }
+            @page rotated {
+                size: landscape;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            details:not(ul li details) {
+                page: rotated;
+            }
+
+            td, th {
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+
+            .mermaid > svg {
+                max-width: 100% !important; /* ページの幅に合わせて最大幅を100%にする */
+                max-height: 100vh !important; /* ページの高さに合わせて最大高さを100%にする */
+                width: auto !important; /* アスペクト比を保ちつつ幅を自動調整 */
+                height: auto !important; /* アスペクト比を保ちつつ高さを自動調整 */
+                page-break-inside: avoid !important; /* 図の途中で改ページされるのを防ぐ */
+            }
+
+            #top-page .column-list {
+                position: absolute;
+                bottom: 0;
+            }
+        }
+</style></head><body><article id="27f1dad7-d229-8098-94bf-c36d0411645f" class="page sans"><header><h1 class="page-title">IMPACT 取扱説明書</h1><p class="page-description"></p><table class="properties"><tbody><tr class="property-row property-row-multi_select"><th><span class="icon property-icon"><img src="https://www.notion.so/icons/list_gray.svg" style="width:14px;height:14px;display:block"/></span>フォルダ</th><td></td></tr><tr class="property-row property-row-multi_select"><th><span class="icon property-icon"><img src="https://www.notion.so/icons/list_gray.svg" style="width:14px;height:14px;display:block"/></span>タグ</th><td></td></tr><tr class="property-row property-row-created_time"><th><span class="icon property-icon"><img src="https://www.notion.so/icons/clock_gray.svg" style="width:14px;height:14px;display:block"/></span>作成日時</th><td><time>@2025年10月2日 8:36</time></td></tr><tr class="property-row property-row-last_edited_time"><th><span class="icon property-icon"><img src="https://www.notion.so/icons/clock_gray.svg" style="width:14px;height:14px;display:block"/></span>最終更新日時</th><td><time>@2025年10月6日 21:38</time></td></tr></tbody></table></header><div class="page-body"><nav id="2801dad7-d229-8039-91d0-ed5f974808dd" class="block-color-gray table_of_contents"><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#27f1dad7-d229-8014-9020-d84ec0eae6cd">1. 本体について</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#27f1dad7-d229-8055-bfdb-cf204ab3f83f">1.1. 前面パネル</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2801dad7-d229-8067-838d-d368603da377">SMUモード</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2801dad7-d229-808b-b9f2-d09eb85e0fa8">PS(ポテンショスタット)モード</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#27f1dad7-d229-803d-9fa3-da1d5340e39b">1.2. 上面パネル</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#2801dad7-d229-80c8-95de-d511ad145bc0">1.3. 右面パネル</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#2841dad7-d229-806c-b79d-fb5c0a264ca9">1.4. 本体性能</a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#2801dad7-d229-80b2-97f0-e4594abcd86a">2. 制御ソフトウェアについて</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#2801dad7-d229-802e-9325-f3493a0ad3b8">2.1. 起動方法</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2801dad7-d229-8064-938a-ed615bae6c1d">(1/2) ウェブブラウザを用意する</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2801dad7-d229-80e1-ac1d-f9f69bbace5d">(2/2) サイトにアクセスする</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#2801dad7-d229-8002-8623-d0356eb038af">2.2. 画面構成と各種機能について</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2811dad7-d229-801c-a470-ccacc6e4d1b6">ツールバー</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2811dad7-d229-8057-bb91-fb915def0255">コントロールエリア</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2831dad7-d229-8018-a7cb-fc3ac14023d6">グラフエリア</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2831dad7-d229-8094-8630-f7361d1b0635">コンソールエリア</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#2801dad7-d229-8044-b17f-f784bd6a8042">2.3. IMPACTを起動し、IMPACTを接続する</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2801dad7-d229-8091-a021-d6e2398f2cbf">準備物</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2801dad7-d229-805a-be73-eb56e0dec36e">(1/3) IMPACTとPCをUSBケーブルで接続する</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2801dad7-d229-8070-9eba-cf31adb92e60">(2/3) PCで制御ソフトウェアを起動する</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2801dad7-d229-80a9-9910-fc73fd6a4c90">(3/3) IMPACTとPCを接続する</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#2801dad7-d229-8061-b6f6-cba542925989">2.4. IMPACTの接続を解除する</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2811dad7-d229-8093-98b8-c967d8523b98">方法1. USBケーブルを抜く</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2811dad7-d229-800e-9ac8-f7c4db422036">方法2. 制御ソフトウェアをリセットする</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#2811dad7-d229-80c8-b6a4-e892f6c1bb08">2.5. IVカーブを測定する</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2841dad7-d229-8078-a409-f56e09e04537">(1/5) IMPACTに測定対象を接続する</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2841dad7-d229-80bf-ab06-e8e5d808bec9">(2/5) IMAPCTとPCを接続する</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2811dad7-d229-8053-b298-d4a1bac0cda9">(3/5) 測定条件を設定する</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2841dad7-d229-8064-b1a9-e1ed73f9c9b3">(4/5) 測定を開始する</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2841dad7-d229-80a2-b74a-d9527269fc03">(5/5) 結果を確認する</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2841dad7-d229-80b5-853e-c85aa3dea106">(オプション) 結果を保存する</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2841dad7-d229-80fc-8f4b-c13cb1f24a90">(オプション) 安定用直列抵抗について</a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#2841dad7-d229-8012-b2de-eba5f7128475">3. テクニカルリファレンス</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#2841dad7-d229-8057-bf86-e06b8295b227">3.1. 組み立て方法</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2841dad7-d229-80b3-afa3-def5aab96629">(1/4) ケースの溝へ基盤を差し込む</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2841dad7-d229-809c-9dd8-ec6373e3115e">(2/4) 右面カバーをケースへはめる</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2841dad7-d229-806e-a066-fd0f3a7a59c0">(3/4) BNCコネクタを固定する</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2841dad7-d229-807d-a9b0-faed9f4b2e4a">(4/4) ネジを使用して右面カバーを固定する</a></div></nav><hr id="2801dad7-d229-807a-a4cf-e7e29ceea835"/><h1 id="27f1dad7-d229-8014-9020-d84ec0eae6cd" class="">1. 本体について</h1><h2 id="27f1dad7-d229-8055-bfdb-cf204ab3f83f" class="">1.1. 前面パネル</h2><figure id="2801dad7-d229-80b6-b777-f4b8154e5c1b" class="image"><a href="%E5%89%8D%E9%9D%A2%E3%83%91%E3%83%8D%E3%83%AB.png"><img style="width:710px" src="%E5%89%8D%E9%9D%A2%E3%83%91%E3%83%8D%E3%83%AB.png"/></a></figure><p id="27f1dad7-d229-80c9-84f2-c7aba4b0ab2a" class="">測定対象に接続するプローブ用のコネクタが2つ配置されています。コネクタはBNCコネクタを採用しています。</p><h3 id="2801dad7-d229-8067-838d-d368603da377" class="">SMUモード</h3><figure id="2801dad7-d229-80d1-9bf9-db83d93038a7" class="image"><a href="%E5%89%8D%E9%9D%A2%E3%83%91%E3%83%8D%E3%83%AB_SMU%E3%83%A2%E3%83%BC%E3%83%89.png"><img style="width:709.984375px" src="%E5%89%8D%E9%9D%A2%E3%83%91%E3%83%8D%E3%83%AB_SMU%E3%83%A2%E3%83%BC%E3%83%89.png"/></a></figure><p id="2801dad7-d229-803a-b533-ed7701f56d7a" class="">SMUモード(動作モードについては<span style="border-bottom:0.05em solid">1.2. 上面パネル</span>を参照)では右側のコネクタのみを使用します。コネクタのセンターピンはCE-RE短絡端子に、アウターコンタクトはWE端子に接続されます。本機器を電源と見なす場合、センターピンはマイナス端子、アウターコンタクトはプラス端子となります。</p><table id="2801dad7-d229-80ec-89f6-d544773309ce" class="simple-table"><thead class="simple-table-header"><tr id="2801dad7-d229-809d-80a2-c8b50372b936"><th id="bRQf" class="simple-table-header-color simple-table-header" style="width:181px">位置</th><th id="b:~`" class="simple-table-header-color simple-table-header" style="width:213px">機能</th></tr></thead><tbody><tr id="2801dad7-d229-809d-ae24-fbcafc06e24a"><td id="bRQf" class="" style="width:181px">右、センターピン</td><td id="b:~`" class="" style="width:213px">CE-RE短絡端子(マイナス端子)</td></tr><tr id="2801dad7-d229-8089-ab78-fd2a8ca9c19a"><td id="bRQf" class="" style="width:181px">右、アウターコンタクト</td><td id="b:~`" class="" style="width:213px">WE端子(プラス端子)</td></tr></tbody></table><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2801dad7-d229-80ef-a170-c2c447b80fbc"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><p id="2801dad7-d229-8026-9742-fa0120090941" class=""><strong>接続上の注意点</strong></p><p id="2801dad7-d229-806e-bb5f-f52b67cc4acc" class="">一般的なケーブルはセンターピンに赤色、アウターコンタクトには黒色が割り当てられています。誤接続しないよう注意してください。</p><figure id="2801dad7-d229-80d5-8fdc-cda1422cbee1" class="image"><a href="%E5%89%8D%E9%9D%A2%E3%83%91%E3%83%8D%E3%83%AB_SMU%E3%83%A2%E3%83%BC%E3%83%89_%E7%95%99%E6%84%8F%E7%82%B9.png"><img style="width:643.96875px" src="%E5%89%8D%E9%9D%A2%E3%83%91%E3%83%8D%E3%83%AB_SMU%E3%83%A2%E3%83%BC%E3%83%89_%E7%95%99%E6%84%8F%E7%82%B9.png"/></a><figcaption><a href="https://akizukidenshi.com/catalog/g/g111691/">https://akizukidenshi.com/catalog/g/g111691/</a></figcaption></figure><p id="2801dad7-d229-8013-bf43-dba0cd092747" class="">これはRE端子を基準にGNDと仮想短絡しているWE端子の電位を制御するポテンショスタット特有の動作に起因する仕様です。</p></div></figure><h3 id="2801dad7-d229-808b-b9f2-d09eb85e0fa8" class="">PS(ポテンショスタット)モード</h3><figure id="2801dad7-d229-8068-9ee5-d99f110c8ff6" class="image"><a href="%E5%89%8D%E9%9D%A2%E3%83%91%E3%83%8D%E3%83%AB_PS%E3%83%A2%E3%83%BC%E3%83%89.png"><img style="width:709.984375px" src="%E5%89%8D%E9%9D%A2%E3%83%91%E3%83%8D%E3%83%AB_PS%E3%83%A2%E3%83%BC%E3%83%89.png"/></a></figure><p id="2801dad7-d229-803f-a1e0-fcfd660e6ef1" class="">PSモード(動作モードについては<span style="border-bottom:0.05em solid">1.2. 上面パネル</span>を参照)では2つのコネクタを使用します。</p><table id="2801dad7-d229-80b7-9a02-e1e6ecfff850" class="simple-table"><thead class="simple-table-header"><tr id="2801dad7-d229-80b7-b190-f005c7fde38f"><th id="^apz" class="simple-table-header-color simple-table-header" style="width:179.328125px">位置</th><th id="NTmP" class="simple-table-header-color simple-table-header" style="width:78.328125px">機能</th></tr></thead><tbody><tr id="2801dad7-d229-800a-bede-fca5e95bccc1"><td id="^apz" class="" style="width:179.328125px">右、センターピン</td><td id="NTmP" class="" style="width:78.328125px">RE端子</td></tr><tr id="2801dad7-d229-8090-9d45-fd84201e57e1"><td id="^apz" class="" style="width:179.328125px">右、アウターコンタクト</td><td id="NTmP" class="" style="width:78.328125px">WE端子</td></tr><tr id="2801dad7-d229-808f-8a8c-ca02ee5f6f10"><td id="^apz" class="" style="width:179.328125px">左、センターピン</td><td id="NTmP" class="" style="width:78.328125px">CE端子</td></tr><tr id="2801dad7-d229-80f7-9a1c-fe5937901251"><td id="^apz" class="" style="width:179.328125px">左、アウターコンタクト</td><td id="NTmP" class="" style="width:78.328125px">WE端子</td></tr></tbody></table><h2 id="27f1dad7-d229-803d-9fa3-da1d5340e39b" class="">1.2. 上面パネル</h2><figure id="2801dad7-d229-80dd-844b-ce8d2c01a8f0" class="image"><a href="%E4%B8%8A%E9%9D%A2%E3%83%91%E3%83%8D%E3%83%AB.png"><img style="width:709.984375px" src="%E4%B8%8A%E9%9D%A2%E3%83%91%E3%83%8D%E3%83%AB.png"/></a></figure><p id="27f1dad7-d229-80f4-9b24-ee439934f169" class="">回路上の接続を切り替えるスイッチが2つ配置されています。各スイッチの機能は以下の通りです。</p><table id="27f1dad7-d229-80f8-a7df-f508e393bcc4" class="simple-table"><thead class="simple-table-header"><tr id="27f1dad7-d229-8077-9fe8-cdd3b5ae0314"><th id="~Obp" class="simple-table-header-color simple-table-header" style="width:71.65625px">位置</th><th id="VHCl" class="simple-table-header-color simple-table-header" style="width:254.65625px">機能</th><th id="Dd~@" class="simple-table-header-color simple-table-header" style="width:382.65625px">概要</th></tr></thead><tbody><tr id="27f1dad7-d229-80e8-ae52-c7b9547aa91d"><td id="~Obp" class="" style="width:71.65625px">手前側</td><td id="VHCl" class="" style="width:254.65625px">右→PS(ポテンショスタット)モード<br/>左→SMUモード</td><td id="Dd~@" class="" style="width:382.65625px">このスイッチは端子の動作モードを切り替えます。<br/>PSモードでは3端子での測定を行うことができます。<br/>SMUモードではRE端子とCE端子が短絡され、2端子での測定を行うことができます。</td></tr><tr id="27f1dad7-d229-80c4-83fd-e87dc475b2ea"><td id="~Obp" class="" style="width:71.65625px">後方側</td><td id="VHCl" class="" style="width:254.65625px">右→ADC有効化<br/>左→ADC無効化</td><td id="Dd~@" class="" style="width:382.65625px">ADCを有効化した場合、オペアンプとマイコンの測定端子が接続され、電流を測定することができます。<br/>ADCを無効化した場合、オペアンプとマイコンの測定端子は電気的に切断されます。</td></tr></tbody></table><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2801dad7-d229-808d-9a1e-caf299e1bceb"><div style="font-size:1.5em"><span class="icon">⚠️</span></div><div style="width:100%"><p id="2801dad7-d229-8036-ab0a-ce9ec683ae1c" class=""><strong>なぜADCを無効化するのか</strong></p><p id="2801dad7-d229-801c-a45f-d9500419be41" class="">本機器には、動作中にマイコンの測定端子に対して+3.3Vを超える高電圧や逆電圧がかかり、マイコンが破損することを防ぐための保護ダイオードが接続されています。ただし、機器起動時や終了時、動作モード切り替え時には動作が不安定になり、予期せぬ電圧がマイコンの測定端子にかかる可能性があります。そのため、測定時以外はADCを無効化することを推奨します。</p></div></figure><h2 id="2801dad7-d229-80c8-95de-d511ad145bc0" class="">1.3. 右面パネル</h2><figure id="2801dad7-d229-80e4-b7fb-c3b6a9439a42" class="image"><a href="%E5%8F%B3%E9%9D%A2%E3%83%91%E3%83%8D%E3%83%AB.png"><img style="width:709.984375px" src="%E5%8F%B3%E9%9D%A2%E3%83%91%E3%83%8D%E3%83%AB.png"/></a></figure><p id="2801dad7-d229-8058-bdb7-e8c6a7b086bd" class="">上面パネルの各スイッチの動作を示す表示、PCとの通信と電源供給を行うUSB-microB端子が配置されています。</p><h2 id="2841dad7-d229-806c-b79d-fb5c0a264ca9" class="">1.4. 本体性能</h2><table id="2841dad7-d229-8058-a6b7-e6e19df6687c" class="simple-table"><tbody><tr id="2841dad7-d229-80d0-aa0c-f9da5efb6ccf"><td id="gdiw" class="" style="width:126.328125px">測定可能電流</td><td id="O}ry" class="" style="width:132.328125px">-15mA 〜 15mA</td></tr><tr id="2841dad7-d229-8042-99c3-f0689d34e028"><td id="gdiw" class="" style="width:126.328125px">最小電流分解能</td><td id="O}ry" class="" style="width:132.328125px">73nA</td></tr><tr id="2841dad7-d229-8085-bb40-e9a8eecdcbce"><td id="gdiw" class="" style="width:126.328125px">設定可能電圧</td><td id="O}ry" class="" style="width:132.328125px">-2.048V 〜 2.048V</td></tr><tr id="2841dad7-d229-8093-9357-defac32ef96e"><td id="gdiw" class="" style="width:126.328125px">最小設定電圧</td><td id="O}ry" class="" style="width:132.328125px">1mV</td></tr></tbody></table><hr id="2801dad7-d229-8049-8fab-f188d9a06da7"/><h1 id="2801dad7-d229-80b2-97f0-e4594abcd86a" class="">2. 制御ソフトウェアについて</h1><figure class="block-color-default_background callout" style="white-space:pre-wrap;display:flex" id="2801dad7-d229-80c9-88ec-f3e5da040d5a"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><p id="2801dad7-d229-806d-83b2-f9390b1b90a3" class=""><strong>説明書中の画面について</strong></p><p id="2801dad7-d229-805c-9c73-f53d2e73873f" class="">本説明書ではWindows 11 OS、Google Chrome ブラウザを使用しています。異なるOS、ブラウザを使用した場合は表示される画面が説明書とは異なる場合があります。</p></div></figure><h2 id="2801dad7-d229-802e-9325-f3493a0ad3b8" class="">2.1. 起動方法</h2><h3 id="2801dad7-d229-8064-938a-ed615bae6c1d" class="">(1/2) ウェブブラウザを用意する</h3><p id="2801dad7-d229-80d9-b663-c864e2808684" class="">本ソフトウェアは以下の環境で動作します。何れかの対応ブラウザを用意して下さい。ただし、<strong>モバイルOS（Android,iOSなど)には対応していません</strong>。</p><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2801dad7-d229-80eb-b77d-e99f2a905e95"><div style="font-size:1.5em"><span class="icon">ℹ️</span></div><div style="width:100%"><p id="2801dad7-d229-802e-b342-d98d50facb29" class=""><strong>対応ブラウザ</strong></p><ul id="2801dad7-d229-80c3-a2a0-dcd489a6d044" class="bulleted-list"><li style="list-style-type:disc">Chrome 89以上</li></ul><ul id="2801dad7-d229-8083-b7e5-f1ea12de4ff3" class="bulleted-list"><li style="list-style-type:disc">Edge 89以上</li></ul><ul id="2801dad7-d229-808c-beef-ffd127e3c91c" class="bulleted-list"><li style="list-style-type:disc">Opera 75以上</li></ul></div></figure><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2801dad7-d229-8043-8f99-c4ea6aae3959"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><p id="2801dad7-d229-8090-ae13-c8997b34320d" class=""><strong>非対応ブラウザ</strong></p><ul id="2801dad7-d229-801a-89b1-db36aa71c948" class="bulleted-list"><li style="list-style-type:disc">Safari</li></ul><ul id="2801dad7-d229-8042-934f-cd630eebc055" class="bulleted-list"><li style="list-style-type:disc">FireFox</li></ul><ul id="2801dad7-d229-802c-88b9-ea92cf8039ec" class="bulleted-list"><li style="list-style-type:disc">モバイル端末上のブラウザ</li></ul></div></figure><h3 id="2801dad7-d229-80e1-ac1d-f9f69bbace5d" class="">(2/2) サイトにアクセスする</h3><p id="2801dad7-d229-80fc-800b-deca143be4a6" class="">前手順で用意したブラウザにて、以下のURLへアクセスして下さい。</p><p id="2801dad7-d229-808d-b938-d78cf8944298" class=""><a href="https://oosan1.github.io/OriginalSMU_KKHS/Cliant/Web/">https://oosan1.github.io/OriginalSMU_KKHS/Cliant/Web/</a></p><figure id="2801dad7-d229-8046-bd58-da81db6ab560" class="image" style="text-align:center"><a href="IMG_2924.png"><img style="width:400px" src="IMG_2924.png"/></a></figure><p id="2801dad7-d229-8046-aede-d4e225f046ae" class="">すると、以下のようなWebページが表示されます。</p><figure id="2801dad7-d229-8080-a1b4-e153035ed162" class="image"><a href="%E3%82%BD%E3%83%95%E3%83%88_%E8%B5%B7%E5%8B%95%E7%94%BB%E9%9D%A2_150.png"><img style="width:2559px" src="%E3%82%BD%E3%83%95%E3%83%88_%E8%B5%B7%E5%8B%95%E7%94%BB%E9%9D%A2_150.png"/></a></figure><p id="2801dad7-d229-8077-b20f-fb5eec2b6856" class="">以上で起動は完了となります。</p><p id="2801dad7-d229-805a-863b-d427f73effed" class="">本ソフトウェアはWebブラウザ上で動作するため、インストールは不要です。再度、起動したい場合は同様の手順で本ソフトウェアへアクセスして下さい。</p><h2 id="2801dad7-d229-8002-8623-d0356eb038af" class="">2.2. 画面構成と各種機能について</h2><figure id="2831dad7-d229-8046-960f-e6f3a17d997a" class="image"><a href="%E3%82%BD%E3%83%95%E3%83%88_%E7%94%BB%E9%9D%A2%E6%A7%8B%E6%88%90.png"><img style="width:709.984375px" src="%E3%82%BD%E3%83%95%E3%83%88_%E7%94%BB%E9%9D%A2%E6%A7%8B%E6%88%90.png"/></a></figure><table id="2801dad7-d229-807d-8d54-d48c937e4e13" class="simple-table"><thead class="simple-table-header"><tr id="2801dad7-d229-80c4-b218-e566969bfaeb"><th id="vrR:" class="simple-table-header-color simple-table-header" style="width:181px">エリア名</th><th id="iV~p" class="simple-table-header-color simple-table-header" style="width:524px">機能</th></tr></thead><tbody><tr id="2801dad7-d229-804f-ba90-fa9e818b7d50"><td id="vrR:" class="" style="width:181px">ツールバー</td><td id="iV~p" class="" style="width:524px">機器との接続の管理や状態の確認を行います。</td></tr><tr id="2801dad7-d229-80d1-8726-e9941f7fa4c6"><td id="vrR:" class="" style="width:181px">コントロールエリア</td><td id="iV~p" class="" style="width:524px">測定条件の設定や測定の開始などを管理します。</td></tr><tr id="2801dad7-d229-8054-90fa-df2a5dd3c444"><td id="vrR:" class="" style="width:181px">グラフエリア</td><td id="iV~p" class="" style="width:524px">測定結果をグラフとして可視化します。</td></tr><tr id="2801dad7-d229-802f-a978-cf25b63120cb"><td id="vrR:" class="" style="width:181px">コンソールエリア</td><td id="iV~p" class="" style="width:524px">機器から出力されたログを確認したり、命令を手動で送信することができます。</td></tr></tbody></table><h3 id="2811dad7-d229-801c-a470-ccacc6e4d1b6" class="">ツールバー</h3><table id="2811dad7-d229-803f-97ab-c947e69bca4b" class="simple-table"><thead class="simple-table-header"><tr id="2811dad7-d229-80fa-98bf-ef6bb23bc783"><th id="&gt;N=^" class="simple-table-header-color simple-table-header" style="width:105.328125px">パラメータ名</th><th id="uJgE" class="simple-table-header-color simple-table-header" style="width:599.328125px">概要</th></tr></thead><tbody><tr id="2811dad7-d229-8036-83c9-d72a4a8c14a4"><td id="&gt;N=^" class="" style="width:105.328125px">通信</td><td id="uJgE" class="" style="width:599.328125px">現在の接続状況を表示しています。</td></tr><tr id="2811dad7-d229-809c-8527-c9e05b0e6e6c"><td id="&gt;N=^" class="" style="width:105.328125px">校正</td><td id="uJgE" class="" style="width:599.328125px">現在グラフエリアに表示しているデータが校正されたものかどうかを表示しています。</td></tr><tr id="2811dad7-d229-80c7-92b8-ee408960b78d"><td id="&gt;N=^" class="" style="width:105.328125px">状態</td><td id="uJgE" class="" style="width:599.328125px">現在の接続状況や測定進度など、ソフトウェアに関する総合的な情報を表示しています。</td></tr></tbody></table><p id="2811dad7-d229-807f-8efe-cacb50327686" class="">
+</p><p id="2811dad7-d229-80cf-bddd-c109ef7a2b85" class=""><strong>接続</strong><div class="indented"><p id="2811dad7-d229-80be-b9ba-e56c0507fe3c" class="">IMPACTへ接続するためのダイアログを表示します。</p><p id="2811dad7-d229-80ee-8828-e0bc0b5dba64" class="">接続方法の詳細は<span style="border-bottom:0.05em solid">2.3. IMPACTを起動し、IMPACTを接続する</span>を参照してください。</p></div></p><table id="2811dad7-d229-80f5-a523-c2454662663b" class="simple-table"><thead class="simple-table-header"><tr id="2811dad7-d229-80bc-90a2-e3ece4391082"><th id="c\dW" class="simple-table-header-color simple-table-header" style="width:118.328125px">パラメータ名</th><th id="qTUR" class="simple-table-header-color simple-table-header" style="width:522.328125px">概要</th></tr></thead><tbody><tr id="2811dad7-d229-8062-8aec-fcadf2fe0e6b"><td id="c\dW" class="" style="width:118.328125px">ボーレート</td><td id="qTUR" class="" style="width:522.328125px">シリアル通信のボーレート(通信速度)を設定します。<br/>この設定を変更すると、IMPACTと正しく通信できなくなる可能性があります。</td></tr></tbody></table><p id="2811dad7-d229-80b4-9a2e-d63747876e44" class="">
+</p><h3 id="2811dad7-d229-8057-bb91-fb915def0255" class="">コントロールエリア</h3><p id="2811dad7-d229-8008-b749-d00560a96859" class=""><strong>DAC A出力</strong><div class="indented"><p id="2811dad7-d229-804d-a6f2-ce348ad72757" class="">DACのAチャンネルから設定電圧を出力します。</p></div></p><table id="2811dad7-d229-80ce-b7aa-d89d66ad9925" class="simple-table"><thead class="simple-table-header"><tr id="2811dad7-d229-8019-9b8e-c5acc1f0fee3"><th id="qx\a" class="simple-table-header-color simple-table-header" style="width:116.328125px">パラメータ名</th><th id="LkE\" class="simple-table-header-color simple-table-header" style="width:236.33333333333334px">概要</th></tr></thead><tbody><tr id="2811dad7-d229-8013-965f-da7c5d596bc6"><td id="qx\a" class="" style="width:116.328125px">電圧(V)</td><td id="LkE\" class="" style="width:236.33333333333334px">出力する電圧を指定します。</td></tr></tbody></table><p id="2811dad7-d229-8026-8622-dd65f6cd9921" class="">
+</p><p id="2811dad7-d229-806e-84f1-e52706da7644" class=""><strong>DAC B出力</strong><div class="indented"><p id="2811dad7-d229-807a-bb45-ebd48ed570f9" class="">DACのAチャンネルから設定電圧を出力します。</p></div></p><table id="2811dad7-d229-8052-a60b-f702201a16ea" class="simple-table"><thead class="simple-table-header"><tr id="2811dad7-d229-8061-921e-da6c74219c2f"><th id="?RBl" class="simple-table-header-color simple-table-header" style="width:116.328125px">パラメータ名</th><th id="YnQ^" class="simple-table-header-color simple-table-header" style="width:236.33333333333334px">概要</th></tr></thead><tbody><tr id="2811dad7-d229-8099-8842-d71564c3358e"><td id="?RBl" class="" style="width:116.328125px">電圧(V)</td><td id="YnQ^" class="" style="width:236.33333333333334px">出力する電圧を指定します。</td></tr></tbody></table><p id="2811dad7-d229-8026-af15-dc8a7b9e8a85" class="">
+</p><p id="2811dad7-d229-8094-a429-cad58e06f64c" class=""><strong>IVカーブ</strong><div class="indented"><p id="2811dad7-d229-8043-8d85-ee703b07f45d" class="">IVカーブの測定を開始します。</p></div></p><table id="2811dad7-d229-808d-8d79-e1736e1124dd" class="simple-table"><thead class="simple-table-header"><tr id="2811dad7-d229-8016-88c5-dd402c7b9add"><th id="Z?xT" class="simple-table-header-color simple-table-header" style="width:254.328125px">パラメータ名</th><th id="Y&gt;]Q" class="simple-table-header-color simple-table-header" style="width:439.328125px">概要</th></tr></thead><tbody><tr id="2811dad7-d229-809f-89ae-d2e3ad7243bb"><td id="Z?xT" class="" style="width:254.328125px">掃引速度(mV/s)</td><td id="Y&gt;]Q" class="" style="width:439.328125px">測定時の電圧掃引速度を設定します。</td></tr><tr id="2811dad7-d229-800b-bebd-f7cc61ada6e4"><td id="Z?xT" class="" style="width:254.328125px">電圧変更から計測までの待機時間(μs)</td><td id="Y&gt;]Q" class="" style="width:439.328125px">電圧を切り替えてから電流の測定を開始するまでの待機時間を設定します。<br/>応答速度が遅い電池を測定する場合はこの待機時間を長くすることを推奨します。</td></tr><tr id="2811dad7-d229-8022-b03a-d5a74b3f30de"><td id="Z?xT" class="" style="width:254.328125px">最小電圧(V)</td><td id="Y&gt;]Q" class="" style="width:439.328125px">設定電圧の下限値を設定します。<br/>最小値は-2.048Vです。<br/>この値は最大電圧よりも小さい必要があります。</td></tr><tr id="2811dad7-d229-8086-b459-c8e3af6d5a43"><td id="Z?xT" class="" style="width:254.328125px">最大電圧(V)</td><td id="Y&gt;]Q" class="" style="width:439.328125px">設定電圧の上限値を設定します。<br/>最大値は2.048Vです。<br/>この値は最小電圧よりも大きい必要があります。<br/>ただし、最小電圧≤設定電圧&lt;最大電圧、となっています。</td></tr><tr id="2811dad7-d229-8083-9ed0-db58fffb6e10"><td id="Z?xT" class="" style="width:254.328125px">変更電圧幅(V)</td><td id="Y&gt;]Q" class="" style="width:439.328125px">設定電圧を変化させる幅を設定します。<br/>最小値は0.001Vです。<br/><br/>例 0.01に設定した場合<br/>設定電圧 0, 0.01, 0.02…</td></tr><tr id="2811dad7-d229-805f-b958-cdb55a85548d"><td id="Z?xT" class="" style="width:254.328125px">平均回数</td><td id="Y&gt;]Q" class="" style="width:439.328125px">電圧を変化させるたびにこの回数だけ測定を行い、平均を取ります。<br/>平均回数を上げるほどノイズが小さくなりますが、一回の測定に必要な時間が長くなり、掃引速度に間に合わなくなる可能性があります。</td></tr><tr id="2811dad7-d229-80ed-a772-f0fc6ec22266"><td id="Z?xT" class="" style="width:254.328125px">安定用直列抵抗値(Ω)</td><td id="Y&gt;]Q" class="" style="width:439.328125px">発振を抑えるために接続する直列抵抗の抵抗値を設定します。<br/>これにより、直列抵抗で起こる電圧低下を補正することができます。<br/>直列抵抗を使用しない場合は0に設定してください。<br/>詳しい使用方法については<span style="border-bottom:0.05em solid">2.5-(オプション) 安定用直列抵抗について</span>を参照してください。</td></tr><tr id="2811dad7-d229-80e8-858e-c13d0d3f1ea7"><td id="Z?xT" class="" style="width:254.328125px">サイクリックモード</td><td id="Y&gt;]Q" class="" style="width:439.328125px">有効にした場合、電圧の掃引方向を反転してもう一度測定を行います。<br/><br/>無効: 最小電圧→最大電圧<br/>有効: 最小電圧→最大電圧→最小電圧</td></tr></tbody></table><p id="2811dad7-d229-80d2-8d1e-ec3672e8798a" class="">
+</p><p id="2811dad7-d229-800b-a349-c1fcd2780f36" class=""><strong>CSV保存</strong><div class="indented"><p id="2811dad7-d229-802e-a82a-c70a3d7b7cef" class="">測定データをCSVファイルとしてエクスポートします。</p></div></p><table id="2811dad7-d229-804c-9bae-db001bc24f3b" class="simple-table"><thead class="simple-table-header"><tr id="2811dad7-d229-8051-bceb-d433db7acab1"><th id="_Mf=" class="simple-table-header-color simple-table-header" style="width:105.328125px">パラメータ名</th><th id="&lt;B\L" class="simple-table-header-color simple-table-header" style="width:236.33333333333334px">概要</th></tr></thead><tbody><tr id="2811dad7-d229-80c1-a4d2-dab6b83e0377"><td id="_Mf=" class="" style="width:105.328125px">ファイル名</td><td id="&lt;B\L" class="" style="width:236.33333333333334px">CSVファイルの名前を設定します。</td></tr></tbody></table><p id="2811dad7-d229-805d-85af-fbacde07e4e5" class="">
+</p><p id="2811dad7-d229-802a-b762-d442c2680083" class=""><strong>諸設定</strong></p><table id="2811dad7-d229-80b0-9443-d27e40880499" class="simple-table"><thead class="simple-table-header"><tr id="2811dad7-d229-8039-8384-e2e5128b0173"><th id="gfJK" class="simple-table-header-color simple-table-header" style="width:191.328125px">パラメータ名</th><th id="eqa{" class="simple-table-header-color simple-table-header" style="width:501.328125px">概要</th></tr></thead><tbody><tr id="2811dad7-d229-8081-8db0-efcd929526a0"><td id="gfJK" class="" style="width:191.328125px">ADC最低電圧(V)</td><td id="eqa{" class="" style="width:501.328125px">ADCの測定可能な下限電圧を設定します。この値はオペアンプによる増幅。オフセットを考慮します。</td></tr><tr id="2811dad7-d229-8030-9eee-d9e8d322fc67"><td id="gfJK" class="" style="width:191.328125px">ADC最高電圧(V)</td><td id="eqa{" class="" style="width:501.328125px">ADCの測定可能な上限電圧を設定します。この値はオペアンプによる増幅。オフセットを考慮します。</td></tr><tr id="2811dad7-d229-80d4-be8e-dbfc13ebbda9"><td id="gfJK" class="" style="width:191.328125px">ADC分解能</td><td id="eqa{" class="" style="width:501.328125px">ADCの分解能を設定します。</td></tr><tr id="2811dad7-d229-80c8-94e2-f7a02afde1b9"><td id="gfJK" class="" style="width:191.328125px">測定値の反転</td><td id="eqa{" class="" style="width:501.328125px">ADCの測定値を0Aを基準に反転します。</td></tr><tr id="2811dad7-d229-8035-b4d8-f9368d2908a0"><td id="gfJK" class="" style="width:191.328125px">ADC電流レンジ</td><td id="eqa{" class="" style="width:501.328125px">電流の測定レンジを設定します。レンジが小さい(測定可能な幅が狭い)ほど分解能は高くなります。<br/>自動に設定した場合、各測定値に合わせて最適なレンジを切り替えます。</td></tr><tr id="2811dad7-d229-8069-b4c0-e7c62d35511a"><td id="gfJK" class="" style="width:191.328125px">レンジ切り替え待機時間(μs)</td><td id="eqa{" class="" style="width:501.328125px">レンジを切り替える際に、切り替えてから測定するまでの待機時間を設定します。<br/>この値を短くした場合、レンジの切り替えが完了する前に測定を行ってしまい、測定値が不安定になる可能性があります。</td></tr><tr id="2811dad7-d229-805f-b901-f057b1e0f059"><td id="gfJK" class="" style="width:191.328125px">DAC最低電圧(V)</td><td id="eqa{" class="" style="width:501.328125px">DACの下限電圧を設定します。この値はオペアンプによる増幅。オフセットを考慮します。</td></tr><tr id="2811dad7-d229-8034-b2e3-d742845b01ed"><td id="gfJK" class="" style="width:191.328125px">DAC最高電圧</td><td id="eqa{" class="" style="width:501.328125px">DACの上限電圧を設定します。この値はオペアンプによる増幅。オフセットを考慮します。</td></tr><tr id="2811dad7-d229-80cf-a383-f8931ecbdb1e"><td id="gfJK" class="" style="width:191.328125px">DAC分解能</td><td id="eqa{" class="" style="width:501.328125px">DACの分解能を設定します。</td></tr></tbody></table><p id="2831dad7-d229-8094-803d-e3b5792e2b16" class="">
+</p><h3 id="2831dad7-d229-8018-a7cb-fc3ac14023d6" class="">グラフエリア</h3><p id="2831dad7-d229-800f-b9b5-ed440875bc9d" class="">測定結果が表示されます。</p><p id="2831dad7-d229-80de-a18f-da38cce3183a" class="">
+</p><h3 id="2831dad7-d229-8094-8630-f7361d1b0635" class="">コンソールエリア</h3><p id="2831dad7-d229-8020-a881-cf78421a5901" class=""><strong>送信</strong><div class="indented"><p id="2831dad7-d229-8064-a1b0-e7f7b24dcb64" class="">入力欄に入力したテキストをシリアル通信にて送信します。</p></div></p><h2 id="2801dad7-d229-8044-b17f-f784bd6a8042" class="">2.3. IMPACTを起動し、IMPACTを接続する</h2><h3 id="2801dad7-d229-8091-a021-d6e2398f2cbf" class="">準備物</h3><table id="2801dad7-d229-80bd-94c3-e3ff70d24b39" class="simple-table"><thead class="simple-table-header"><tr id="2801dad7-d229-80c7-a21a-e8de31ec020b"><th id="Q&gt;LC" class="simple-table-header-color simple-table-header" style="width:264px">名前</th><th id="_vHU" class="simple-table-header-color simple-table-header" style="width:61px">個数</th></tr></thead><tbody><tr id="2801dad7-d229-803b-ab9b-ffabdb6a2b8c"><td id="Q&gt;LC" class="" style="width:264px">IMPACT</td><td id="_vHU" class="" style="width:61px">1台</td></tr><tr id="2801dad7-d229-809c-b118-ca877a18b608"><td id="Q&gt;LC" class="" style="width:264px">USB-A to USB-microBケーブル</td><td id="_vHU" class="" style="width:61px">1本</td></tr><tr id="2801dad7-d229-807b-8a75-e5ece5ce024f"><td id="Q&gt;LC" class="" style="width:264px">制御ソフトウェアにアクセスできるPC</td><td id="_vHU" class="" style="width:61px">1台</td></tr></tbody></table><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2801dad7-d229-8055-9c81-e7cc9402628a"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><p id="2801dad7-d229-8004-8dd3-f7c42b02ae5c" class=""><strong>USBケーブルの注意点</strong></p><p id="2801dad7-d229-809c-90a7-e1dd5e98c107" class="">通信機能に対応したケーブルを使用してください。電源供給機能にのみ対応したケーブルではPCとIMPACTを接続することはできません。</p></div></figure><h3 id="2801dad7-d229-805a-be73-eb56e0dec36e" class="">(1/3) IMPACTとPCをUSBケーブルで接続する</h3><p id="2801dad7-d229-80f2-a598-d27d7a6b7850" class="">PCにUSBケーブルのA端子を接続してください。</p><p id="2801dad7-d229-8062-a99f-c5d66f38a2a5" class="">IMPACTにUSBケーブルのmicro-B端子を接続してください。</p><p id="2801dad7-d229-80a2-b77e-c029c459786c" class="">機器本体側のmicro-B端子部分が緑色に点灯している場合、電源供給は成功しています。IMPACTには電源スイッチが無いため、電源を供給すると自動的に起動します。</p><h3 id="2801dad7-d229-8070-9eba-cf31adb92e60" class="">(2/3) PCで制御ソフトウェアを起動する</h3><p id="2801dad7-d229-805b-a57f-e8de5d354989" class="">USBケーブルを接続したPCで<span style="border-bottom:0.05em solid">2.1. 起動方法</span>を参考に制御ソフトウェアを起動してください。</p><h3 id="2801dad7-d229-80a9-9910-fc73fd6a4c90" class="">(3/3) IMPACTとPCを接続する</h3><figure id="2831dad7-d229-800f-9980-dac31509dffa" class="image"><a href="%E3%82%BD%E3%83%95%E3%83%88_%E6%8E%A5%E7%B6%9A%E3%83%9C%E3%82%BF%E3%83%B3.png"><img style="width:709.96875px" src="%E3%82%BD%E3%83%95%E3%83%88_%E6%8E%A5%E7%B6%9A%E3%83%9C%E3%82%BF%E3%83%B3.png"/></a></figure><p id="2801dad7-d229-803a-8450-d5c8c8cc3a52" class="">ツールバーの「接続」ボタンをクリックしてください。接続先を選択するダイアログが表示されます。</p><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2831dad7-d229-8090-bec7-f1a870173f02"><div style="font-size:1.5em"><span class="icon">❓</span></div><div style="width:100%"><p id="2831dad7-d229-8080-9f80-e026e9f9d935" class=""><strong>エラーが表示された場合</strong></p><figure id="2831dad7-d229-807e-a07f-db22dd585620" class="image"><a href="%E3%82%BD%E3%83%95%E3%83%88_%E6%A8%A9%E9%99%90%E3%82%A8%E3%83%A9%E3%83%BC.png"><img style="width:643.96875px" src="%E3%82%BD%E3%83%95%E3%83%88_%E6%A8%A9%E9%99%90%E3%82%A8%E3%83%A9%E3%83%BC.png"/></a></figure><p id="2831dad7-d229-80a2-85bf-f84f22d0eac5" class="">このようなエラーが表示された場合、ブラウザ上でシリアルポートの使用がブロックされている可能性があります。ブラウザの設定からシリアルポートの使用を許可してください。</p><figure id="2831dad7-d229-807a-a15e-f9f2ee6ccf29" class="image"><a href="%E3%82%BD%E3%83%95%E3%83%88_%E3%82%B7%E3%83%AA%E3%82%A2%E3%83%AB%E9%80%9A%E4%BF%A1%E3%81%AE%E8%A8%B1%E5%8F%AF.png"><img style="width:643.984375px" src="%E3%82%BD%E3%83%95%E3%83%88_%E3%82%B7%E3%83%AA%E3%82%A2%E3%83%AB%E9%80%9A%E4%BF%A1%E3%81%AE%E8%A8%B1%E5%8F%AF.png"/></a></figure></div></figure><figure id="2831dad7-d229-8074-b35c-d99cb6508dc7" class="image"><a href="%E3%82%BD%E3%83%95%E3%83%88_%E6%8E%A5%E7%B6%9A%E3%83%80%E3%82%A4%E3%82%A2%E3%83%AD%E3%82%B0.png"><img style="width:709.984375px" src="%E3%82%BD%E3%83%95%E3%83%88_%E6%8E%A5%E7%B6%9A%E3%83%80%E3%82%A4%E3%82%A2%E3%83%AD%E3%82%B0.png"/></a></figure><p id="2811dad7-d229-806d-8434-dd3b3ef39f81" class="">ダイアログ中のリストから「Board CDC (COM N)」(NはPC環境や接続するタイミングによって変化します)を選択してください。</p><p id="2831dad7-d229-802b-9ec0-cc7d81395bbe" class="">その後、ダイアログ中の「接続」ボタンをクリックしてください。</p><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2811dad7-d229-8082-8a3e-f43d0ccdef80"><div style="font-size:1.5em"><span class="icon">❓</span></div><div style="width:100%"><p id="2811dad7-d229-800a-9291-ed6fa5d75fbf" class=""><strong>Board CDC (COM N)が表示されない場合</strong></p><ul id="2811dad7-d229-8049-8292-dc9793b4af13" class="bulleted-list"><li style="list-style-type:disc">IMPACTのシステムがクラッシュしている可能性があります。USBケーブルを抜き差しし、IMPACTをリセットしてください。</li></ul><ul id="2811dad7-d229-80ba-b874-fe9e617cc288" class="bulleted-list"><li style="list-style-type:disc">USBケーブルが通信に非対応、もしくは断線している可能性があります。他のUSBケーブルに変更してください。</li></ul><ul id="2811dad7-d229-802b-9915-f344c10093d7" class="bulleted-list"><li style="list-style-type:disc">初めてIMPACTを接続する場合はデバイスドライバのインストールに時間がかかっている可能性があります。接続した状態で10分ほど放置し、再度接続してください。</li></ul></div></figure><p id="2811dad7-d229-800a-8d7f-ece6f371bbbd" class="">コンソールエリアに緑字で「connection」と表示されれば接続は完了です。</p><figure id="2831dad7-d229-8022-9c7d-dc695dae85a5" class="image"><a href="%E3%82%BD%E3%83%95%E3%83%88_connection.png"><img style="width:364.98809814453125px" src="%E3%82%BD%E3%83%95%E3%83%88_connection.png"/></a></figure><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2811dad7-d229-801e-bd67-e3e04f71f8f7"><div style="font-size:1.5em"><span class="icon">❓</span></div><div style="width:100%"><p id="2811dad7-d229-8032-8100-c243b1d6eaba" class=""><strong>エラーが表示された場合</strong></p><figure id="2831dad7-d229-806f-8504-c6e6e7ffcd70" class="image"><a href="%E3%82%BD%E3%83%95%E3%83%88_%E5%90%8C%E6%99%82%E6%8E%A5%E7%B6%9A%E3%82%A8%E3%83%A9%E3%83%BC.png"><img style="width:643.921875px" src="%E3%82%BD%E3%83%95%E3%83%88_%E5%90%8C%E6%99%82%E6%8E%A5%E7%B6%9A%E3%82%A8%E3%83%A9%E3%83%BC.png"/></a></figure><p id="2811dad7-d229-80fc-bd19-e2429c34c24c" class="">同じIMPACTに2つ以上のソフトウェアが接続することはできません。そのため、他のソフトウェアでIMPACTに接続している場合、エラーが表示されます。別のタブで制御ソフトウェアを開いていないか、シリアルモニタソフトを使用していないか、などを確認し、それらの接続を解除してください。</p></div></figure><h2 id="2801dad7-d229-8061-b6f6-cba542925989" class="">2.4. IMPACTの接続を解除する</h2><h3 id="2811dad7-d229-8093-98b8-c967d8523b98" class="">方法1. USBケーブルを抜く</h3><p id="2811dad7-d229-80b9-905f-f7531fe81d4f" class="">PCとIMPACTを接続しているUSBケーブルを抜くことでIMAPCTの接続は解除され、IMPACTは終了します。</p><p id="2811dad7-d229-80b8-9dad-c5c6bfc57183" class="">コンソールエリアに赤字で「disconnection」と表示されれば接続の解除は完了です。</p><figure id="2831dad7-d229-80fe-9b19-e0a385ff90d8" class="image"><a href="%E3%82%BD%E3%83%95%E3%83%88_disconnection.png"><img style="width:364.9821472167969px" src="%E3%82%BD%E3%83%95%E3%83%88_disconnection.png"/></a></figure><h3 id="2811dad7-d229-800e-9ac8-f7c4db422036" class="">方法2. 制御ソフトウェアをリセットする</h3><p id="2811dad7-d229-80d6-b444-df06d6be512e" class="">制御ソフトウェアを閉じる、もしくは再読み込みすることでIMPACTとの接続は解除されます。ただし、USBケーブルを抜かない場合、IMPACTは終了しません。</p><p id="2811dad7-d229-8066-a9ea-d4364f67ef4b" class="">接続に関するエラー等で接続を解除したい場合はこちらの方法を推奨します。</p><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2811dad7-d229-8090-9948-de0c2115d68e"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><p id="2811dad7-d229-80f8-9533-ef70a310568d" class=""><strong>制御ソフトウェア上のデータについて</strong></p><p id="2811dad7-d229-8005-83ac-f3ed97395bd6" class="">制御ソフトウェア上の測定データや測定条件は<strong>保存されません</strong>。制御ソフトウェアを閉じる、もしくは再読み込みした場合は測定データは破棄され、測定条件はデフォルト値へリセットされます。</p></div></figure><h2 id="2811dad7-d229-80c8-b6a4-e892f6c1bb08" class="">2.5. IVカーブを測定する</h2><h3 id="2841dad7-d229-8078-a409-f56e09e04537" class="">(1/5) IMPACTに測定対象を接続する</h3><p id="2841dad7-d229-8071-9991-fa98fd638ba4" class=""><span style="border-bottom:0.05em solid">1.1. 前面パネル</span>を参考にIMPACTの測定端子と測定対象を接続してください。また、測定モードの切り替えも<span style="border-bottom:0.05em solid">1.2. 上面パネル</span>を参考に行っておいてください。</p><h3 id="2841dad7-d229-80bf-ab06-e8e5d808bec9" class="">(2/5) IMAPCTとPCを接続する</h3><p id="2841dad7-d229-80db-94d8-eeb51ff0e1d6" class=""><span style="border-bottom:0.05em solid">2.3. IMPACTを起動し、IMPACTを接続する</span>を参考にIMPACTとPCをUSBケーブルで接続してください。</p><h3 id="2811dad7-d229-8053-b298-d4a1bac0cda9" class="">(3/5) 測定条件を設定する</h3><p id="2831dad7-d229-80a6-b9d7-d4e58220c990" class="">測定条件を設定するコントロールエリアのパラメータと、注意点は以下の通りです。パラメータの意味については<span style="border-bottom:0.05em solid">2.2. 画面構成と各種機能について</span>を参照してください。</p><p id="2831dad7-d229-8011-876d-d12b556ff9c4" class=""><strong>IVカーブ</strong></p><table id="2831dad7-d229-805b-8e33-f3d756072aec" class="simple-table"><thead class="simple-table-header"><tr id="2831dad7-d229-800d-8542-ca3786094231"><th id="nWv{" class="simple-table-header-color simple-table-header" style="width:261.328125px">パラメータ名</th><th id="vqD]" class="simple-table-header-color simple-table-header" style="width:439.328125px">注意点</th></tr></thead><tbody><tr id="2831dad7-d229-80d8-a5c8-cc241a6ac81a"><td id="nWv{" class="" style="width:261.328125px">掃引速度(mV/s)</td><td id="vqD]" class="" style="width:439.328125px">測定対象に合わせて設定してください。ただし、必要以上に速度を上げた場合、内部処理が間に合わず、掃引速度が達成できない可能性があります。</td></tr><tr id="2831dad7-d229-80c1-bef9-fc3e8c90b84c"><td id="nWv{" class="" style="width:261.328125px">電圧変更から計測までの待機時間(μs)</td><td id="vqD]" class="" style="width:439.328125px">測定対象の応答速度が遅い場合は長く設定してください。一般的に、固体と液体を組み合わせたデバイスほど電気容量が大きく、応答速度が遅いです。</td></tr><tr id="2841dad7-d229-8089-a1a8-d00e96c27568"><td id="nWv{" class="" style="width:261.328125px">最小電圧(V)</td><td id="vqD]" class="" style="width:439.328125px">0Vよりも少し低い値(-0.1Vなど)を設定することをおすすめします。</td></tr><tr id="2841dad7-d229-807c-9e39-e3d734cca189"><td id="nWv{" class="" style="width:261.328125px">最大電圧(V)</td><td id="vqD]" class="" style="width:439.328125px">最初は0.6V程度に設定し、x切片が0.6V以上であった場合は必要に応じて上げていくことをおすすめします。</td></tr><tr id="2841dad7-d229-80bc-9470-fd346cd53e45"><td id="nWv{" class="" style="width:261.328125px">安定用直列抵抗値(Ω)</td><td id="vqD]" class="" style="width:439.328125px">安定用直列抵抗を使用する場合は設定してください。<br/>詳しい使用方法についてはを参照してください。</td></tr></tbody></table><p id="2841dad7-d229-805b-b1e0-fb541d65073a" class="">
+</p><p id="2831dad7-d229-8034-9dc9-e76fcaa2d075" class=""><strong>諸設定</strong></p><table id="2841dad7-d229-8043-8c8f-d51803fdc82a" class="simple-table"><thead class="simple-table-header"><tr id="2841dad7-d229-803a-99d5-ef627f09eda9"><th id="HT[E" class="simple-table-header-color simple-table-header" style="width:131.328125px">パラメータ名</th><th id="ckE&gt;" class="simple-table-header-color simple-table-header" style="width:567.328125px">注意点</th></tr></thead><tbody><tr id="2841dad7-d229-80e5-ae2f-c071f93b05ac"><td id="HT[E" class="" style="width:131.328125px">ADC電流レンジ</td><td id="ckE&gt;" class="" style="width:567.328125px">特に理由が無ければ自動で問題ありません。<br/>掃引速度が高速で、レンジの切り替えが間に合わないような場合はレンジを固定することで解決する可能性があります。</td></tr></tbody></table><h3 id="2841dad7-d229-8064-b1a9-e1ed73f9c9b3" class="">(4/5) 測定を開始する</h3><figure id="2841dad7-d229-8036-b32b-f2f1cbf924cd" class="image"><a href="%E3%82%BD%E3%83%95%E3%83%88_IV%E3%82%AB%E3%83%BC%E3%83%96%E3%82%92%E3%82%AF%E3%83%AA%E3%83%83%E3%82%AF.png"><img style="width:709.984375px" src="%E3%82%BD%E3%83%95%E3%83%88_IV%E3%82%AB%E3%83%BC%E3%83%96%E3%82%92%E3%82%AF%E3%83%AA%E3%83%83%E3%82%AF.png"/></a></figure><p id="2841dad7-d229-809e-be7a-d0c256f71f99" class="">コントロールエリア内の「IVカーブ」ボタンをクリックすることで測定が開始されます。</p><p id="2841dad7-d229-8013-8dea-e1ae4eeb513c" class="">測定中は一切の操作ができません。また、測定が終わるまでは<strong>IMPACTとの接続を解除しない</strong>でください。</p><h3 id="2841dad7-d229-80a2-b74a-d9527269fc03" class="">(5/5) 結果を確認する</h3><figure id="2841dad7-d229-80c3-af69-da7375c21499" class="image"><a href="%E3%82%BD%E3%83%95%E3%83%88_IV%E3%82%AB%E3%83%BC%E3%83%96_%E7%B5%90%E6%9E%9C%E7%A2%BA%E8%AA%8D.png"><img style="width:709.96875px" src="%E3%82%BD%E3%83%95%E3%83%88_IV%E3%82%AB%E3%83%BC%E3%83%96_%E7%B5%90%E6%9E%9C%E7%A2%BA%E8%AA%8D.png"/></a></figure><p id="2841dad7-d229-8026-9f90-efd8b3fff743" class="">結果はグラフエリアに表示されます。このグラフは縦軸に電流、横軸に電圧をとった散布図になります。</p><p id="2841dad7-d229-809a-88c4-d2c30b239fc9" class="">また、コンソールエリアにエラーが表示されていないことも確認してください。</p><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2841dad7-d229-8034-a9d2-f87443a62c96"><div style="font-size:1.5em"><span class="icon">❓</span></div><div style="width:100%"><p id="2841dad7-d229-8050-ad72-d24c20f277bb" class=""><strong>エラーが表示された場合</strong></p><figure id="2841dad7-d229-80fa-bd4c-e9ae4ea5e9ab" class="image"><a href="%E3%82%BD%E3%83%95%E3%83%88_%E6%8E%83%E5%BC%95%E9%80%9F%E5%BA%A6%E3%82%A8%E3%83%A9%E3%83%BC.png"><img style="width:643.984375px" src="%E3%82%BD%E3%83%95%E3%83%88_%E6%8E%83%E5%BC%95%E9%80%9F%E5%BA%A6%E3%82%A8%E3%83%A9%E3%83%BC.png"/></a></figure><p id="2841dad7-d229-80b2-a2a3-d5c9afceab4c" class="">このようなエラーは、設定された掃引速度が速すぎたために内部処理が間に合っていないことを指しています。</p><p id="2841dad7-d229-80aa-a776-d0f1bcc0783a" class="">「電圧変更から計測までの待機時間」を短くするか、レンジを固定してください。大抵の場合はレンジを固定することで解決します。</p></div></figure><h3 id="2841dad7-d229-80b5-853e-c85aa3dea106" class="">(オプション) 結果を保存する</h3><p id="2841dad7-d229-805c-beb5-cc5f8ff918c7" class="">得られた結果をより詳細に分析したい場合や、保存したい場合は結果をCSVファイルとして出力することができます。</p><figure id="2841dad7-d229-809f-b658-d0556ae35ff1" class="image"><a href="%E3%82%BD%E3%83%95%E3%83%88_csv%E4%BF%9D%E5%AD%98.png"><img style="width:709.984375px" src="%E3%82%BD%E3%83%95%E3%83%88_csv%E4%BF%9D%E5%AD%98.png"/></a></figure><p id="2841dad7-d229-80d7-9bb9-ef62b1e21a5f" class="">ファイル名を指定し、コントロールエリアの「CSV保存」ボタンをクリックすることで、CSVファイルが自動的にダウンロードされます。ファイル構造は以下の通りです。</p><table id="2841dad7-d229-80a8-a139-deb5952c297e" class="simple-table"><thead class="simple-table-header"><tr id="2841dad7-d229-8019-bad7-d755c6e448ec"><th id="ObJl" class="simple-table-header-color simple-table-header" style="width:93.328125px">ヘッダ名</th><th id="eE[|" class="simple-table-header-color simple-table-header" style="width:236.33333333333334px">概要</th></tr></thead><tbody><tr id="2841dad7-d229-8013-835a-c73191eebc5d"><td id="ObJl" class="" style="width:93.328125px">電圧(V)</td><td id="eE[|" class="" style="width:236.33333333333334px">設定した電圧値を記録します。</td></tr><tr id="2841dad7-d229-8085-81fb-c372ebb90b59"><td id="ObJl" class="" style="width:93.328125px">電流(mA)</td><td id="eE[|" class="" style="width:236.33333333333334px">測定した電流値を記録します。</td></tr><tr id="2841dad7-d229-8050-aa7d-c0079fcd26b8"><td id="ObJl" class="" style="width:93.328125px">走査方向</td><td id="eE[|" class="" style="width:236.33333333333334px">電圧の掃引方向を記録します。<br/><br/>0: 最小電圧→最大電圧<br/>1: 最大電圧→最小電圧</td></tr></tbody></table><h3 id="2841dad7-d229-80fc-8f4b-c13cb1f24a90" class="">(オプション) 安定用直列抵抗について</h3><p id="2841dad7-d229-803f-872c-c2cf4625de41" class="">固体と液体を使用した電池など、電気容量の大きい測定対象をSMUモードで測定する場合、IMPACTの測定値が不安定になる場合があります。そのような場合は、測定端子と直列に抵抗を接続することで測定値を安定化できる可能性があります。</p><p id="2841dad7-d229-8043-9d63-f903a6922e69" class="">安定用直列抵抗を使用する場合は、コントロールエリア内の「安定用直列抵抗値(Ω)」を必ず設定してください。直列抵抗による電圧降下量を計算し、自動で補正を行った結果を表示します。</p><p id="2841dad7-d229-805d-b20e-f6dae27f7e18" class="">抵抗値は測定値が安定する最小の値を選択してください。抵抗値が大きくなるほど、電圧降下が大きくなり、設定値と補正後の値の差が大きくなってしまいます。</p><figure id="2841dad7-d229-8045-bc8d-fac613ea9410" class="image"><a href="%E6%8A%B5%E6%8A%97%E5%9F%BA%E7%9B%A4.jpg"><img style="width:709.984375px" src="%E6%8A%B5%E6%8A%97%E5%9F%BA%E7%9B%A4.jpg"/></a></figure><figure id="2841dad7-d229-8022-ad04-dfed836dafa7" class="image"><a href="%E6%8A%B5%E6%8A%97%E5%9F%BA%E7%9B%A4_%E5%8F%96%E3%82%8A%E4%BB%98%E3%81%91%E6%96%B9.jpg"><img style="width:709.984375px" src="%E6%8A%B5%E6%8A%97%E5%9F%BA%E7%9B%A4_%E5%8F%96%E3%82%8A%E4%BB%98%E3%81%91%E6%96%B9.jpg"/></a></figure><h1 id="2841dad7-d229-8012-b2de-eba5f7128475" class="">3. テクニカルリファレンス</h1><h2 id="2841dad7-d229-8057-bf86-e06b8295b227" class="">3.1. 組み立て方法</h2><h3 id="2841dad7-d229-80b3-afa3-def5aab96629" class=""><strong>(1/4) ケースの溝へ基盤を差し込む</strong></h3><figure id="2841dad7-d229-8001-b65f-f1978d4028cb" class="image"><a href="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_%E5%9F%BA%E7%9B%A4%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF.png"><img style="width:709.96875px" src="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_%E5%9F%BA%E7%9B%A4%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF.png"/></a></figure><figure id="2841dad7-d229-80b9-a6aa-fe74d56d786e" class="image"><a href="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_%E5%9F%BA%E7%9B%A4%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF%E5%BE%8C.png"><img style="width:709.984375px" src="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_%E5%9F%BA%E7%9B%A4%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF%E5%BE%8C.png"/></a></figure><h3 id="2841dad7-d229-809c-9dd8-ec6373e3115e" class="">(2/4) 右面カバーをケースへはめる</h3><figure id="2841dad7-d229-8023-9b97-c2a13f267b60" class="image"><a href="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_%E5%8F%B3%E9%9D%A2%E3%82%AB%E3%83%90%E3%83%BC%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF.png"><img style="width:709.96875px" src="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_%E5%8F%B3%E9%9D%A2%E3%82%AB%E3%83%90%E3%83%BC%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF.png"/></a></figure><figure id="2841dad7-d229-8079-98d2-e4b92f6d478d" class="image"><a href="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_%E5%8F%B3%E9%9D%A2%E3%82%AB%E3%83%90%E3%83%BC%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF%E5%BE%8C.png"><img style="width:709.984375px" src="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_%E5%8F%B3%E9%9D%A2%E3%82%AB%E3%83%90%E3%83%BC%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF%E5%BE%8C.png"/></a></figure><h3 id="2841dad7-d229-806e-a066-fd0f3a7a59c0" class="">(3/4) BNCコネクタを固定する</h3><figure id="2841dad7-d229-80a5-a129-f9d926d5c1c5" class="image"><a href="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_BNC%E3%83%8A%E3%83%83%E3%83%88%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF.png"><img style="width:3448px" src="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_BNC%E3%83%8A%E3%83%83%E3%83%88%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF.png"/></a></figure><figure id="2841dad7-d229-80be-ab7d-edff997c1b63" class="image"><a href="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_BNC%E3%83%8A%E3%83%83%E3%83%88%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF%E5%BE%8C.png"><img style="width:709.984375px" src="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_BNC%E3%83%8A%E3%83%83%E3%83%88%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF%E5%BE%8C.png"/></a></figure><h3 id="2841dad7-d229-807d-a9b0-faed9f4b2e4a" class="">(4/4) ネジを使用して右面カバーを固定する</h3><figure id="2841dad7-d229-8002-a888-c97bdecf7437" class="image"><a href="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_%E3%83%8D%E3%82%B8%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF.png"><img style="width:709.984375px" src="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_%E3%83%8D%E3%82%B8%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF.png"/></a></figure><figure id="2841dad7-d229-8029-b9ac-fa35d02cf580" class="image"><a href="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_%E3%83%8D%E3%82%B8%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF%E5%BE%8C.png"><img style="width:624px" src="%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB_%E3%83%8D%E3%82%B8%E3%81%AE%E5%B7%AE%E3%81%97%E8%BE%BC%E3%81%BF%E5%BE%8C.png"/></a></figure><p id="2841dad7-d229-80ef-a5f3-fa09d6510418" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
