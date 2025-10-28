@@ -9,6 +9,8 @@ const EIS_max_data = 9000; // EIS計測の最大データ個数
 const EIS_max_sampling_freq = 250000; // EIS計測の最大サンプリングレート
 
 let drawDataList = [];
+let graph_xMax;
+let graph_yMax;
 let EIS_voltageList = [];
 let EIS_avgMode = false;
 let EIS_avgCountNow = 0;
@@ -34,6 +36,7 @@ let IV_R;
 
 
 const connectButton = document.getElementById("connect_btn");
+const stopButton = document.getElementById("stop_btn");
 const baudrateTextbox = document.getElementById("baudrate");
 const serialConsoleTextbox = document.getElementById("send_text");
 const sendButton = document.getElementById("send_btn");
@@ -49,9 +52,11 @@ const DACbTextbox = document.getElementById("B_vol");
 const IVButton = document.getElementById("IV_btn");
 const IV_speedTextbox = document.getElementById("IV_speed");
 const IV_waitingTimeTextbox = document.getElementById("IV_waiting_time");
+const IV_before_waitingTimeTextbox = document.getElementById("IV_before_waiting_time");
 const IV_minTextbox = document.getElementById("IV_vol_min");
 const IV_maxTextbox = document.getElementById("IV_vol_max");
 const IV_stepTextbox = document.getElementById("IV_vol_step");
+const IV_voltage_invertCheckbox = document.getElementById("IV_voltage_invert");
 const IV_repetitions = document.getElementById("IV_repetitions");
 const IV_resistance = document.getElementById("IV_resistance");
 const IV_invertCheckbox = document.getElementById("IV_invert");
@@ -81,6 +86,10 @@ const DAC_stepTextbox = document.getElementById("DAC_step");
 connectButton.addEventListener("click", onConnectButtonClick, false);
 serialConsoleTextbox.addEventListener('keydown', onConsoleKeypress);
 sendButton.addEventListener("click", sendMessage, false);
+stopButton.addEventListener("click", () => {
+    writeTextSerial("S"); // 何かしらの文字を送信すると停止する
+}, false);
+
 
 navigator.serial.addEventListener("disconnect", (event) => {
     ButtonEnDi("disconnect")
@@ -185,9 +194,11 @@ function onIVcurveButtonClick() {
     MODE = "IVcurve";
     status_text.innerText = "IVカーブ測定中...";
     const speed = Number(IV_speedTextbox.value) / 1000;
+    const before_waiting_time = Number(IV_before_waitingTimeTextbox.value);
     const stepVol = Number(IV_stepTextbox.value);
     const minVol = Number(IV_minTextbox.value);
     const maxVol = Number(IV_maxTextbox.value);
+    const step_direction = IV_voltage_invertCheckbox.checked ? -1 : 1;
     const repetitions = Number(IV_repetitions.value);
     DAC_absVol = Number(DAC_maxVolTextbox.value) - Number(DAC_minVolTextbox.value);
     DAC_absMinVol = Math.abs(Number(DAC_minVolTextbox.value));
@@ -210,8 +221,8 @@ function onIVcurveButtonClick() {
     const step_minVol = Math.round(((minVol + DAC_absMinVol) / DAC_absVol) * DAC_step);
     const step_maxVol = Math.round(((maxVol + DAC_absMinVol) / DAC_absVol) * DAC_step);
 
-    console.log(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${ADC_IconvR} ${ADC_IconvR_time} ${repetitions} ${invert}`);
-    writeTextSerial(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${ADC_IconvR} ${ADC_IconvR_time} ${repetitions} ${invert}`);
+    console.log(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${ADC_IconvR} ${ADC_IconvR_time} ${repetitions} ${invert} ${step_direction} ${before_waiting_time}`);
+    writeTextSerial(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${ADC_IconvR} ${ADC_IconvR_time} ${repetitions} ${invert} ${step_direction} ${before_waiting_time}`);
 }
 
 // EIS計測
@@ -328,6 +339,8 @@ function ButtonEnDi(mode) {
         EISButton.disabled = true;
         CSVButton.disabled = true;
         calButton.disabled = true;
+        stopButton.disabled = true;
+        stopButton.style.background = "rgb(255, 161, 161)";
     }else if (mode === "connect") {
         sendButton.disabled = false;
         DACaButton.disabled = false;
@@ -335,6 +348,8 @@ function ButtonEnDi(mode) {
         IVButton.disabled = false;
         EISButton.disabled = false;
         calButton.disabled = false;
+        stopButton.disabled = true;
+        stopButton.style.background = "rgb(255, 161, 161)";
     }else if (mode === "IVcurve_start") {
         sendButton.disabled = true;
         DACaButton.disabled = true;
@@ -343,8 +358,12 @@ function ButtonEnDi(mode) {
         EISButton.disabled = true;
         CSVButton.disabled = true;
         calButton.disabled = true;
+        stopButton.disabled = false;
+        stopButton.style.background = "red";
     }else if (mode === "IVcurve_finish") {
         CSVButton.disabled = false
+        stopButton.disabled = true;
+        stopButton.style.background = "rgb(255, 161, 161)";
     }else if (mode === "IVcurve_notMeasured") {
         sendButton.disabled = false;
         DACaButton.disabled = false;
@@ -352,6 +371,8 @@ function ButtonEnDi(mode) {
         IVButton.disabled = false;
         EISButton.disabled = false;
         calButton.disabled = false;
+        stopButton.disabled = true;
+        stopButton.style.background = "rgb(255, 161, 161)";
     }
 }
 
@@ -457,16 +478,18 @@ function SerialControl(text) {
             recording = true;
             drawDataList = [];
             dataType = "none";
+            createGraph();
         }else if (noCtrlCharText === "END") {
             recording = false;
             console.log("記録終了...")
             status_text.innerText = "接続完了";
-            if (graph) {
+            /*if (graph) {
                 graph.destroy();
                 console.log("destroyed");
             }
             drawGraph(drawDataList);
-            console.log(drawDataList);
+            console.log(drawDataList);*/
+            MODE = "NORMAL";
             ButtonEnDi("IVcurve_finish");
         }else if (noCtrlCharText === "CALIBRATION:ON") {
             isCalibrated = true;
@@ -493,6 +516,8 @@ function SerialControl(text) {
             converted_voltage = converted_voltage - IV_R * current;
 
             const INV = noCtrlCharText.split(" ")[3];
+            graph.data.datasets[INV].data.push({x: converted_voltage, y: current * IunitM});
+            graph.update();
             drawDataList.push({
                 "x": converted_voltage,
                 "y": current * IunitM,
@@ -558,6 +583,71 @@ function SerialControl(text) {
         parseSerial(text);
     }
 }
+
+function createGraph(xMax, yMax) {
+    if (graph) {
+        graph.destroy();
+        console.log("destroyed");
+    }
+    // データセットを作成
+    const invColors = {
+            "0": "rgba(255, 99, 132, 0.8)", // 赤系
+            "1": "rgba(54, 162, 235, 0.8)", // 青系
+    };
+    const datasets = [
+        {
+            label: `行き`, // 凡例のラベル
+            data: [],
+            showLine: true,
+            fill: false,
+            borderColor: invColors["0"],
+            borderWidth: 1,
+            pointBorderColor: invColors["0"],
+            pointBackgroundColor: invColors["0"],
+        },
+        {
+            label: `帰り`, // 凡例のラベル
+            data: [],
+            showLine: true,
+            fill: false,
+            borderColor: invColors["1"],
+            borderWidth: 1,
+            pointBorderColor: invColors["1"],
+            pointBackgroundColor: invColors["1"],
+        }
+    ];
+    graph = new Chart(graph_canvas, {
+        type: 'scatter', 
+        data: { 
+          datasets: datasets
+        },
+        options:{
+          scales: {
+            xAxes: [{        
+              scaleLabel: {             
+                display: true,          
+                labelString: '電圧(V)' 
+              }
+            }],
+            yAxes: [{        
+              scaleLabel: {             
+                display: true,          
+                labelString: '電流(mA)' 
+              }
+            }]
+          },
+          responsive: true,
+          maintainAspectRatio: false,
+          // 凡例を表示
+          legend: {
+              display: true,
+              position: 'top',
+          },
+        },
+    });
+    graph.update("none"); // アニメーションの無効化
+}
+
 
 function drawGraph(data) {
     if (dataType === "IVcurve") {

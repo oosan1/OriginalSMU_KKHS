@@ -19,7 +19,8 @@
                 <button type="button" id="connect_btn">接続</button>
                 <label id="baudrate_label">ボーレート:<input type="text" id="baudrate" value="115200"></label>
             </div>
-            <span class="version-display">verβ1.0.0</span>
+            <button type="button" id="stop_btn" style="background: rgb(255, 161, 161)" disabled>測定停止</button>
+            <span class="version-display">verβ1.1.0</span>
         </header>
         <main class="main-content">
             <div id="control_panel">
@@ -37,9 +38,11 @@
                     <div class="inputs_list">
                         <div><label class="input-label">掃引速度(mV/s):<input type="text" id="IV_speed" value="500"></label></div>
                         <div><label class="input-label">電圧変更から計測までの待機時間(μs):<input type="text" id="IV_waiting_time" value="500"></label></div>
+                        <div><label class="input-label">初期電圧設定から計測開始までの待機時間(ms):<input type="text" id="IV_before_waiting_time" value="500"></label></div>
                         <div><label class="input-label">最小電圧(V):<input type="text" id="IV_vol_min" value="-1"></label></div>
                         <div><label class="input-label">最大電圧(V):<input type="text" id="IV_vol_max" value="1"></label></div>
                         <div><label class="input-label">変更電圧幅(V)<input type="text" id="IV_vol_step" value="0.01"></label></div>
+                        <div><label class="input-label">掃引方向の反転(最大→最小):<input type="checkbox" id="IV_voltage_invert"></label></div>
                         <div><label class="input-label">平均回数<input type="text" id="IV_repetitions" value="5"></label></div>
                         <div><label class="input-label">安定用直列抵抗値(Ω)<input type="text" id="IV_resistance" value="0"></label></div>
                         <div><label class="input-label">サイクリックモード:<input type="checkbox" id="IV_invert"></label></div>
