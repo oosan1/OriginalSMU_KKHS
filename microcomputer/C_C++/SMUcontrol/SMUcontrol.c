@@ -409,12 +409,12 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
     sendLog("Finish measurement.\n", 1);
 
     // 計測後は安全のため、ハイインピーダンスモードにする。
-    write_data = 0x2000 + DACchannel * 0x8000 + 0;
+    /*write_data = 0x2000 + DACchannel * 0x8000 + 0;
     gpio_put(PIN_CS, 0);
     spi_write16_blocking(SPI_PORT, &write_data, 2);
     gpio_put(PIN_CS, 1);
     gpio_put(PIN_LDAC, 0);
-    gpio_put(PIN_LDAC, 1);
+    gpio_put(PIN_LDAC, 1);*/
     
     // 測定データの送信
     /*sendLog("Start sending.\n", 1);

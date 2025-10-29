@@ -20,7 +20,8 @@
                 <label id="baudrate_label">ボーレート:<input type="text" id="baudrate" value="115200"></label>
             </div>
             <button type="button" id="stop_btn" style="background: rgb(255, 161, 161)" disabled>測定停止</button>
-            <span class="version-display">verβ1.1.0</span>
+            <button type="button" id="stop_next_btn" style="background: rgb(255, 161, 161)" disabled>次の測定を行わない</button>
+            <span class="version-display">verβ1.1.1</span>
         </header>
         <main class="main-content">
             <div id="control_panel">
@@ -46,6 +47,7 @@
                         <div><label class="input-label">平均回数<input type="text" id="IV_repetitions" value="5"></label></div>
                         <div><label class="input-label">安定用直列抵抗値(Ω)<input type="text" id="IV_resistance" value="0"></label></div>
                         <div><label class="input-label">サイクリックモード:<input type="checkbox" id="IV_invert"></label></div>
+                        <div><label class="input-label">測定回数:<input type="text" id="IV_measure_count" value="1"></label></div>
                     </div>
                 </div>
                 <hr style="display: none">

@@ -33,10 +33,12 @@ let ADC_absMinVol;
 let ADC_step;
 let ADC_invert;
 let IV_R;
+let IV_counter = 0;
 
 
 const connectButton = document.getElementById("connect_btn");
 const stopButton = document.getElementById("stop_btn");
+const stopNextButton = document.getElementById("stop_next_btn");
 const baudrateTextbox = document.getElementById("baudrate");
 const serialConsoleTextbox = document.getElementById("send_text");
 const sendButton = document.getElementById("send_btn");
@@ -60,6 +62,7 @@ const IV_voltage_invertCheckbox = document.getElementById("IV_voltage_invert");
 const IV_repetitions = document.getElementById("IV_repetitions");
 const IV_resistance = document.getElementById("IV_resistance");
 const IV_invertCheckbox = document.getElementById("IV_invert");
+const IV_measure_countTextbox = document.getElementById("IV_measure_count");
 
 const EISButton = document.getElementById("EIS_btn");
 const EISampText = document.getElementById("EIS_amp");
@@ -88,6 +91,12 @@ serialConsoleTextbox.addEventListener('keydown', onConsoleKeypress);
 sendButton.addEventListener("click", sendMessage, false);
 stopButton.addEventListener("click", () => {
     writeTextSerial("S"); // 何かしらの文字を送信すると停止する
+}, false);
+stopNextButton.addEventListener("click", function() {
+    IV_counter = 0;
+    status_text.innerText = `次の測定がキャンセルされました`;
+    this.disabled = true;
+    this.style.background = "rgb(255, 161, 161)";
 }, false);
 
 
@@ -192,9 +201,13 @@ IVButton.addEventListener("click", onIVcurveButtonClick, false);
 // IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {反転の有無(0: false, 1: true)}
 function onIVcurveButtonClick() {
     MODE = "IVcurve";
-    status_text.innerText = "IVカーブ測定中...";
     const speed = Number(IV_speedTextbox.value) / 1000;
-    const before_waiting_time = Number(IV_before_waitingTimeTextbox.value);
+    let before_waiting_time;
+    if (IV_counter == 0) {
+        before_waiting_time = Number(IV_before_waitingTimeTextbox.value);
+    }else {
+        before_waiting_time = 0;
+    }
     const stepVol = Number(IV_stepTextbox.value);
     const minVol = Number(IV_minTextbox.value);
     const maxVol = Number(IV_maxTextbox.value);
@@ -206,6 +219,7 @@ function onIVcurveButtonClick() {
     IV_R = Number(IV_resistance.value);
     const ADC_IconvR = Number(ADC_IconvRTextbox.value);
     const ADC_IconvR_time = Number(ADC_IconvRtimeTextbox.value);
+    const measure_count = Number(IV_measure_countTextbox.value);
 
     // この関数では使わないが、データ取得時のために更新しておく
     ADC_absVol = Number(ADC_maxVolTextbox.value) - Number(ADC_minVolTextbox.value);
@@ -220,6 +234,12 @@ function onIVcurveButtonClick() {
     const step_stepVol = Math.round((stepVol / DAC_absVol) * DAC_step);
     const step_minVol = Math.round(((minVol + DAC_absMinVol) / DAC_absVol) * DAC_step);
     const step_maxVol = Math.round(((maxVol + DAC_absMinVol) / DAC_absVol) * DAC_step);
+
+    if (IV_counter == 0) {
+        IV_counter = measure_count
+    }
+
+    status_text.innerText = `IVカーブ測定中...( 測定進捗: ${measure_count - IV_counter + 1}/${measure_count} )`;
 
     console.log(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${ADC_IconvR} ${ADC_IconvR_time} ${repetitions} ${invert} ${step_direction} ${before_waiting_time}`);
     writeTextSerial(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${ADC_IconvR} ${ADC_IconvR_time} ${repetitions} ${invert} ${step_direction} ${before_waiting_time}`);
@@ -341,6 +361,8 @@ function ButtonEnDi(mode) {
         calButton.disabled = true;
         stopButton.disabled = true;
         stopButton.style.background = "rgb(255, 161, 161)";
+        stopNextButton.disabled = true;
+        stopNextButton.style.background = "rgb(255, 161, 161)";
     }else if (mode === "connect") {
         sendButton.disabled = false;
         DACaButton.disabled = false;
@@ -350,6 +372,8 @@ function ButtonEnDi(mode) {
         calButton.disabled = false;
         stopButton.disabled = true;
         stopButton.style.background = "rgb(255, 161, 161)";
+        stopNextButton.disabled = true;
+        stopNextButton.style.background = "rgb(255, 161, 161)";
     }else if (mode === "IVcurve_start") {
         sendButton.disabled = true;
         DACaButton.disabled = true;
@@ -360,10 +384,14 @@ function ButtonEnDi(mode) {
         calButton.disabled = true;
         stopButton.disabled = false;
         stopButton.style.background = "red";
+        stopNextButton.disabled = false;
+        stopNextButton.style.background = "red";
     }else if (mode === "IVcurve_finish") {
         CSVButton.disabled = false
         stopButton.disabled = true;
         stopButton.style.background = "rgb(255, 161, 161)";
+        stopNextButton.disabled = true;
+        stopNextButton.style.background = "rgb(255, 161, 161)";
     }else if (mode === "IVcurve_notMeasured") {
         sendButton.disabled = false;
         DACaButton.disabled = false;
@@ -373,6 +401,8 @@ function ButtonEnDi(mode) {
         calButton.disabled = false;
         stopButton.disabled = true;
         stopButton.style.background = "rgb(255, 161, 161)";
+        stopNextButton.disabled = true;
+        stopNextButton.style.background = "rgb(255, 161, 161)";
     }
 }
 
@@ -471,14 +501,13 @@ function parseSerial(text) {
 function SerialControl(text) {
     const noCtrlCharText = text.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
     if (MODE === "IVcurve") {
-        ButtonEnDi("IVcurve_start");
         if (noCtrlCharText === "START") {
             console.log("記録開始...")
-            status_text.innerText = "データ送信中...";
             recording = true;
             drawDataList = [];
             dataType = "none";
             createGraph();
+            ButtonEnDi("IVcurve_start");
         }else if (noCtrlCharText === "END") {
             recording = false;
             console.log("記録終了...")
@@ -491,6 +520,13 @@ function SerialControl(text) {
             console.log(drawDataList);*/
             MODE = "NORMAL";
             ButtonEnDi("IVcurve_finish");
+
+            if (IV_counter > 1) {
+                IV_counter--;
+                onIVcurveButtonClick();
+            }else {
+                IV_counter = 0;
+            }
         }else if (noCtrlCharText === "CALIBRATION:ON") {
             isCalibrated = true;
             calibrated_text.innerText = "校正: 有効"
