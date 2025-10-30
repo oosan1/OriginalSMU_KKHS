@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>オリジナルSMU Webクライアント</title>
+    <script src="./Chart.min.js"></script>
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <div id="status_monitor">
+                <div id="connectivity">通信: 断×</div>
+                <div id="calibrated">校正: 無効</div>
+                <div id="status">状態: 接続待ち</div>
+            </div>
+            <div class="connection-controls">
+                <button type="button" id="connect_btn">接続</button>
+                <label id="baudrate_label">ボーレート:<input type="text" id="baudrate" value="115200"></label>
+            </div>
+            <button type="button" id="stop_btn" style="background: rgb(255, 161, 161)" disabled>測定停止</button>
+            <button type="button" id="stop_next_btn" style="background: rgb(255, 161, 161)" disabled>次の測定を行わない</button>
+            <span class="version-display">verβ1.1.2f</span>
+        </header>
+        <main class="main-content">
+            <div id="control_panel">
+                <div class="control-group">
+                    <button type="button" id="setVolA_btn" disabled>DAC A出力</button>
+                    <label class="input-label">電圧(V):<input type="text" id="A_vol" value="0"></label>
+                </div>
+                <div class="control-group">
+                    <button type="button" id="setVolB_btn" disabled>DAC B出力</button>
+                    <label class="input-label">電圧(V):<input type="text" id="B_vol" value="0"></label>
+                </div>
+                <hr>
+                <div class="control-group">
+                    <div><button type="button" id="IV_btn" class="action-button" disabled>IVカーブ</button></div>
+                    <div class="inputs_list">
+                        <div><label class="input-label">掃引速度(mV/s):<input type="text" id="IV_speed" value="30"></label></div>
+                        <div><label class="input-label">電圧変更から計測までの待機時間(μs):<input type="text" id="IV_waiting_time" value="10000"></label></div>
+                        <div><label class="input-label">初期電圧設定から計測開始までの待機時間(ms):<input type="text" id="IV_before_waiting_time" value="5000"></label></div>
+                        <div><label class="input-label">最小電圧(V):<input type="text" id="IV_vol_min" value="-2"></label></div>
+                        <div><label class="input-label">最大電圧(V):<input type="text" id="IV_vol_max" value="2"></label></div>
+                        <div><label class="input-label">変更電圧幅(V)<input type="text" id="IV_vol_step" value="0.01"></label></div>
+                        <div><label class="input-label">掃引方向の反転(最大→最小):<input type="checkbox" id="IV_voltage_invert" checked></label></div>
+                        <div><label class="input-label">平均回数<input type="text" id="IV_repetitions" value="5"></label></div>
+                        <div><label class="input-label">安定用直列抵抗値(Ω)<input type="text" id="IV_resistance" value="0"></label></div>
+                        <div><label class="input-label">サイクリックモード:<input type="checkbox" id="IV_invert" checked></label></div>
+                        <div><label class="input-label">測定回数:<input type="text" id="IV_measure_count" value="1"></label></div>
+                    </div>
+                </div>
+                <hr style="display: none">
+                <div class="control-group eis-controls" style="display: none">
+                    <button type="button" id="EIS_btn" class="action-button" disabled>EIS</button>
+                    <div class="inputs_list wide">
+                        <div><label>振幅(mV):<input type="text" id="EIS_amp" value="20"></label></div>
+                        <div><label>オフセット電圧(mV):<input type="text" id="EIS_offset_vol" value="250"></label></div>
+                        <div><input type="checkbox" id="EIS_save_bool" checked/>CSV保存の有無</div>
+
+                        <div id="eis_freq_list_container">
+                            <table id="eis_freq_table">
+                                <thead>
+                                    <tr>
+                                        <th>周波数(Hz)</th>
+                                        <th>平均回数</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="eis_freq_list">
+                                    <tr>
+                                        <td><input type="text" name="eis_freq" value="12.5"></td>
+                                        <td><input type="text" name="eis_avg_count" value="2"></td>
+                                        <td><button type="button" class="remove_freq_btn">×</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" id="add_freq_btn">パラメータを追加</button>
+                    </div>
+                </div>
+                <hr>
+                <div class="control-group">
+                    <button type="button" id="csv_btn" disabled>CSV保存</button>
+                    <label class="input-label">ファイル名:<input type="text" id="csv_name" value="Test.csv"></label>
+                </div>
+                <hr>
+                <div class="control-group" style="display: none">
+                    <button type="button" id="cal_btn" disabled>校正</button>
+                    <label class="input-label">校正用抵抗値(Ω):<input type="text" id="cal_reg" value="1000"></label>
+                </div>
+                <hr style="display: none">
+                <div class="control-group">
+                    <div class="inputs_list">
+                        <label class="input-label">ADC最低電圧(V):<input type="text" id="ADC_min_vol" value="-1.5"></label>
+                        <label class="input-label">ADC最高電圧(V):<input type="text" id="ADC_max_vol" value="1.5"></label>
+                        <label class="input-label">ADC分解能:<input type="text" id="ADC_step" value="4096"></label>
+                        <label class="input-label">測定値の反転:<input type="checkbox" id="ADC_invert_meas" checked></label>
+                        <label class="input-label">ADC電流レンジ:
+                        <select id="ADC_IconvR">
+                            <option value="0" selected>自動</option>
+                            <option value="100">±15.15mA</option>
+                            <option value="1000">±1.65mA</option>
+                            <option value="10000">±150μA</option>
+                        </select>
+                        </label>
+                        <label class="input-label">レンジ切り替え待機時間(μs)<input type="text" id="ADC_IconvR_time" value="13500"></label>
+                        <hr>
+                        <label class="input-label">DAC最低電圧(V):<input type="text" id="DAC_min_vol" value="-2.048"></label>
+                        <label class="input-label">DAC最高電圧(V):<input type="text" id="DAC_max_vol" value="2.048"></label>
+                        <label class="input-label">DAC分解能:<input type="text" id="DAC_step" value="4096"></label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="graph_container">
+                <canvas id="graph"></canvas>
+            </div>
+        </main>
+
+        <footer class="page-footer">
+            <div id="serial_console">
+                </div>
+            <div class="send-controls">
+                <button type="button" id="send_btn" disabled>送信</button>
+                <input type="text" id="send_text">
+            </div>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
