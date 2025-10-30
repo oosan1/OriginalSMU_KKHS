@@ -239,7 +239,8 @@ function onIVcurveButtonClick() {
         IV_counter = measure_count
     }
 
-    status_text.innerText = `IVカーブ測定中...( 測定進捗: ${measure_count - IV_counter + 1}/${measure_count} )`;
+    status_text.innerText = `IVカーブ測定中...( 現在の測定進捗: ${measure_count - IV_counter + 1}回目/${measure_count}回 )`;
+    ButtonEnDi("IVcurve_start");
 
     console.log(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${ADC_IconvR} ${ADC_IconvR_time} ${repetitions} ${invert} ${step_direction} ${before_waiting_time}`);
     writeTextSerial(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${ADC_IconvR} ${ADC_IconvR_time} ${repetitions} ${invert} ${step_direction} ${before_waiting_time}`);
@@ -507,7 +508,6 @@ function SerialControl(text) {
             drawDataList = [];
             dataType = "none";
             createGraph();
-            ButtonEnDi("IVcurve_start");
         }else if (noCtrlCharText === "END") {
             recording = false;
             console.log("記録終了...")
