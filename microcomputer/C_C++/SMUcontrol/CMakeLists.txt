@@ -35,23 +35,46 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(SMUcontrol SMUcontrol.c )
+#add_executable(SMUcontrol SMUcontrol.c )
+add_executable(SMUcontrol 
+    SMUcontrol.c
+    custom_src/reset_interface.c
+    custom_src/stdio_usb.c
+    custom_src/stdio_usb_descriptors.c
+)
+
+# USBシリアルの製品名等を定義
+target_compile_definitions(SMUcontrol PRIVATE
+    USBD_MANUFACTURER="KKHS ScienceClub"
+    USBD_PRODUCT="SMU"
+    USBD_CDC_PRODUCT_NAME="IMPACT Interface"
+)
 
 pico_set_program_name(SMUcontrol "SMUcontrol")
 pico_set_program_version(SMUcontrol "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
 pico_enable_stdio_uart(SMUcontrol 0)
-pico_enable_stdio_usb(SMUcontrol 1)
+#pico_enable_stdio_usb(SMUcontrol 1)
+
 
 # Add the standard library to the build
 target_link_libraries(SMUcontrol
         pico_stdlib
-        )
+)
 
 # Add the standard include files to the build
 target_include_directories(SMUcontrol PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
+        ${CMAKE_CURRENT_LIST_DIR}/custom_src
+        ${CMAKE_CURRENT_LIST_DIR}/custom_src/include
+)
+
+target_link_libraries(SMUcontrol
+    pico_time
+    pico_unique_id
+    pico_usb_reset_interface
+    tinyusb_device_unmarked
 )
 
 # Add any user requested libraries
@@ -62,6 +85,6 @@ target_link_libraries(SMUcontrol
         hardware_clocks
         hardware_pll
         hardware_vreg
-        )
+)
 
 pico_add_extra_outputs(SMUcontrol)

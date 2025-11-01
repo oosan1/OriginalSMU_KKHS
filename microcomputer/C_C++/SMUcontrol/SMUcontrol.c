@@ -13,6 +13,10 @@
 #include "hardware/vreg.h"
 #include "pico/util/datetime.h"
 
+#include "tusb.h"
+#include "pico/stdio_usb.h"
+
+
 // SPIピン設定
 #define SPI_PORT spi0
 #define PIN_MISO 16
@@ -670,6 +674,10 @@ int main() {
 
     stdio_init_all();
 
+    // USBシリアル初期化
+    tusb_init();
+    stdio_usb_init();
+
     // SPI初期化
     spi_init(SPI_PORT, SPI_CLOCK_SPEED);
     spi_set_format( SPI_PORT,
@@ -888,6 +896,5 @@ int main() {
             sprintf(buffer, "Unknown command:%s\n", com_command);
             sendLog(buffer, 3);
         }
-        
     }
 }
