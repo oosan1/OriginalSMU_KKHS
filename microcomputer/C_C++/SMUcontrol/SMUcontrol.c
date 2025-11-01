@@ -777,6 +777,29 @@ int main() {
             }*/
            sendLog("Can't use RTC yet.\n", 1);
         }
+        else if(strcmp(com_command, "DEBUG") == 0) {
+            // ADCチェック
+            float ADC_CONVERSION_FACTOR = 3.0f / (1 << 12);
+
+            adc_select_input(0);
+            uint16_t adc_0 = adc_read();
+
+            // CPU温度チェック
+            adc_select_input(4);
+            adc_read();
+            uint16_t adc = adc_read();
+            float voltage = adc * ADC_CONVERSION_FACTOR;
+            float temp_c = 27.0f - (voltage - 0.706f) / 0.001721f;
+
+            sprintf(buffer, "ADC0raw: %d, CPU Temp: %.2f C\n", adc_0, temp_c);
+            sendLog(buffer, 1);
+            sendLog("timer check start...\n", 1);
+            uint64_t start_time_us = time_us_64();
+            busy_wait_until(start_time_us + 1000*5000); // 5秒待機
+            sendLog("5s wait over\n", 1);
+
+            sendLog("===================================\n", 1);
+        }
         else if(strcmp(com_command, "setVol") == 0) {
             // setVol {channel(0:A, 1:B)} {Voltage(step表記)}
             scanf("%d", &int_com_arg1);
