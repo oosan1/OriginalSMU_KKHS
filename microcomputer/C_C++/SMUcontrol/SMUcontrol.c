@@ -173,7 +173,7 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
     }
 
     absolute_time_t wait_time_us = per_step / (float)speed_stepPerS * 1000 * 1000;
-    uint32_t start_time_us = time_us_32();
+    uint64_t start_time_us = time_us_64();
     absolute_time_t target_time_us;
     bool over_time_flag = false;
     
@@ -223,7 +223,7 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
     gpio_put(PIN_LDAC, 0);
     gpio_put(PIN_LDAC, 1);
     sleep_ms(before_waiting_time);
-    start_time_us = time_us_32();
+    start_time_us = time_us_64();
 
     // IVcurve測定
     sendLog("Start sending.\n", 1);
@@ -247,12 +247,12 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
         spi_write16_blocking(SPI_PORT, &write_data, 2);
         gpio_put(PIN_CS, 1);
         target_time_us = start_time_us + wait_time_us;
-        if (time_us_32() > target_time_us && i != 0) {
+        if (time_us_64() > target_time_us && i != 0) {
             over_time_flag = true; // 処理速度的に掃引速度を守れなかった場合はフラグを立てる。
         }
         busy_wait_until(target_time_us); // 掃引速度に合わせて待機。
         gpio_put(PIN_LDAC, 0);
-        start_time_us = time_us_32();
+        start_time_us = time_us_64();
         gpio_put(PIN_LDAC, 1);
         sleep_us(waiting_time);
         ADCvalue = adc_read();
@@ -335,12 +335,12 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
             gpio_put(PIN_CS, 1);
 
             target_time_us = start_time_us + wait_time_us;
-            if (time_us_32() > target_time_us && i != 0) {
+            if (time_us_64() > target_time_us && i != 0) {
                 over_time_flag = true; // 処理速度的に掃引速度を守れなかった場合はフラグを立てる。
             }
             busy_wait_until(target_time_us); // 掃引速度に合わせて待機。
             gpio_put(PIN_LDAC, 0);
-            start_time_us = time_us_32();
+            start_time_us = time_us_64();
             gpio_put(PIN_LDAC, 1);
             sleep_us(waiting_time);
             ADCvalue = adc_read();
@@ -651,20 +651,25 @@ int sendLog(char *text, int level) {
         return -1;
     }
 
-    uint32_t startup_time_us = time_us_32();
-    uint32_t startup_time_ms = startup_time_us / 1000;
-    if(level == 0) {
-        printf("[%u] debug: %s", startup_time_ms, text);
-    }
-    else if(level == 1) {
-        printf("[%u] info: %s", startup_time_ms, text);
-    }
-    else if(level == 2) {
-        printf("[%u] warning: %s", startup_time_ms, text);
-    }
-    else if(level == 3) {
-        printf("[%u] error: %s", startup_time_ms, text);
-    }
+    uint64_t total_time_us = time_us_64();
+    uint64_t total_time_ms = total_time_us / 1000;
+    uint64_t total_time_s = total_time_ms / 1000;
+
+    uint32_t time_ms = total_time_ms % 1000;
+    uint32_t time_s = total_time_s % 60;
+    uint32_t time_min = (total_time_s / 60) % 60;
+    uint32_t time_hour = (total_time_s / 60 / 60) % 24;
+    uint32_t time_day = total_time_s / 86400;
+
+    const char* level_strs[] = {
+        "debug",
+        "info",
+        "warning",
+        "error"
+    };
+    const char* level_str = level_strs[level];
+
+    printf("[%" PRIu32 "day:%" PRIu32 "h:%" PRIu32 "min:%" PRIu32 "s:%" PRIu32 "ms] %s: %s", time_day, time_hour, time_min, time_s, time_ms, level_str, text);
 
     return 0;
 }
