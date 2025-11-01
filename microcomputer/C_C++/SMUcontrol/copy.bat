@@ -1,0 +1,1 @@
+COPY build\SMUcontrol.uf2 %1
