@@ -11,7 +11,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 10px;
+    padding: 5px;
     gap: 10px;
 }
 
@@ -82,6 +82,29 @@ body {
     border: 1px solid #ccc;
     border-radius: 3px;
 }
+
+#device_monitor {
+    display: flex;
+    flex-direction: row;
+    font-size: 14px;
+    gap: 15px;
+    color: #333;
+    margin-left: auto;
+    text-align: right;
+}
+
+.device-info {
+    background-color: #e9e9e9;
+    border-radius: 5px;
+}
+.device-info > div {
+    margin: 4px;
+}
+
+.info-item .value {
+    font-weight: bold;
+}
+
 
 .main-content {
     display: flex;

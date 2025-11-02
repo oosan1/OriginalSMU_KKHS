@@ -8,6 +8,10 @@ const IunitM = 1000; //A:1, mA:1000
 const EIS_max_data = 9000; // EIS計測の最大データ個数
 const EIS_max_sampling_freq = 250000; // EIS計測の最大サンプリングレート
 
+const STATUS_UPDATE_INTERVAL = 1000; // 状態更新の間隔(ms)
+
+let status_interval;
+
 let drawDataList = [];
 let graph_xMax;
 let graph_yMax;
@@ -45,6 +49,15 @@ const sendButton = document.getElementById("send_btn");
 const connectivity_text = document.getElementById("connectivity");
 const calibrated_text = document.getElementById("calibrated");
 const status_text = document.getElementById("status");
+
+const boardName = document.getElementById("board_name");
+const CPUName = document.getElementById("CPU_name");
+const circuitVersion = document.getElementById("circuit_version");
+const firmwareVersion = document.getElementById("firmware_version");
+const upTime = document.getElementById("uptime");
+const CPUTemp = document.getElementById("CPU_temp");
+const updateStatus = document.getElementById("update_status");
+
 
 const DACaButton = document.getElementById("setVolA_btn");
 const DACaTextbox = document.getElementById("A_vol");
@@ -105,6 +118,17 @@ navigator.serial.addEventListener("disconnect", (event) => {
     sendSerialConsole("disconnection", "red");
     connectivity_text.innerText = "通信: 断×";
     status_text.innerText = "接続待ち";
+
+    boardName.innerText = "--";
+    CPUName.innerText = "--";
+    circuitVersion.innerText = "--";
+    firmwareVersion.innerText = "--";
+
+    clearInterval(status_interval);
+    upTime.innerText = "--日 --時間 --分 --秒 --ミリ秒";
+    CPUTemp.innerText = "-- ℃";
+    update_status.innerText = "--";
+
     MODE = "NORMAL";
 });
 
@@ -142,6 +166,7 @@ let debugInterval;
 // デバッグ用
 function start_debug() {
     status_text.innerText = "デバッグ実行中...";
+    stopStatusUpdate(-1);
     writeTextSerial("DEBUG");
     debugInterval = setInterval(() => {
         writeTextSerial("DEBUG");
@@ -150,10 +175,12 @@ function start_debug() {
 function stop_debug() {
     status_text.innerText = "デバッグ完了...";
     clearInterval(debugInterval);
+    startStatusUpdate();
 };
 
 // DAC制御
 DACaButton.addEventListener("click", () => {
+    stopStatusUpdate(500);
     const voltage = Number(DACaTextbox.value)
     DAC_absVol = Number(DAC_maxVolTextbox.value) - Number(DAC_minVolTextbox.value);
     DAC_absMinVol = Math.abs(Number(DAC_minVolTextbox.value));
@@ -163,6 +190,7 @@ DACaButton.addEventListener("click", () => {
     writeTextSerial(`setVol 0 ${step_voltage}`);
 });
 DACbButton.addEventListener("click", () => {
+    stopStatusUpdate(500);
     const voltage = Number(DACaTextbox.value)
     const DAC_absVol = Number(DAC_maxVolTextbox.value) - Number(DAC_minVolTextbox.value);
     const DAC_absMinVol = Math.abs(Number(DAC_minVolTextbox.value));
@@ -214,6 +242,7 @@ function ListToCSV(list, header) {
 IVButton.addEventListener("click", onIVcurveButtonClick, false);
 // IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {反転の有無(0: false, 1: true)}
 function onIVcurveButtonClick() {
+    stopStatusUpdate(-1);
     MODE = "IVcurve";
     const speed = Number(IV_speedTextbox.value) / 1000;
     let before_waiting_time;
@@ -462,6 +491,9 @@ async function onConnectButtonClick() {
         readTextSerial();
         connectivity_text.innerText = "通信: 接続〇"
         status_text.innerText = "状態: 接続完了";
+        
+        onConnect();
+        startStatusUpdate();
     } catch (e) {
         if (e.name === 'NotFoundError') {
             sendSerialConsole("NotFoundError: シリアルポートが選択されませんでした。シリアルポートへの接続が許可されていない可能性があります。", "red");
@@ -475,6 +507,41 @@ async function onConnectButtonClick() {
     }
 }
 
+function onConnect() {
+    MODE = "STATUS_FIRST";
+    writeTextSerial("STATUS_FIRST");
+}
+
+function startStatusUpdate() {
+    status_interval = setInterval(() => {
+        MODE = "STATUS_UPDATE";
+        updateStatus.innerText = `${STATUS_UPDATE_INTERVAL/1000}秒毎に更新中`;
+        writeTextSerial("STATUS_UPDATE");
+        upTime.style.fontStyle = "normal";
+        CPUTemp.style.fontStyle = "normal";
+        uptime.style.color = "black";
+        CPUTemp.style.color = "black";
+    }, STATUS_UPDATE_INTERVAL);
+}
+
+function stopStatusUpdate(wait_time) {
+    clearInterval(status_interval);
+    update_status.innerText = `停止中`;
+    upTime.style.fontStyle = "oblique";
+    CPUTemp.style.fontStyle = "oblique";
+    uptime.style.color = "gray";
+    CPUTemp.style.color = "gray";
+
+    if (wait_time < 0) {
+        return;
+    }else {
+        setTimeout(() => {
+            startStatusUpdate();
+        }, wait_time);
+    }
+}
+
+
 async function writeTextSerial(text) {
     const encoder = new TextEncoder();
     const writer = port.writable.getWriter();
@@ -484,6 +551,7 @@ async function writeTextSerial(text) {
 }
 
 function sendMessage() {
+    stopStatusUpdate(500);
     const messageText = serialConsoleTextbox.value.trim();
 
     if (messageText === "") return;
@@ -545,6 +613,7 @@ function SerialControl(text) {
                 onIVcurveButtonClick();
             }else {
                 IV_counter = 0;
+                startStatusUpdate();
             }
         }else if (noCtrlCharText === "CALIBRATION:ON") {
             isCalibrated = true;
@@ -633,6 +702,32 @@ function SerialControl(text) {
         }else {
             parseSerial(text);
         }
+    }else if (MODE === "STATUS_FIRST") {
+        const board_name = noCtrlCharText.split(" ")[3];
+        const cpu_name = noCtrlCharText.split(" ")[5];
+        const circuit_version = noCtrlCharText.split(" ")[7];
+        const firmware_version = noCtrlCharText.split(" ")[9];
+
+        boardName.innerText = board_name;
+        CPUName.innerText = cpu_name;
+        circuitVersion.innerText = circuit_version;
+        firmwareVersion.innerText = firmware_version;
+
+        MODE = "NORMAL";
+    }else if (MODE === "STATUS_UPDATE") {
+        const uptime_raw = noCtrlCharText.split(" ")[0];
+        const cpu_temp = noCtrlCharText.split(" ")[3];
+
+        const uptime_day = uptime_raw.split(":")[0].replace("day", "日").replace("[", "");
+        const uptime_hour = uptime_raw.split(":")[1].replace("h", "時間");
+        const uptime_min = uptime_raw.split(":")[2].replace("min", "分");
+        const uptime_sec = uptime_raw.split(":")[3].replace("s", "秒");
+        const uptime_msec = uptime_raw.split(":")[4].replace("ms", "ミリ秒").replace("]", "");;
+
+        upTime.innerText = `${uptime_day} ${uptime_hour} ${uptime_min} ${uptime_sec} ${uptime_msec}`;
+        CPUTemp.innerText = `${cpu_temp} ℃`;
+
+        MODE = "NORMAL";
     }else {
         ButtonEnDi("IVcurve_notMeasured");
         parseSerial(text);

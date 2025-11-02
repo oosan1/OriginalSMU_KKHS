@@ -16,6 +16,11 @@
 #include "tusb.h"
 #include "pico/stdio_usb.h"
 
+// 本体設定
+#define BOARD_NAME "RaspberrypiPico2"
+#define CPU_NAME "RP2350"
+#define CIRCUIT_VERSION "β0.0.4"
+#define FIRMWARE_VERSION "β1.0.0"
 
 // SPIピン設定
 #define SPI_PORT spi0
@@ -786,7 +791,6 @@ int main() {
 
             // CPU温度チェック
             adc_select_input(4);
-            adc_read();
             uint16_t adc = adc_read();
             float voltage = adc * ADC_CONVERSION_FACTOR;
             float temp_c = 27.0f - (voltage - 0.706f) / 0.001721f;
@@ -799,6 +803,21 @@ int main() {
             sendLog("5s wait over\n", 1);
 
             sendLog("===================================\n", 1);
+        }
+        else if(strcmp(com_command, "STATUS_FIRST") == 0) {
+            sprintf(buffer, "BoardName: %s ,CPUName: %s ,CircuitVersion: %s ,FirmwareVersion: %s\n", BOARD_NAME, CPU_NAME, CIRCUIT_VERSION, FIRMWARE_VERSION);
+            sendLog(buffer, 0);
+        }
+        else if(strcmp(com_command, "STATUS_UPDATE") == 0) {
+            // CPU温度チェック
+            float ADC_CONVERSION_FACTOR = 3.0f / (1 << 12);
+            adc_select_input(4);
+            uint16_t adc = adc_read();
+            float voltage = adc * ADC_CONVERSION_FACTOR;
+            float temp_c = 27.0f - (voltage - 0.706f) / 0.001721f;
+
+            sprintf(buffer, "CPUtemp: %.2f\n", temp_c);
+            sendLog(buffer, 0);
         }
         else if(strcmp(com_command, "setVol") == 0) {
             // setVol {channel(0:A, 1:B)} {Voltage(step表記)}
