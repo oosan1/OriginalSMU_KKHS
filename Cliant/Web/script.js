@@ -138,6 +138,20 @@ document.addEventListener('DOMContentLoaded', () => {
 const graph_canvas = document.getElementById("graph");
 let graph;
 
+let debugInterval;
+// デバッグ用
+function start_debug() {
+    status_text.innerText = "デバッグ実行中...";
+    writeTextSerial("DEBUG");
+    debugInterval = setInterval(() => {
+        writeTextSerial("DEBUG");
+    }, 10*60*1000);
+}
+function stop_debug() {
+    status_text.innerText = "デバッグ完了...";
+    clearInterval(debugInterval);
+};
+
 // DAC制御
 DACaButton.addEventListener("click", () => {
     const voltage = Number(DACaTextbox.value)
