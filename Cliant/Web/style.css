@@ -21,6 +21,23 @@ body {
     align-items: stretch;
 }
 
+#title_area {
+    display: flex;
+    flex-direction: column;
+}
+
+#logo {
+    height: 60px;
+    align-self: center;
+}
+
+#version-display {
+    margin: 0 auto;
+    font-size: 14px;
+    color: #333;
+    align-self: flex-start;
+}
+
 #status_monitor {
     background-color: dimgray;
     color: white;
@@ -65,15 +82,6 @@ body {
     border: 1px solid #ccc;
     border-radius: 3px;
 }
-
-.version-display {
-    margin-left: auto;
-    font-size: 14px;
-    color: #333;
-    align-self: flex-start;
-    padding-top: 10px;
-}
-
 
 .main-content {
     display: flex;

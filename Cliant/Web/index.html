@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="icon/favicon.ico" sizes="32x32">
+    <link rel="icon" href="icon/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icon/apple-touch-icon.png">
     <link rel="stylesheet" href="style.css">
     <title>オリジナルSMU Webクライアント</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
@@ -10,6 +13,10 @@
 <body>
     <div class="page-container">
         <header class="page-header">
+            <div id="title_area">
+                <img src="image/logo.png" alt="Original SMU Logo" id="logo">
+                <span id="version-display">β1.1.3</span>
+            </div>
             <div id="status_monitor">
                 <div id="connectivity">通信: 断×</div>
                 <div id="calibrated">校正: 無効</div>
@@ -21,7 +28,6 @@
             </div>
             <button type="button" id="stop_btn" style="background: rgb(255, 161, 161)" disabled>測定停止</button>
             <button type="button" id="stop_next_btn" style="background: rgb(255, 161, 161)" disabled>次の測定を行わない</button>
-            <span class="version-display">verβ1.1.2</span>
         </header>
         <main class="main-content">
             <div id="control_panel">
