@@ -463,11 +463,15 @@ async function onConnectButtonClick() {
         connectivity_text.innerText = "通信: 接続〇"
         status_text.innerText = "状態: 接続完了";
     } catch (e) {
-        console.error(`Connection failed ${e}`)
-        sendSerialConsole("Connection failed", "red");
-        sendSerialConsole("==============================", "red");
-        sendSerialConsole(e, "red");
-        sendSerialConsole("==============================", "red");
+        if (e.name === 'NotFoundError') {
+            sendSerialConsole("NotFoundError: シリアルポートが選択されませんでした。シリアルポートへの接続が許可されていない可能性があります。", "red");
+        }else if (e.name === 'NetworkError') {
+            sendSerialConsole("NetworkError: シリアルポートへの接続に失敗しました。別のアプリケーションがシリアルポートを使用している可能性があります。", "red");
+        }else if (e.name === 'InvalidStateError') {
+            sendSerialConsole("InvalidStateError: そのシリアルポートは既に開かれています。", "red");
+        }else {
+            sendSerialConsole(`不明なエラー: ${e.message}`, "red");
+        }
     }
 }
 
