@@ -453,7 +453,8 @@ async function onConnectButtonClick() {
         console.error(`baudrate setting failed ${e}`);
     }
     try {
-        port = await navigator.serial.requestPort();
+        const filter = { usbVendorId: 0x2E8A };
+        port = await navigator.serial.requestPort({ filters: [filter] });
         await port.open({ baudRate: baudrate });
         console.log("接続成功");
         ButtonEnDi("connect");
