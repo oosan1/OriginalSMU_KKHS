@@ -13,8 +13,14 @@
 #include "hardware/vreg.h"
 #include "pico/util/datetime.h"
 
+// USBシリアル関連
 #include "tusb.h"
 #include "pico/stdio_usb.h"
+
+static bool g_is_connected = false;
+
+// タイマー関連
+struct repeating_timer LED_timer;
 
 // 本体設定
 #define BOARD_NAME "RaspberrypiPico2"
@@ -679,6 +685,36 @@ int sendLog(char *text, int level) {
     return 0;
 }
 
+bool LED_timer_callback(struct repeating_timer *t) {
+    if (gpio_get(LED_PIN) == 1) {
+        gpio_put(LED_PIN, 0);
+    } else {
+        gpio_put(LED_PIN, 1);
+    }
+    return true;
+}
+
+int64_t LED_off_callback(alarm_id_t id, void *user_data) {
+    gpio_put(LED_PIN, 0);
+    return 0;
+}
+void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts) {
+  (void) itf;
+  (void) rts;
+
+  g_is_connected = dtr; // DTRがONなら接続、OFFなら切断
+
+  if (g_is_connected) {
+    // 接続時は点滅を解除し、LEDを消灯
+    cancel_repeating_timer(&LED_timer);
+    gpio_put(LED_PIN, 0);
+  } else {
+    // 接続待機時はLEDを1秒間隔で点滅
+    add_repeating_timer_ms(-1000, LED_timer_callback , NULL, &LED_timer);
+    gpio_put(LED_PIN, 1);
+  }
+}
+
 int main() {
     set_sys_clock_pll(SYSTEM_CLOCK_MHZ*2*2 * MHZ, 2, 2);
 
@@ -722,6 +758,7 @@ int main() {
 
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
+    gpio_put(LED_PIN, 0);
 
     // RTC初期化
     // !=====RTCはRP2350で使用できないため、対応待ち=====!
@@ -768,180 +805,192 @@ int main() {
     bool isInvert = false;
 
     sendLog("system started\n", 1);
-    gpio_put(LED_PIN, 1);
 
     while (true) {
-        scanf("%s", &com_command);
-        if(strcmp(com_command, "INFO") == 0) {
-            // INFO
-            /*success = INFO(&t);
-            if(success==0) {
-                sendLog("INFO was executed\n", 0);
-            }else {
-                sendLog("INFO was failed\n", 3);
-            }*/
-           sendLog("Can't use RTC yet.\n", 1);
-        }
-        else if(strcmp(com_command, "DEBUG") == 0) {
-            // ADCチェック
-            float ADC_CONVERSION_FACTOR = 3.0f / (1 << 12);
+        tud_task();
 
-            adc_select_input(0);
-            uint16_t adc_0 = adc_read();
+        if (g_is_connected) {
+            int result = scanf("%s", &com_command);
 
-            // CPU温度チェック
-            adc_select_input(4);
-            uint16_t adc = adc_read();
-            float voltage = adc * ADC_CONVERSION_FACTOR;
-            float temp_c = 27.0f - (voltage - 0.706f) / 0.001721f;
+            if (result == 1) {
+                gpio_put(LED_PIN, 1);
+                add_alarm_in_ms(20, LED_off_callback, NULL, false);
 
-            sprintf(buffer, "ADC0raw: %d, CPU Temp: %.2f C\n", adc_0, temp_c);
-            sendLog(buffer, 1);
-            sendLog("timer check start...\n", 1);
-            uint64_t start_time_us = time_us_64();
-            busy_wait_until(start_time_us + 1000*5000); // 5秒待機
-            sendLog("5s wait over\n", 1);
-
-            sendLog("===================================\n", 1);
-        }
-        else if(strcmp(com_command, "STATUS_FIRST") == 0) {
-            sprintf(buffer, "BoardName: %s ,CPUName: %s ,CircuitVersion: %s ,FirmwareVersion: %s\n", BOARD_NAME, CPU_NAME, CIRCUIT_VERSION, FIRMWARE_VERSION);
-            sendLog(buffer, 0);
-        }
-        else if(strcmp(com_command, "STATUS_UPDATE") == 0) {
-            // CPU温度チェック
-            float ADC_CONVERSION_FACTOR = 3.0f / (1 << 12);
-            adc_select_input(4);
-            uint16_t adc = adc_read();
-            float voltage = adc * ADC_CONVERSION_FACTOR;
-            float temp_c = 27.0f - (voltage - 0.706f) / 0.001721f;
-
-            sprintf(buffer, "CPUtemp: %.2f\n", temp_c);
-            sendLog(buffer, 0);
-        }
-        else if(strcmp(com_command, "setVol") == 0) {
-            // setVol {channel(0:A, 1:B)} {Voltage(step表記)}
-            scanf("%d", &int_com_arg1);
-            scanf("%d", &int_com_arg2);
-            success = setVol(int_com_arg1, int_com_arg2);
-            if(success==0) {
-                sendLog("setVol was executed\n", 0);
-            }else {
-                sendLog("setVol was failed\n", 3);
+                if(strcmp(com_command, "INFO") == 0) {
+                    // INFO
+                    /*success = INFO(&t);
+                    if(success==0) {
+                        sendLog("INFO was executed\n", 0);
+                    }else {
+                        sendLog("INFO was failed\n", 3);
+                    }*/
+                   sendLog("Can't use RTC yet.\n", 1);
+                }
+                else if(strcmp(com_command, "DEBUG") == 0) {
+                    // ADCチェック
+                    float ADC_CONVERSION_FACTOR = 3.0f / (1 << 12);
+                
+                    adc_select_input(0);
+                    uint16_t adc_0 = adc_read();
+                
+                    // CPU温度チェック
+                    adc_select_input(4);
+                    uint16_t adc = adc_read();
+                    float voltage = adc * ADC_CONVERSION_FACTOR;
+                    float temp_c = 27.0f - (voltage - 0.706f) / 0.001721f;
+                
+                    sprintf(buffer, "ADC0raw: %d, CPU Temp: %.2f C\n", adc_0, temp_c);
+                    sendLog(buffer, 1);
+                    sendLog("timer check start...\n", 1);
+                    uint64_t start_time_us = time_us_64();
+                    busy_wait_until(start_time_us + 1000*5000); // 5秒待機
+                    sendLog("5s wait over\n", 1);
+                
+                    sendLog("===================================\n", 1);
+                }
+                else if(strcmp(com_command, "STATUS_FIRST") == 0) {
+                    sprintf(buffer, "BoardName: %s ,CPUName: %s ,CircuitVersion: %s ,FirmwareVersion: %s\n", BOARD_NAME, CPU_NAME, CIRCUIT_VERSION, FIRMWARE_VERSION);
+                    sendLog(buffer, 0);
+                }
+                else if(strcmp(com_command, "STATUS_UPDATE") == 0) {
+                    // CPU温度チェック
+                    float ADC_CONVERSION_FACTOR = 3.0f / (1 << 12);
+                    adc_select_input(4);
+                    uint16_t adc = adc_read();
+                    float voltage = adc * ADC_CONVERSION_FACTOR;
+                    float temp_c = 27.0f - (voltage - 0.706f) / 0.001721f;
+                
+                    sprintf(buffer, "CPUtemp: %.2f\n", temp_c);
+                    sendLog(buffer, 0);
+                }
+                else if(strcmp(com_command, "setVol") == 0) {
+                    // setVol {channel(0:A, 1:B)} {Voltage(step表記)}
+                    scanf("%d", &int_com_arg1);
+                    scanf("%d", &int_com_arg2);
+                    success = setVol(int_com_arg1, int_com_arg2);
+                    if(success==0) {
+                        sendLog("setVol was executed\n", 0);
+                    }else {
+                        sendLog("setVol was failed\n", 3);
+                    }
+                }
+                else if(strcmp(com_command, "readVol") == 0) {
+                    // readVol {channel(0:A, 1:B)}
+                    scanf("%d", &int_com_arg1);
+                    success = readVol(int_com_arg1);
+                    if(success==0) {
+                        sendLog("readVol was executed\n", 0);
+                    }else {
+                        sendLog("readVol was failed\n", 3);
+                    }
+                }
+                else if(strcmp(com_command, "IVsweep") == 0) {
+                    // 非推奨コマンド
+                    // IVsweep {channel(0:A, 1:B)} {speed(V/s)} {maxVoltageStep} {Inverse}
+                    scanf("%d", &int_com_arg1);
+                    scanf("%f", &float_com_arg1);
+                    scanf("%d", &int_com_arg2);
+                    success = IVsweep(int_com_arg1, float_com_arg1, int_com_arg2);
+                    if(success==0) {
+                        sendLog("IVsweep was executed\n", 0);
+                    }else {
+                        sendLog("IVsweep was failed\n", 3);
+                    }
+                }
+                else if(strcmp(com_command, "IVcurve") == 0) {
+                    // IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {conversionResistor(Ω)(0でオートレンジ)} {reg_waitingTime(us)} {反転の有無(0: false, 1: true)}
+                    scanf("%d", &int_com_arg1);
+                    scanf("%d", &int_com_arg2);
+                    scanf("%f", &float_com_arg1);
+                    scanf("%d", &int_com_arg3);
+                    scanf("%d", &int_com_arg4);
+                    scanf("%d", &int_com_arg5);
+                    scanf("%d", &int_com_arg6);
+                    scanf("%d", &int_com_arg7);
+                    scanf("%d", &int_com_arg8);
+                    scanf("%d", &int_com_arg9);
+                    scanf("%d", &int_com_arg10);
+                    scanf("%d", &int_com_arg11);
+                    scanf("%d", &int_com_arg12);
+                    success = IVcurve(int_com_arg1, int_com_arg2, float_com_arg1, int_com_arg3, int_com_arg4, int_com_arg5, int_com_arg6, int_com_arg7, int_com_arg8, int_com_arg9, int_com_arg10, int_com_arg11, int_com_arg12, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
+                    if(success==0) {
+                        sendLog("IVcurve was executed\n", 0);
+                    }else {
+                        sendLog("IVcurve was failed\n", 3);
+                    }
+                }
+                else if(strcmp(com_command, "IVcal") == 0) {
+                    // IVcal {resistance(Ω)} {VtoIresistance(Ω)}{&IV_list} {&IV_size} {&cal_list}
+                    scanf("%f", &float_com_arg1);
+                    scanf("%f", &float_com_arg2);
+                    /*success = IVcal(float_com_arg1, float_com_arg2, offset_voltage_step, isInvert, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
+                    if(success==0) {
+                        sendLog("IVcal was executed\n", 0);
+                    }else {
+                        sendLog("IVcal was failed\n", 3);
+                    }*/
+                    sendLog("Can't use IVcal command.\n", 3);
+                }
+                else if(strcmp(com_command, "EIS") == 0) {
+                    // EIS {DACchannel(0:A, 1:B)} {ADCchannel} {samplingRate(Hz)} {raise_time(ms)} {Voltage_min(step)} {Voltage_max(step)} {repeat_count}
+                    scanf("%d", &int_com_arg1);
+                    scanf("%d", &int_com_arg2);
+                    scanf("%f", &float_com_arg1);
+                    scanf("%f", &float_com_arg2);
+                    scanf("%d", &int_com_arg5);
+                    scanf("%d", &int_com_arg6);
+                    scanf("%d", &int_com_arg7);
+                
+                    /*success = EIS(int_com_arg1, int_com_arg2, float_com_arg1, float_com_arg2, int_com_arg5, int_com_arg6, int_com_arg7, offset_voltage_step, isInvert, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
+                    if(success==0) {
+                        sendLog("EIS was executed\n", 0);
+                    }else {
+                        sendLog("EIS was failed\n", 3);
+                    }*/
+                   sendLog("Can't use EIS command.\n", 3);
+                }
+                else if(strcmp(com_command, "setOffsets") == 0) {
+                    // setOffsets {offset_voltage(step)} {isInvert(0:false, 1:true)}
+                    scanf("%d", &int_com_arg1);
+                    scanf("%d", &int_com_arg2);
+                
+                    offset_voltage_step = int_com_arg1;
+                    isInvert = int_com_arg2;
+                    sprintf(buffer, "offset_voltage:%d, isInvert:%d\n", offset_voltage_step, isInvert);
+                    sendLog(buffer, 0);
+                    sendLog("setOffsets was executed\n", 0);
+                }
+                else if(strcmp(com_command, "setRefVoltage") == 0) {
+                    // setRefVoltage {ADC_REF(V)} {DAC_REF(V)}
+                    scanf("%f", &float_com_arg1);
+                    scanf("%f", &float_com_arg2);
+                
+                    ADC_REF = float_com_arg1;
+                    DAC_REF = float_com_arg2;
+                    sprintf(buffer, "ADC_REF:%f, DAC_REF:%f\n", ADC_REF, DAC_REF);
+                    sendLog(buffer, 0);
+                    sendLog("setRefVoltage was executed\n", 0);
+                }else if(strcmp(com_command, "setReg") == 0) {
+                    // setReg {1k:0, 100:1} {off:0, on:1}
+                    scanf("%d", &int_com_arg1);
+                    scanf("%d", &int_com_arg2);
+                    if (int_com_arg1 == 0) {
+                        gpio_put(PIN_1k, int_com_arg2);
+                    }else if (int_com_arg1 == 1) {
+                        gpio_put(PIN_100, int_com_arg2);
+                    }else {
+                        sendLog("Unknown Channel\n", 3);
+                    }
+                    sendLog("setReg was executed\n", 0);
+                }
+                else {
+                    sprintf(buffer, "Unknown command:%s\n", com_command);
+                    sendLog(buffer, 3);
+                }
             }
-        }
-        else if(strcmp(com_command, "readVol") == 0) {
-            // readVol {channel(0:A, 1:B)}
-            scanf("%d", &int_com_arg1);
-            success = readVol(int_com_arg1);
-            if(success==0) {
-                sendLog("readVol was executed\n", 0);
-            }else {
-                sendLog("readVol was failed\n", 3);
-            }
-        }
-        else if(strcmp(com_command, "IVsweep") == 0) {
-            // 非推奨コマンド
-            // IVsweep {channel(0:A, 1:B)} {speed(V/s)} {maxVoltageStep} {Inverse}
-            scanf("%d", &int_com_arg1);
-            scanf("%f", &float_com_arg1);
-            scanf("%d", &int_com_arg2);
-            success = IVsweep(int_com_arg1, float_com_arg1, int_com_arg2);
-            if(success==0) {
-                sendLog("IVsweep was executed\n", 0);
-            }else {
-                sendLog("IVsweep was failed\n", 3);
-            }
-        }
-        else if(strcmp(com_command, "IVcurve") == 0) {
-            // IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {conversionResistor(Ω)(0でオートレンジ)} {reg_waitingTime(us)} {反転の有無(0: false, 1: true)}
-            scanf("%d", &int_com_arg1);
-            scanf("%d", &int_com_arg2);
-            scanf("%f", &float_com_arg1);
-            scanf("%d", &int_com_arg3);
-            scanf("%d", &int_com_arg4);
-            scanf("%d", &int_com_arg5);
-            scanf("%d", &int_com_arg6);
-            scanf("%d", &int_com_arg7);
-            scanf("%d", &int_com_arg8);
-            scanf("%d", &int_com_arg9);
-            scanf("%d", &int_com_arg10);
-            scanf("%d", &int_com_arg11);
-            scanf("%d", &int_com_arg12);
-            success = IVcurve(int_com_arg1, int_com_arg2, float_com_arg1, int_com_arg3, int_com_arg4, int_com_arg5, int_com_arg6, int_com_arg7, int_com_arg8, int_com_arg9, int_com_arg10, int_com_arg11, int_com_arg12, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
-            if(success==0) {
-                sendLog("IVcurve was executed\n", 0);
-            }else {
-                sendLog("IVcurve was failed\n", 3);
-            }
-        }
-        else if(strcmp(com_command, "IVcal") == 0) {
-            // IVcal {resistance(Ω)} {VtoIresistance(Ω)}{&IV_list} {&IV_size} {&cal_list}
-            scanf("%f", &float_com_arg1);
-            scanf("%f", &float_com_arg2);
-            /*success = IVcal(float_com_arg1, float_com_arg2, offset_voltage_step, isInvert, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
-            if(success==0) {
-                sendLog("IVcal was executed\n", 0);
-            }else {
-                sendLog("IVcal was failed\n", 3);
-            }*/
-            sendLog("Can't use IVcal command.\n", 3);
-        }
-        else if(strcmp(com_command, "EIS") == 0) {
-            // EIS {DACchannel(0:A, 1:B)} {ADCchannel} {samplingRate(Hz)} {raise_time(ms)} {Voltage_min(step)} {Voltage_max(step)} {repeat_count}
-            scanf("%d", &int_com_arg1);
-            scanf("%d", &int_com_arg2);
-            scanf("%f", &float_com_arg1);
-            scanf("%f", &float_com_arg2);
-            scanf("%d", &int_com_arg5);
-            scanf("%d", &int_com_arg6);
-            scanf("%d", &int_com_arg7);
-
-            /*success = EIS(int_com_arg1, int_com_arg2, float_com_arg1, float_com_arg2, int_com_arg5, int_com_arg6, int_com_arg7, offset_voltage_step, isInvert, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
-            if(success==0) {
-                sendLog("EIS was executed\n", 0);
-            }else {
-                sendLog("EIS was failed\n", 3);
-            }*/
-           sendLog("Can't use EIS command.\n", 3);
-        }
-        else if(strcmp(com_command, "setOffsets") == 0) {
-            // setOffsets {offset_voltage(step)} {isInvert(0:false, 1:true)}
-            scanf("%d", &int_com_arg1);
-            scanf("%d", &int_com_arg2);
-
-            offset_voltage_step = int_com_arg1;
-            isInvert = int_com_arg2;
-            sprintf(buffer, "offset_voltage:%d, isInvert:%d\n", offset_voltage_step, isInvert);
-            sendLog(buffer, 0);
-            sendLog("setOffsets was executed\n", 0);
-        }
-        else if(strcmp(com_command, "setRefVoltage") == 0) {
-            // setRefVoltage {ADC_REF(V)} {DAC_REF(V)}
-            scanf("%f", &float_com_arg1);
-            scanf("%f", &float_com_arg2);
-
-            ADC_REF = float_com_arg1;
-            DAC_REF = float_com_arg2;
-            sprintf(buffer, "ADC_REF:%f, DAC_REF:%f\n", ADC_REF, DAC_REF);
-            sendLog(buffer, 0);
-            sendLog("setRefVoltage was executed\n", 0);
-        }else if(strcmp(com_command, "setReg") == 0) {
-            // setReg {1k:0, 100:1} {off:0, on:1}
-            scanf("%d", &int_com_arg1);
-            scanf("%d", &int_com_arg2);
-            if (int_com_arg1 == 0) {
-                gpio_put(PIN_1k, int_com_arg2);
-            }else if (int_com_arg1 == 1) {
-                gpio_put(PIN_100, int_com_arg2);
-            }else {
-                sendLog("Unknown Channel\n", 3);
-            }
-            sendLog("setReg was executed\n", 0);
         }
         else {
-            sprintf(buffer, "Unknown command:%s\n", com_command);
-            sendLog(buffer, 3);
+            sleep_ms(100);
         }
     }
 }

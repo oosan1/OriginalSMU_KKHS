@@ -33,6 +33,9 @@ project(SMUcontrol C CXX ASM)
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
+
+add_definitions(-DPICO_STDIO_USB_RX_TIMEOUT_US=10000)
+
 # Add executable. Default name is the project name, version 0.1
 
 #add_executable(SMUcontrol SMUcontrol.c )
