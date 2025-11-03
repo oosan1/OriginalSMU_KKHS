@@ -46,12 +46,9 @@ const stopNextButton = document.getElementById("stop_next_btn");
 const baudrateTextbox = document.getElementById("baudrate");
 const serialConsoleTextbox = document.getElementById("send_text");
 const sendButton = document.getElementById("send_btn");
-const connectivity_text = document.getElementById("connectivity");
-const calibrated_text = document.getElementById("calibrated");
 const status_text = document.getElementById("status");
 
 const boardName = document.getElementById("board_name");
-const CPUName = document.getElementById("CPU_name");
 const circuitVersion = document.getElementById("circuit_version");
 const firmwareVersion = document.getElementById("firmware_version");
 const upTime = document.getElementById("uptime");
@@ -116,11 +113,9 @@ stopNextButton.addEventListener("click", function() {
 navigator.serial.addEventListener("disconnect", (event) => {
     ButtonEnDi("disconnect")
     sendSerialConsole("disconnection", "red");
-    connectivity_text.innerText = "通信: 断×";
     status_text.innerText = "接続待ち";
 
     boardName.innerText = "--";
-    CPUName.innerText = "--";
     circuitVersion.innerText = "--";
     firmwareVersion.innerText = "--";
 
@@ -282,7 +277,7 @@ function onIVcurveButtonClick() {
         IV_counter = measure_count
     }
 
-    status_text.innerText = `IVカーブ測定中...( 現在の測定進捗: ${measure_count - IV_counter + 1}回目/${measure_count}回 )`;
+    status_text.innerHTML = `IVカーブ測定中...<br>( 現在の測定進捗: ${measure_count - IV_counter + 1}回目/${measure_count}回 )`;
     ButtonEnDi("IVcurve_start");
 
     console.log(`IVcurve 0 0 ${step_speed} ${step_stepVol} ${waiting_time} ${step_minVol} ${step_maxVol} ${ADC_IconvR} ${ADC_IconvR_time} ${repetitions} ${invert} ${step_direction} ${before_waiting_time}`);
@@ -489,7 +484,6 @@ async function onConnectButtonClick() {
         ButtonEnDi("connect");
         sendSerialConsole("connection", "green");
         readTextSerial();
-        connectivity_text.innerText = "通信: 接続〇"
         status_text.innerText = "状態: 接続完了";
         
         onConnect();
@@ -617,10 +611,8 @@ function SerialControl(text) {
             }
         }else if (noCtrlCharText === "CALIBRATION:ON") {
             isCalibrated = true;
-            calibrated_text.innerText = "校正: 有効"
         }else if (noCtrlCharText === "CALIBRATION:OFF") {
             isCalibrated = false;
-            calibrated_text.innerText = "校正: 無効"
         }else if (recording) {
             const rawInputStepVol = noCtrlCharText.split(" ")[0];
             const rawOutputStepVol = noCtrlCharText.split(" ")[1];
@@ -673,10 +665,8 @@ function SerialControl(text) {
             }
         }else if (noCtrlCharText === "CALIBRATION:ON") {
             isCalibrated = true;
-            calibrated_text.innerText = "校正: 有効"
         }else if (noCtrlCharText === "CALIBRATION:OFF") {
             isCalibrated = false;
-            calibrated_text.innerText = "校正: 無効"
         }else if (recording) {
             let TIME = noCtrlCharText.split(" ")[0];
             const OUT_VOL = noCtrlCharText.split(" ")[1];
@@ -708,8 +698,7 @@ function SerialControl(text) {
         const circuit_version = noCtrlCharText.split(" ")[7];
         const firmware_version = noCtrlCharText.split(" ")[9];
 
-        boardName.innerText = board_name;
-        CPUName.innerText = cpu_name;
+        boardName.innerText = `${board_name} - ${cpu_name}`;
         circuitVersion.innerText = circuit_version;
         firmwareVersion.innerText = firmware_version;
 

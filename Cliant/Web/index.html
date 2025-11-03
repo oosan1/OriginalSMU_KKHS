@@ -18,13 +18,14 @@
                 <span id="version-display">β1.2.0</span>
             </div>
             <div id="status_monitor">
-                <div id="connectivity">通信: 断×</div>
-                <div id="calibrated">校正: 無効</div>
                 <div id="status">状態: 接続待ち</div>
             </div>
             <div class="connection-controls">
                 <button type="button" id="connect_btn">接続</button>
-                <label id="baudrate_label">ボーレート:<input type="text" id="baudrate" value="115200"></label>
+                <label id="baudrate_label">
+                    ボーレート:
+                    <input type="text" id="baudrate" value="115200">
+                </label>
             </div>
             <button type="button" id="stop_btn" style="background: rgb(255, 161, 161)" disabled>測定停止</button>
             <button type="button" id="stop_next_btn" style="background: rgb(255, 161, 161)" disabled>次の測定を行わない</button>
@@ -33,10 +34,6 @@
                     <div class="info-item">
                         <span class="label">制御ボード: </span> 
                         <span class="value" id="board_name">--</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="label">CPU: </span> 
-                        <span class="value" id="CPU_name">--</span>
                     </div>
                     <div class="info-item">
                         <span class="label">基盤バージョン: </span> 
