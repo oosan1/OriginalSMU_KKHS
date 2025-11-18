@@ -13,6 +13,7 @@ body {
     height: 100%;
     padding: 5px;
     gap: 10px;
+    box-sizing: border-box;
 }
 
 .page-header {
