@@ -4,7 +4,7 @@ let recording = false;
 //const ADC_VOL = 2.96; // ADCの基準電圧
 //const DAC_VOL = 2.048; // DACの基準電圧
 //const IconvR = 10000; // カレントフォロア回路の変換抵抗値
-const IunitM = 1000; //A:1, mA:1000
+const IunitM = 1000; //A:1, mA:1000 ( 1000に固定してください! 校正が機能しなくなります。 )
 const EIS_max_data = 9000; // EIS計測の最大データ個数
 const EIS_max_sampling_freq = 250000; // EIS計測の最大サンプリングレート
 
@@ -28,6 +28,8 @@ let EIS_freqs = [];
 let dataType = "none"
 let data_increase = 0;
 let isCalibrated = false;
+let calication_offset = {};      // mA
+let calication_coefficient = {};
 
 let DAC_absVol;
 let DAC_absMinVol;
@@ -84,6 +86,15 @@ const CSVButton = document.getElementById("csv_btn");
 const CSVTextbox = document.getElementById("csv_name");
 const calButton = document.getElementById("cal_btn");
 const calTextbox = document.getElementById("cal_reg");
+const calCheckbox = document.getElementById("cal_checkbox");
+const calStatusAuto = document.getElementById("cal_status_auto");
+const calStatus100 = document.getElementById("cal_status_100");
+const calStatus1000 = document.getElementById("cal_status_1000");
+const calStatus10000 = document.getElementById("cal_status_10000");
+const calCheckboxAuto = document.getElementById("cal_checkbox_auto");
+const calCheckbox100 = document.getElementById("cal_checkbox_100");
+const calCheckbox1000 = document.getElementById("cal_checkbox_1000");
+const calCheckbox10000 = document.getElementById("cal_checkbox_10000");
 
 const ADC_minVolTextbox = document.getElementById("ADC_min_vol");
 const ADC_maxVolTextbox = document.getElementById("ADC_max_vol");
@@ -151,6 +162,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // 校正データの読み込み
+    const cal_ranges = [0, 100, 1000, 10000];
+    cal_ranges.forEach(range => {
+        const offset = localStorage.getItem(`cal_offset_${range}`);
+        const coefficient = localStorage.getItem(`cal_coefficient_${range}`);
+        const date = localStorage.getItem(`cal_date_${range}`);
+        if (offset && coefficient) {
+            calication_offset[range] = Number(offset);
+            calication_coefficient[range] = Number(coefficient);
+            if (range === 0 && calCheckboxAuto.checked) {
+                calStatusAuto.innerText = `自動: ${date}`;
+            }else if (range === 100 && calCheckbox100.checked) {
+                calStatus100.innerText = `±15.15mA: ${date}`;
+            }else if (range === 1000 && calCheckbox1000.checked) {
+                calStatus1000.innerText = `±1.65mA: ${date}`;
+            }else if (range === 10000 && calCheckbox10000.checked) {
+                calStatus10000.innerText = `±150μA: ${date}`;
+            }
+        }
+    });
 });
 
 //グラフ設定
@@ -385,8 +416,64 @@ function getAllFreq() {
 
 // 校正
 calButton.addEventListener("click", () => {
-    writeTextSerial(`IVcal ${calTextbox.value} ${IconvR}`);
+    if (drawDataList.length === 0) {
+        sendSerialConsole("IVカーブデータがありません。", "red_bold");
+    }else if (isCalibrated === true) {
+        sendSerialConsole("校正済みデータで校正することはできません。", "red_bold");
+    }else {
+        const params = calRegressionLine(drawDataList);
+        const ideal_slope = 1 / (Number(calTextbox.value)) * 1000;
+        calication_coefficient[ADC_IconvRTextbox.value] = ideal_slope / params.slope;
+        calication_offset[ADC_IconvRTextbox.value] = -params.intercept;
+        sendSerialConsole(`校正完了。 レンジ:${Number(ADC_IconvRTextbox.value)}, オフセット値:${calication_offset[ADC_IconvRTextbox.value]} mA, 補正係数:${calication_coefficient[ADC_IconvRTextbox.value]}`, "green");
+        localStorage.setItem(`cal_offset_${ADC_IconvRTextbox.value}`, calication_offset[ADC_IconvRTextbox.value]);
+        localStorage.setItem(`cal_coefficient_${ADC_IconvRTextbox.value}`, calication_coefficient[ADC_IconvRTextbox.value]);
+        localStorage.setItem(`cal_date_${ADC_IconvRTextbox.value}`, formatDateTime(new Date()));
+        if (Number(ADC_IconvRTextbox.value) === 0) {
+            calStatusAuto.innerText = `自動: ${formatDateTime(new Date())}`;
+        }else if (Number(ADC_IconvRTextbox.value) === 100) {
+            calStatus100.innerText = `±15.15mA: ${formatDateTime(new Date())}`;
+        }else if (Number(ADC_IconvRTextbox.value) === 1000) {
+            calStatus1000.innerText = `±1.65mA: ${formatDateTime(new Date())}`;
+        }else if (Number(ADC_IconvRTextbox.value) === 10000) {
+            calStatus10000.innerText = `±150μA: ${formatDateTime(new Date())}`;
+        }
+    }
 });
+
+function calRegressionLine(data) {
+    const n = data.length;
+    let sumX = 0;
+    let sumX2 = 0;
+    let sumY = 0;
+    let sumXY = 0;
+
+    data.forEach(point => {
+        sumX += point.x;
+        sumX2 += point.x * point.x;
+        sumY += point.y;
+        sumXY += point.x * point.y;
+    });
+    const a = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    const b = (sumX2 * sumY - sumXY * sumX) / (n * sumX2 - sumX * sumX);
+
+    return { slope: a, intercept: b };
+}
+
+function formatDateTime(date) {
+  const padToTwoDigits = (number) => {
+    return String(number).padStart(2, '0');
+  };
+
+  const year = date.getFullYear();
+  const month = padToTwoDigits(date.getMonth() + 1);
+  const day = padToTwoDigits(date.getDate());
+  const hours = padToTwoDigits(date.getHours());
+  const minutes = padToTwoDigits(date.getMinutes());
+  const seconds = padToTwoDigits(date.getSeconds());
+
+  return `${year}/${month}/${day}/${hours}:${minutes}:${seconds}`;
+}
 
 // ボタンの有効無効制御
 function ButtonEnDi(mode) {
@@ -631,12 +718,59 @@ function SerialControl(text) {
             let converted_voltage = (rawInputStepVol / DAC_step) * DAC_absVol - DAC_absMinVol;
             converted_voltage = converted_voltage - IV_R * current;
 
+            // 校正の適用
+            let calibrated_current;
+            if (calCheckbox.checked) {
+                isCalibrated = true;
+                let offset = 0;
+                let coefficient = 1;
+
+                // まず、現在のレンジ専用の校正データを探す
+                // なければ自動レンジの校正データを使う
+                if (noCtrlCharText.split(" ")[2] === "100") {
+                    if (calCheckbox100.checked === true && ("100" in calication_coefficient)) {
+                        offset = calication_offset["100"];
+                        coefficient = calication_coefficient["100"];
+                        //console.log("100レンジの校正データを使用");
+                    }else if ("0" in calication_coefficient && calCheckboxAuto.checked === true) {
+                        offset = calication_offset["0"];
+                        coefficient = calication_coefficient["0"];
+                        //console.log("自動レンジの校正データを使用");
+                    }
+                }else if (noCtrlCharText.split(" ")[2] === "1000") {
+                    if (calCheckbox1000.checked === true && ("1000" in calication_coefficient)) {
+                        offset = calication_offset["1000"];
+                        coefficient = calication_coefficient["1000"];
+                        //console.log("1000レンジの校正データを使用");
+                    }else if ("0" in calication_coefficient && calCheckboxAuto.checked === true) {
+                        offset = calication_offset["0"];
+                        coefficient = calication_coefficient["0"];
+                        //console.log("自動レンジの校正データを使用");
+                    }
+                }else if (noCtrlCharText.split(" ")[2] === "10000") {
+                    if (calCheckbox10000.checked === true && ("10000" in calication_coefficient)) {
+                        offset = calication_offset["10000"];
+                        coefficient = calication_coefficient["10000"];
+                        //console.log("10000レンジの校正データを使用");
+                    }else if ("0" in calication_coefficient && calCheckboxAuto.checked === true) {
+                        offset = calication_offset["0"];
+                        coefficient = calication_coefficient["0"];
+                        //console.log("自動レンジの校正データを使用");
+                    }
+                }
+
+                calibrated_current = (current * IunitM * coefficient) + offset;
+            }else {
+                isCalibrated = false;
+                calibrated_current = current * IunitM;
+            }
+
             const INV = noCtrlCharText.split(" ")[3];
-            graph.data.datasets[INV].data.push({x: converted_voltage, y: current * IunitM});
+            graph.data.datasets[INV].data.push({x: converted_voltage, y: calibrated_current});
             graph.update();
             drawDataList.push({
                 "x": converted_voltage,
-                "y": current * IunitM,
+                "y": calibrated_current,
                 "INV": INV
             });
             dataType = "IVcurve";
