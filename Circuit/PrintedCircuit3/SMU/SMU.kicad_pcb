@@ -17391,15 +17391,15 @@
 			)
 		)
 		(embedded_fonts no)
-		(model "${KIPRJMOD}/RP2350_Plus_Pin_3D.step"
+		(model "${KIPRJMOD}/RaspberrypiPico2.step"
 			(offset
-				(xyz 0 0 0)
+				(xyz 0 0 10.3)
 			)
 			(scale
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz 0 0 0)
+				(xyz -90 -0 -0)
 			)
 		)
 	)
