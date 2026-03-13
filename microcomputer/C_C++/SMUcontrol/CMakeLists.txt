@@ -90,4 +90,8 @@ target_link_libraries(SMUcontrol
         hardware_vreg
 )
 
+set_target_properties(SMUcontrol PROPERTIES
+    LINK_FLAGS "-Wl,-Map=SMUcontrol.map"
+)
+
 pico_add_extra_outputs(SMUcontrol)

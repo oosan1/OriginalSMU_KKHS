@@ -26,7 +26,7 @@ struct repeating_timer LED_timer;
 #define BOARD_NAME "RaspberryPiPico2"
 #define CPU_NAME "RP2350"
 #define CIRCUIT_VERSION "β0.0.4"
-#define FIRMWARE_VERSION "β1.0.2"
+#define FIRMWARE_VERSION "β1.1.2"
 
 // SPIピン設定
 #define SPI_PORT spi0
@@ -56,7 +56,9 @@ float ADC_REF = 2.96;
 
 #define LED_PIN 25
 
-#define IV_BUF_SIZE 10000
+//IVcurve変数
+#define IV_BUF_SIZE 100000
+uint16_t IVcurve_list[IV_BUF_SIZE][2] = {0};    // スタック領域の使用を防ぐため、グローバル変数として定義
 
 // システムクロック設定 (100~400MHz)
 #define SYSTEM_CLOCK_MHZ 280
@@ -110,7 +112,8 @@ int readVol(int channel) {
 }
 
 // IVsweep {channel(0:A, 1:B)} {speed(V/s)} {maxVoltageStep(step表記)}
-int IVsweep(int channel, float speed_VperS, int voltage_step_max) {
+// 非推奨コマンド。Ivcurveコマンドと機能が被るため。
+/*int IVsweep(int channel, float speed_VperS, int voltage_step_max) {
     char buffer[512];
     if(channel < 0 || channel > 2) {
         sendLog("DAC channel is 1 or 2.", 3);
@@ -161,10 +164,10 @@ int IVsweep(int channel, float speed_VperS, int voltage_step_max) {
         sendLog("The specified sweep speed could not be achieved. Reduce the sweep speed.", 2);
     }
     return 0;
-}
+}*/
 
-// IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {conversionRegistor(Ω)(0でオートレンジ)} {reg_waitingTime(us)} {repetitions(繰り返し回数)} {測定方向(0: 最小→最大, 1: 両方向)} {電圧設定値の反転(1: 無し, -1:あり)} {測定前待機時間(ms)} {&result_list} {&result_size} {&cal_list} {&isCalibrated}
-int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, int waiting_time, int voltage_step_min, int voltage_step_max, int conv_reg, int reg_waiting_time, int repetitions, int INV, int inpINV, int before_waiting_time, uint16_t result_list[][2], int *result_size, int *cal_list, bool *isCalibrated) {
+// IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {conversionRegistor(Ω)(0でオートレンジ)} {reg_waitingTime(us)} {repetitions(繰り返し回数)} {測定方向(0: 最小→最大, 1: 両方向)} {電圧設定値の反転(1: 無し, -1:あり)} {測定前待機時間(ms)} {&result_list} {&result_size} {&isCalibrated}
+int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, int waiting_time, int voltage_step_min, int voltage_step_max, int conv_reg, int reg_waiting_time, int repetitions, int INV, int inpINV, int before_waiting_time, uint16_t result_list[][2], int *result_size, bool *isCalibrated) {
     char buffer[512];
     if(ADCchannel < 0 || ADCchannel > 4) {
         sendLog("Available ADC channels are 1 to 3.", 3);
@@ -409,7 +412,7 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
                 }
             }
 
-            for (int i = 0; i < repetitions - 1; i++) {
+            for (int i = 0; i < repetitions; i++) {
                 ADCvalue += adc_read();
             }
             ADCvalue = ADCvalue / repetitions;
@@ -423,7 +426,8 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
     printf("END\n");
     sendLog("Finish measurement.\n", 1);
 
-    // 計測後は安全のため、ハイインピーダンスモードにする。
+    // (旧説明)計測後は安全のため、ハイインピーダンスモードにする。
+    // 連続で計測を行う場合のために、設定電圧の初期化は特に行わない。
     /*write_data = 0x2000 + DACchannel * 0x8000 + 0;
     gpio_put(PIN_CS, 0);
     spi_write16_blocking(SPI_PORT, &write_data, 2);
@@ -459,7 +463,8 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
 }
 
 // IVcal {resistance(Ω)} {offset_voltage_step}(step表記) {isInvert} {&IV_list} {&IV_size} {&cal_list} {&isCalibrated}
-int IVcal(float resistance, float VtoIresistance, int offset_voltage_step, bool isInvert, uint16_t *IV_list, int *IV_size, int *cal_list, bool *isCalibrated) {
+// キャリブレーションはクライアント側で行うため、この関数は使用しない。
+/*int IVcal(float resistance, float VtoIresistance, int offset_voltage_step, bool isInvert, uint16_t *IV_list, int *IV_size, int *cal_list, bool *isCalibrated) {
     char buffer[512];
     if(resistance <= 0) {
         sendLog("The calibration resistance value must be greater than 0.\n", 3);
@@ -510,10 +515,10 @@ int IVcal(float resistance, float VtoIresistance, int offset_voltage_step, bool 
     *isCalibrated = true;
 
     return 0;
-}
+}*/
 
-// EIS {DACchannel(0:A, 1:B)} {ADCchannel} {samplingRate(Hz)} {raise_time(ms)} {Voltage_min(step)} {Voltage_max(step)} {repeat_count} {offset_voltage_step}(step)} {isInvert} {&result_list} {&result_size} {&cal_list} {&isCalibrated}
-int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, int volage_min, int volage_max, int repeat_count, int offset_voltage_step, bool isInvert, uint16_t *result_list, int *result_size, int *cal_list, bool *isCalibrated) {
+// EIS {DACchannel(0:A, 1:B)} {ADCchannel} {samplingRate(Hz)} {raise_time(ms)} {Voltage_min(step)} {Voltage_max(step)} {repeat_count} {repetitions} {&result_list} {&result_size} {&isCalibrated}
+int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, int volage_min, int volage_max, int conv_reg, int repeat_count, int repetitions, uint16_t result_list[][2], int *result_size, bool *isCalibrated) {
     char buffer[512];
     if(ADCchannel < 0 || ADCchannel > 4) {
         sendLog("Available ADC channels are 1 to 3.", 3);
@@ -539,6 +544,10 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
     absolute_time_t target_time_us;
     bool over_time_flag = false;
     printf("loop_count: %d\n", loop_count);
+    if(loop_count > IV_BUF_SIZE * 2) {
+        sendLog("Measurement memory exceeded. Reduce the sampling frequency or shorten the measurement time.\n", 2);
+        return -1;
+    }
     
     // DAC設定
     // チャンネル: 指定, バッファ: 無, ゲイン: 1倍
@@ -549,14 +558,32 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
 
 
     // ADC設定
-    const float conversionFactor = ADC_REF / (1 << 12);
     adc_select_input(ADCchannel);
     uint16_t ADCvalue;
-    int ADCvoltage_step;
+    uint16_t ADCvoltage_step;
     float ADCvoltage;
     *result_size = loop_count*repeat_count;
+
+    // 電流電圧変換抵抗の設定
+    int current_reg;
+    if (conv_reg == 10000) {
+        gpio_put(PIN_1k, 0);
+        gpio_put(PIN_100, 0);
+        current_reg = 10000;
+    }else if (conv_reg == 1000) {
+        gpio_put(PIN_1k, 1);
+        gpio_put(PIN_100, 0);
+        current_reg = 1000;
+    }else if (conv_reg == 100) {
+        gpio_put(PIN_1k, 0);
+        gpio_put(PIN_100, 1);
+        current_reg = 100;
+    }else {
+        sendLog("The available conversion resistors are 100Ω, 1kΩ, 10kΩ.\n", 3);
+        return -1;
+    }
     
-    // IVcurve測定
+    // EIS測定
     sendLog("Start measurement.\n", 1);
     gpio_put(PIN_CS, 0);
     spi_write16_blocking(SPI_PORT, &data_max_voltage, 2);
@@ -568,6 +595,7 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
     int dac_update_counter = 0;
     int overCount = 0;
     for (int i = 0; i < loop_count; i++) {
+        ADCvalue = 0;
         if (dac_update_counter == 0) {
             if (voltage_status) {
                 gpio_put(PIN_CS, 0);
@@ -595,20 +623,36 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
         }
         busy_wait_until(target_time_us); // サンプリングレートに合わせて待機。
         start_time_us = time_us_32();
-        ADCvalue = adc_read();
-        result_list[i] = ADCvalue;
+
+        for (int i = 0; i < repetitions; i++) {
+            ADCvalue += adc_read();
+        }
+
+        /* --解説--
+         * IVカーブを測定する場合、測定レンジが可変する可能性があるため、result_listの0列目にADC値、1列目に現在のレンジを保存している。
+         * ただし、EIS測定を行う場合は測定速度を確保するために測定レンジを固定するため、バッファの最大値に到達したら、1列目にもADC値を保存する仕様としている。
+         * これにより、メモリを有効活用することができる。
+        */
+
+        if (i < IV_BUF_SIZE) {
+            result_list[i][0] = ADCvalue;
+        }else {
+            result_list[i - IV_BUF_SIZE][1] = ADCvalue;
+        }
     }
     gpio_put(PIN_CS, 1);
     sendLog("Finish measurement.\n", 1);
 
-    // 計測後は安全のため、出力電圧を0Vに戻す。
-
+    // (旧説明)計測後は安全のため、出力電圧を0Vに戻す。
+    // 出力電圧のオフセットの関係で、0Vとは限らないため、特に操作は行わない。
+    /*
     uint16_t write_data = DAC_setting_data + 0;
     gpio_put(PIN_CS, 0);
     spi_write16_blocking(SPI_PORT, &write_data, 2);
     gpio_put(PIN_CS, 1);
     gpio_put(PIN_LDAC, 0);
     gpio_put(PIN_LDAC, 1);
+    */
     
     // 測定データの送信
     voltage_status = true;
@@ -627,16 +671,20 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
                 voltage_status = true;
             }
         }
-        ADCvoltage_step =  result_list[i] - cal_list[result_list[i]];
-        ADCvoltage = ADCvoltage_step * conversionFactor;
-        if (isInvert) {
-            ADCvoltage = (ADCvoltage - ADC_REF) * -1;
+        if (i < IV_BUF_SIZE) {
+            ADCvoltage_step = result_list[i][0];
+        }else {
+            ADCvoltage_step = result_list[i - IV_BUF_SIZE][1];
         }
-        ADCvoltage += ADC_REF * ((float)offset_voltage_step / ADC_STEP);
         if (voltage_status) {
-            printf("%f %f %f\n", (1 / samplingRate) * i, ADCvoltage, volage_max * conversionFactor);
+            printf("%d %d %d %d\n", i, volage_max, ADCvoltage_step, current_reg);
         } else {
-            printf("%f %f %f\n", (1 / samplingRate) * i, ADCvoltage, volage_min * conversionFactor);
+            printf("%d %d %d %d\n", i, volage_min, ADCvoltage_step, current_reg);
+        }
+
+        // USBシリアルのデータ欠落を防ぐためのウェイト
+        if (i % 50 == 0) {
+            sleep_ms(1);
         }
     }
     printf("END\n");
@@ -751,7 +799,7 @@ int main() {
     gpio_set_dir(PIN_100, GPIO_OUT);
     gpio_set_drive_strength(PIN_100, GPIO_DRIVE_STRENGTH_12MA);
 
-    // 3.3VレギュレーターをPWMモードに固定
+    // 3.3VレギュレーターをPWMモードに固定 (ノイズ対策のため)
     gpio_init(23);
     gpio_set_dir(23, GPIO_OUT);
     gpio_put(23, 1);
@@ -796,13 +844,9 @@ int main() {
     int success;
     char buffer[512];
 
-    //IVcurve変数
-    uint16_t IVcurve_list[IV_BUF_SIZE][2] = {0};
-    int IVcal_list[IV_BUF_SIZE] = {0};
+    //int IVcal_list[IV_BUF_SIZE] = {0};
     bool isCalibrated = false;
     int IVcurve_size = 0;
-    int offset_voltage_step = 0;
-    bool isInvert = false;
 
     sendLog("system started\n", 1);
 
@@ -887,7 +931,7 @@ int main() {
                 else if(strcmp(com_command, "IVsweep") == 0) {
                     // 非推奨コマンド
                     // IVsweep {channel(0:A, 1:B)} {speed(V/s)} {maxVoltageStep} {Inverse}
-                    scanf("%d", &int_com_arg1);
+                    /*scanf("%d", &int_com_arg1);
                     scanf("%f", &float_com_arg1);
                     scanf("%d", &int_com_arg2);
                     success = IVsweep(int_com_arg1, float_com_arg1, int_com_arg2);
@@ -895,7 +939,7 @@ int main() {
                         sendLog("IVsweep was executed\n", 0);
                     }else {
                         sendLog("IVsweep was failed\n", 3);
-                    }
+                    }*/
                 }
                 else if(strcmp(com_command, "IVcurve") == 0) {
                     // IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {conversionResistor(Ω)(0でオートレンジ)} {reg_waitingTime(us)} {反転の有無(0: false, 1: true)}
@@ -912,25 +956,26 @@ int main() {
                     scanf("%d", &int_com_arg10);
                     scanf("%d", &int_com_arg11);
                     scanf("%d", &int_com_arg12);
-                    success = IVcurve(int_com_arg1, int_com_arg2, float_com_arg1, int_com_arg3, int_com_arg4, int_com_arg5, int_com_arg6, int_com_arg7, int_com_arg8, int_com_arg9, int_com_arg10, int_com_arg11, int_com_arg12, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
+                    success = IVcurve(int_com_arg1, int_com_arg2, float_com_arg1, int_com_arg3, int_com_arg4, int_com_arg5, int_com_arg6, int_com_arg7, int_com_arg8, int_com_arg9, int_com_arg10, int_com_arg11, int_com_arg12, IVcurve_list, &IVcurve_size, &isCalibrated);
                     if(success==0) {
                         sendLog("IVcurve was executed\n", 0);
                     }else {
                         sendLog("IVcurve was failed\n", 3);
                     }
                 }
-                else if(strcmp(com_command, "IVcal") == 0) {
+                /*else if(strcmp(com_command, "IVcal") == 0) {
+                    // キャリブレーションはクライアント側で行うため、このコマンドは非推奨。
                     // IVcal {resistance(Ω)} {VtoIresistance(Ω)}{&IV_list} {&IV_size} {&cal_list}
                     scanf("%f", &float_com_arg1);
                     scanf("%f", &float_com_arg2);
-                    /*success = IVcal(float_com_arg1, float_com_arg2, offset_voltage_step, isInvert, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
+                    success = IVcal(float_com_arg1, float_com_arg2, offset_voltage_step, isInvert, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
                     if(success==0) {
                         sendLog("IVcal was executed\n", 0);
                     }else {
                         sendLog("IVcal was failed\n", 3);
-                    }*/
+                    }
                     sendLog("Can't use IVcal command.\n", 3);
-                }
+                }*/
                 else if(strcmp(com_command, "EIS") == 0) {
                     // EIS {DACchannel(0:A, 1:B)} {ADCchannel} {samplingRate(Hz)} {raise_time(ms)} {Voltage_min(step)} {Voltage_max(step)} {repeat_count}
                     scanf("%d", &int_com_arg1);
@@ -940,15 +985,18 @@ int main() {
                     scanf("%d", &int_com_arg5);
                     scanf("%d", &int_com_arg6);
                     scanf("%d", &int_com_arg7);
+                    scanf("%d", &int_com_arg8);
+                    scanf("%d", &int_com_arg9);
                 
-                    /*success = EIS(int_com_arg1, int_com_arg2, float_com_arg1, float_com_arg2, int_com_arg5, int_com_arg6, int_com_arg7, offset_voltage_step, isInvert, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
+                    success = EIS(int_com_arg1, int_com_arg2, float_com_arg1, float_com_arg2, int_com_arg5, int_com_arg6, int_com_arg7, int_com_arg8, int_com_arg9, IVcurve_list, &IVcurve_size, &isCalibrated);
                     if(success==0) {
                         sendLog("EIS was executed\n", 0);
                     }else {
                         sendLog("EIS was failed\n", 3);
-                    }*/
-                   sendLog("Can't use EIS command.\n", 3);
+                    }
                 }
+                /*
+                // IVcalと同様に、キャリブレーション関係はクライアント側で行うため、非推奨コマンド
                 else if(strcmp(com_command, "setOffsets") == 0) {
                     // setOffsets {offset_voltage(step)} {isInvert(0:false, 1:true)}
                     scanf("%d", &int_com_arg1);
@@ -959,7 +1007,7 @@ int main() {
                     sprintf(buffer, "offset_voltage:%d, isInvert:%d\n", offset_voltage_step, isInvert);
                     sendLog(buffer, 0);
                     sendLog("setOffsets was executed\n", 0);
-                }
+                }*/
                 else if(strcmp(com_command, "setRefVoltage") == 0) {
                     // setRefVoltage {ADC_REF(V)} {DAC_REF(V)}
                     scanf("%f", &float_com_arg1);
