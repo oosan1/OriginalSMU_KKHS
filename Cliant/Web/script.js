@@ -5,8 +5,8 @@ let recording = false;
 //const DAC_VOL = 2.048; // DACの基準電圧
 //const IconvR = 10000; // カレントフォロア回路の変換抵抗値
 const IunitM = 1000; //A:1, mA:1000 ( 1000に固定してください! 校正が機能しなくなります。 )
-const EIS_max_data = 9000; // EIS計測の最大データ個数
-const EIS_max_sampling_freq = 250000; // EIS計測の最大サンプリングレート
+const EIS_max_data = 199000; // EIS計測の最大データ個数
+const EIS_max_sampling_freq = 100000; // EIS計測の最大サンプリングレート
 
 const STATUS_UPDATE_INTERVAL = 1000; // 状態更新の間隔(ms)
 
@@ -20,11 +20,12 @@ let EIS_avgMode = false;
 let EIS_avgCountNow = 0;
 let EIS_measure_count = 0;
 let EIS_time = 0;
-let EIS_samplig = 0;
+let EIS_sampling = 0;
 let EIS_avg = 0;
 let EIS_finished_flag = false;
 let EIS_flag_promise;
 let EIS_freqs = [];
+let DEBUG_HARDWARE_AVERAGE_COUNT = 3;
 let dataType = "none"
 let data_increase = 0;
 let isCalibrated = false;
@@ -318,22 +319,37 @@ function onIVcurveButtonClick() {
 // EIS計測
 EISButton.addEventListener("click", onEISButtonClick, false);
 async function onEISButtonClick() {
-    writeTextSerial("setOffsets -2048 1");
+    DAC_absVol = Number(DAC_maxVolTextbox.value) - Number(DAC_minVolTextbox.value);
+    DAC_absMinVol = Math.abs(Number(DAC_minVolTextbox.value));
+    DAC_step = Number(DAC_stepTextbox.value);
+    const ADC_IconvR = Number(ADC_IconvRTextbox.value);
+
+    if (ADC_IconvR == 0) {
+        sendSerialConsole("EIS測定を行う場合、自動レンジは使用できません。「ADC電流レンジ:」から自動レンジ以外を選択してください。", "red");
+        return
+    }
+
+    stopStatusUpdate(-1);
     getAllFreq();
 
     const mesure_times = EIS_freqs.length;
-    let amp_voltage = Math.round(Number(EISampText.value) * 4096 / DAC_VOL / 1000);
-    amp_voltage = amp_voltage > 4095 ? 4095 : amp_voltage;
-    let offset_voltage = Math.round(Number(EISoffsetVolText.value) * 4096 / DAC_VOL / 1000);
-    let high_voltage = Math.round(offset_voltage + amp_voltage / 2);
-    let low_voltage = Math.round(offset_voltage - amp_voltage / 2);
-    offset_voltage = offset_voltage > 4095 ? 4095 : offset_voltage;
+    const amp_voltage = Number(EISampText.value) / 1000;
+    const offset_voltage = Number(EISoffsetVolText.value) / 1000;
+    const high_voltage = offset_voltage + amp_voltage / 2;
+    const low_voltage = offset_voltage - amp_voltage / 2;
+    const step_high_voltage = Math.round(((high_voltage + DAC_absMinVol) / DAC_absVol) * DAC_step);
+    const step_low_voltage = Math.round(((low_voltage + DAC_absMinVol) / DAC_absVol) * DAC_step);
 
+    // この関数では使わないが、データ取得時のために更新しておく
+    ADC_absVol = Number(ADC_maxVolTextbox.value) - Number(ADC_minVolTextbox.value);
+    ADC_absMinVol = Math.abs(Number(ADC_minVolTextbox.value));
+    ADC_step = Number(ADC_stepTextbox.value);
+    ADC_invert = ADC_invertMeasCheckbox.checked ? -1 : 1;
+    
     let input_delay_time;
     let sampfreq;
     let input_freq;
     for (let i = 0; i < mesure_times; i++) {
-        status_text.innerText = `EIS測定中...(${i+1}/${mesure_times})`;
         input_freq = EIS_freqs[i].freq;
         input_delay_time = Math.round(((1 / input_freq) * 1000 / 2)*100)/100;
 
@@ -356,16 +372,17 @@ async function onEISButtonClick() {
         }
         sampfreq_arrange = Math.round(Math.min(sampfreq_arrange, EIS_max_sampling_freq) * 100) / 100
         EIS_time = 1/input_freq;
-        EIS_samplig = sampfreq_arrange;
+        EIS_sampling = sampfreq_arrange;
         EIS_avg = EIS_freqs[i].avg_count;
         EIS_voltageList = [];
 
         EIS_avgMode = false;
         for (let i = 0; i < EIS_avg; i++) {
+            status_text.innerText = `EIS測定中...(${i+1}/${mesure_times}) 平均回数:${i+1}/${EIS_avg}回`;
             EIS_avgCountNow = i;
             setTimeout(() => {
                 MODE = "EIS";
-                writeTextSerial(`EIS 0 0 ${sampfreq_arrange} ${input_delay_time} ${low_voltage} ${high_voltage} 1`);  
+                writeTextSerial(`EIS 0 0 ${sampfreq_arrange} ${input_delay_time} ${step_low_voltage} ${step_high_voltage} ${ADC_IconvR} 1 ${DEBUG_HARDWARE_AVERAGE_COUNT}`);
             }, 200);
             const flagPromise = new Promise(resolve => {
                 EIS_flag_promise = resolve;
@@ -384,6 +401,7 @@ async function onEISButtonClick() {
             saveCSV(filename);
         }
     }
+    startStatusUpdate();
     status_text.innerText = "接続完了";
 }
 
@@ -801,25 +819,102 @@ function SerialControl(text) {
             isCalibrated = true;
         }else if (noCtrlCharText === "CALIBRATION:OFF") {
             isCalibrated = false;
-        }else if (recording) {
-            let TIME = noCtrlCharText.split(" ")[0];
-            const OUT_VOL = noCtrlCharText.split(" ")[1];
-            const INP_VOL = noCtrlCharText.split(" ")[2];
-            if (EIS_measure_count < 2) {
-                data_increase = TIME;
-            }else {
-                const diff = data_increase - (TIME - drawDataList[EIS_measure_count - 1].x);
-                if (diff > 0.000001 || diff < -0.000001) {
-                    console.error(`時間データに破損を検知。オリジナル:${TIME}, 自動修正:${drawDataList[EIS_measure_count - 1].x + data_increase}`);
-                    TIME = drawDataList[EIS_measure_count - 1].x + data_increase;
-                }
+        }else if (noCtrlCharText.split(" ")[1] === "error:") {
+            parseSerial(text);
+            recording = false;
+            if (graph) {
+                graph.destroy();
+                console.log("destroyed");
             }
-            if (EIS_avgMode) {
-                EIS_voltageList[EIS_measure_count] += OUT_VOL / IconvR * IunitM;
-                drawDataList[EIS_measure_count] = {"x": TIME, "y": EIS_voltageList[EIS_measure_count] / (EIS_avgCountNow + 1), "INPvol": INP_VOL, "measureTime": EIS_time, "samplingHz": EIS_samplig, "avgCount": EIS_avg};
+            drawGraph(drawDataList);
+            ButtonEnDi("IVcurve_finish");
+            if (EIS_flag_promise) {
+                EIS_flag_promise();
+            }
+        }else if (recording) {
+            const time_count = noCtrlCharText.split(" ")[0];
+            const raw_DAC_vol_step = noCtrlCharText.split(" ")[1];
+            const raw_ADC_vol_step = noCtrlCharText.split(" ")[2] / DEBUG_HARDWARE_AVERAGE_COUNT;
+            const ADC_vol_step = (raw_ADC_vol_step - (ADC_absMinVol / ADC_absVol) * ADC_step) * ADC_invert;
+            let I_convertion_R = noCtrlCharText.split(" ")[3];
+            
+            // 電流電圧変換における並列抵抗を考慮した補正
+            if (I_convertion_R == 100) {
+                I_convertion_R = 99.009900990099;
+            }else if (I_convertion_R == 1000) {
+                I_convertion_R = 909.09090909091;
+            }
+
+            const current = ((ADC_vol_step / ADC_step) * ADC_absVol) / I_convertion_R;
+            const voltage = (raw_DAC_vol_step / DAC_step) * DAC_absVol - DAC_absMinVol;
+
+            // 校正の適用
+            let calibrated_current;
+            if (calCheckbox.checked) {
+                isCalibrated = true;
+                let offset = 0;
+                let coefficient = 1;
+
+                // まず、現在のレンジ専用の校正データを探す
+                // なければ自動レンジの校正データを使う
+                if (noCtrlCharText.split(" ")[2] === "100") {
+                    if (calCheckbox100.checked === true && ("100" in calication_coefficient)) {
+                        offset = calication_offset["100"];
+                        coefficient = calication_coefficient["100"];
+                        //console.log("100レンジの校正データを使用");
+                    }else if ("0" in calication_coefficient && calCheckboxAuto.checked === true) {
+                        offset = calication_offset["0"];
+                        coefficient = calication_coefficient["0"];
+                        //console.log("自動レンジの校正データを使用");
+                    }
+                }else if (noCtrlCharText.split(" ")[2] === "1000") {
+                    if (calCheckbox1000.checked === true && ("1000" in calication_coefficient)) {
+                        offset = calication_offset["1000"];
+                        coefficient = calication_coefficient["1000"];
+                        //console.log("1000レンジの校正データを使用");
+                    }else if ("0" in calication_coefficient && calCheckboxAuto.checked === true) {
+                        offset = calication_offset["0"];
+                        coefficient = calication_coefficient["0"];
+                        //console.log("自動レンジの校正データを使用");
+                    }
+                }else if (noCtrlCharText.split(" ")[2] === "10000") {
+                    if (calCheckbox10000.checked === true && ("10000" in calication_coefficient)) {
+                        offset = calication_offset["10000"];
+                        coefficient = calication_coefficient["10000"];
+                        //console.log("10000レンジの校正データを使用");
+                    }else if ("0" in calication_coefficient && calCheckboxAuto.checked === true) {
+                        offset = calication_offset["0"];
+                        coefficient = calication_coefficient["0"];
+                        //console.log("自動レンジの校正データを使用");
+                    }
+                }
+
+                calibrated_current = (current * IunitM * coefficient) + offset;
             }else {
-                drawDataList.push({"x": TIME, "y": OUT_VOL / IconvR * IunitM, "INPvol": INP_VOL, "measureTime": EIS_time, "samplingHz": EIS_samplig, "avgCount": EIS_avg});
-                EIS_voltageList[EIS_measure_count] = OUT_VOL / IconvR * IunitM;
+                isCalibrated = false;
+                calibrated_current = current * IunitM;
+            }
+
+            if (EIS_avgMode) {
+                EIS_voltageList[EIS_measure_count] += calibrated_current;
+                drawDataList[EIS_measure_count] = {
+                    "x": time_count / EIS_sampling,
+                    "y": EIS_voltageList[EIS_measure_count] / (EIS_avgCountNow + 1),
+                    "INPvol": voltage,
+                    "measureTime": EIS_time,
+                    "samplingHz": EIS_sampling,
+                    "avgCount": EIS_avg
+                };
+            }else {
+                drawDataList.push({
+                    "x": time_count / EIS_sampling,
+                    "y": calibrated_current,
+                    "INPvol": voltage,
+                    "measureTime": EIS_time,
+                    "samplingHz": EIS_sampling,
+                    "avgCount": EIS_avg
+                });
+                EIS_voltageList[EIS_measure_count] = calibrated_current;
             }
             dataType = "EIS";
             EIS_measure_count++;
