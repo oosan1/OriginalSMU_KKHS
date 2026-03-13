@@ -26,7 +26,11 @@ struct repeating_timer LED_timer;
 #define BOARD_NAME "RaspberryPiPico2"
 #define CPU_NAME "RP2350"
 #define CIRCUIT_VERSION "β0.0.4"
-#define FIRMWARE_VERSION "β1.1.2"
+#define FIRMWARE_VERSION "β1.1.3"
+
+// 電源設定
+//#define PIN_POWER_MODE 23  初代Picoの場合
+#define PIN_POWER_MODE 20
 
 // SPIピン設定
 #define SPI_PORT spi0
@@ -800,9 +804,9 @@ int main() {
     gpio_set_drive_strength(PIN_100, GPIO_DRIVE_STRENGTH_12MA);
 
     // 3.3VレギュレーターをPWMモードに固定 (ノイズ対策のため)
-    gpio_init(23);
-    gpio_set_dir(23, GPIO_OUT);
-    gpio_put(23, 1);
+    gpio_init(PIN_POWER_MODE);
+    gpio_set_dir(PIN_POWER_MODE, GPIO_OUT);
+    gpio_put(PIN_POWER_MODE, 1);
 
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
