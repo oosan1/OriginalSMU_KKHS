@@ -1124,6 +1124,8 @@ async function readTextSerial() {
     if (port.readable) {
         textDecoder = new TextDecoderStream();
         port.readable.pipeTo(textDecoder.writable);
+    }else {
+        return;
     }
     while (port.readable) {
         const reader = textDecoder.readable
