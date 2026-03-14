@@ -121,7 +121,6 @@ stopNextButton.addEventListener("click", function() {
     this.style.background = "rgb(255, 161, 161)";
 }, false);
 
-
 navigator.serial.addEventListener("disconnect", (event) => {
     ButtonEnDi("disconnect")
     sendSerialConsole("disconnection", "red");
@@ -576,11 +575,7 @@ class LineBreakTransformer {
 
 async function onConnectButtonClick() {
     let baudrate
-    try {
-        baudrate = Number(baudrateTextbox.value);
-    } catch (e) {
-        console.error(`baudrate setting failed ${e}`);
-    }
+    baudrate = Number(baudrateTextbox.value);
     try {
         const filter = { usbVendorId: 0x2E8A };
         port = await navigator.serial.requestPort({ filters: [filter] });
@@ -1125,9 +1120,12 @@ function drawGraph(data) {
 }
 
 async function readTextSerial() {
+    let textDecoder;
+    if (port.readable) {
+        textDecoder = new TextDecoderStream();
+        port.readable.pipeTo(textDecoder.writable);
+    }
     while (port.readable) {
-        const textDecoder = new TextDecoderStream();
-        const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
         const reader = textDecoder.readable
         .pipeThrough(new TransformStream(new LineBreakTransformer()))
         .getReader();
