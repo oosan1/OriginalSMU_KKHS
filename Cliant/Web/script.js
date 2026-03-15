@@ -1,10 +1,5 @@
 let port;
 let MODE = "NORMAL";
-let recording = false;
-//const ADC_VOL = 2.96; // ADCの基準電圧
-//const DAC_VOL = 2.048; // DACの基準電圧
-//const IconvR = 10000; // カレントフォロア回路の変換抵抗値
-const IunitM = 1000; //A:1, mA:1000 ( 1000に固定してください! 校正が機能しなくなります。 )
 const EIS_max_data = 199000; // EIS計測の最大データ個数
 const EIS_max_sampling_freq = 100000; // EIS計測の最大サンプリングレート
 
@@ -44,6 +39,10 @@ let ADC_invert;
 let IV_R;
 let IV_counter = 0;
 
+let graph;
+
+
+const graph_canvas = document.getElementById("graph");
 
 const connectButton = document.getElementById("connect_btn");
 const stopButton = document.getElementById("stop_btn");
@@ -187,26 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-//グラフ設定
-const graph_canvas = document.getElementById("graph");
-let graph;
-
-let debugInterval;
-// デバッグ用
-function start_debug() {
-    status_text.innerText = "デバッグ実行中...";
-    stopStatusUpdate(-1);
-    writeTextSerial("DEBUG");
-    debugInterval = setInterval(() => {
-        writeTextSerial("DEBUG");
-    }, 10*60*1000);
-}
-function stop_debug() {
-    status_text.innerText = "デバッグ完了...";
-    clearInterval(debugInterval);
-    startStatusUpdate();
-};
-
 // DAC制御
 DACaButton.addEventListener("click", () => {
     stopStatusUpdate(500);
@@ -269,7 +248,6 @@ function ListToCSV(list, header) {
 
 // IVカーブ計測
 IVButton.addEventListener("click", onIVcurveButtonClick, false);
-// IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {反転の有無(0: false, 1: true)}
 function onIVcurveButtonClick() {
     stopStatusUpdate(-1);
     MODE = "IVcurve";
@@ -696,12 +674,6 @@ function SerialControl(text) {
             recording = false;
             console.log("記録終了...")
             status_text.innerText = "接続完了";
-            /*if (graph) {
-                graph.destroy();
-                console.log("destroyed");
-            }
-            drawGraph(drawDataList);
-            console.log(drawDataList);*/
             MODE = "NORMAL";
             ButtonEnDi("IVcurve_finish");
 
@@ -771,10 +743,10 @@ function SerialControl(text) {
                     }
                 }
 
-                calibrated_current = (current * IunitM * coefficient) + offset;
+                calibrated_current = (current * 1000 * coefficient) + offset;
             }else {
                 isCalibrated = false;
-                calibrated_current = current * IunitM;
+                calibrated_current = current * 1000;
             }
 
             const INV = noCtrlCharText.split(" ")[3];
@@ -879,10 +851,10 @@ function SerialControl(text) {
                     }
                 }
 
-                calibrated_current = (current * IunitM * coefficient) + offset;
+                calibrated_current = (current * 1000 * coefficient) + offset;
             }else {
                 isCalibrated = false;
-                calibrated_current = current * IunitM;
+                calibrated_current = current * 1000;
             }
 
             if (EIS_avgMode) {

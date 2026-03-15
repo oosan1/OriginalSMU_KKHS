@@ -5,7 +5,6 @@
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "hardware/timer.h"
-// #include "hardware/rtc.h"
 #include "hardware/spi.h"
 #include "hardware/adc.h"
 #include "hardware/clocks.h"
@@ -68,21 +67,7 @@ uint16_t IVcurve_list[IV_BUF_SIZE][2] = {0};    // スタック領域の使用�
 #define SYSTEM_CLOCK_MHZ 280
 
 // プロトタイプ宣言
-// int INFO(datetime_t *t);
 int sendLog(char *text, int level);
-
-// コマンド関係
-// INFO {t}
-/*int INFO(datetime_t *t) {
-    char datetime_buf[256];
-    char *datetime_str = &datetime_buf[0];
-    char buffer[256];
-    rtc_get_datetime(t);
-    datetime_to_str(datetime_str, sizeof(datetime_buf), t);
-    sprintf(buffer, "%s\n", datetime_str);
-
-    return 0;
-}*/
 
 // setVol {channel(0:A, 1:B)} {Voltage(step表記)}
 int setVol(int channel, int voltage_step) {
@@ -114,61 +99,6 @@ int readVol(int channel) {
 
     return 0;
 }
-
-// IVsweep {channel(0:A, 1:B)} {speed(V/s)} {maxVoltageStep(step表記)}
-// 非推奨コマンド。Ivcurveコマンドと機能が被るため。
-/*int IVsweep(int channel, float speed_VperS, int voltage_step_max) {
-    char buffer[512];
-    if(channel < 0 || channel > 2) {
-        sendLog("DAC channel is 1 or 2.", 3);
-        return -1;
-    }
-    if(voltage_step_max > 4095) {
-        sprintf(buffer, "%d is greater than the DAC's maximum voltage step of %d. The maximum voltage step of %d is used.\n", voltage_step_max, ADC_STEP - 1, ADC_STEP - 1);
-        sendLog(buffer, 2);
-        voltage_step_max = 4095;
-    }
-
-    absolute_time_t wait_time_us = 1/(speed_VperS / ADC_REF * ADC_STEP) * 1000 * 1000;
-    uint32_t start_time_us = time_us_32();
-    absolute_time_t target_time_us;
-    bool over_time_flag = false;
-    
-    // チャンネル: 指定, バッファ: 無, ゲイン: 1倍
-    const uint16_t DAC_setting_data = 0x3000 + channel * 0x8000;
-    uint16_t write_data;
-
-    sendLog("Start sweep.\n", 1);
-    for (int i = 0; i <= voltage_step_max; i++) {
-        write_data = DAC_setting_data + i;
-        gpio_put(PIN_CS, 0);
-        spi_write16_blocking(SPI_PORT, &write_data, 2);
-        gpio_put(PIN_CS, 1);
-
-        target_time_us = start_time_us + wait_time_us;
-        if (time_us_32() > target_time_us && i != 0) {
-            over_time_flag = true; // 処理速度的に掃引速度を守れなかった場合はフラグを立てる。
-        }
-        busy_wait_until(target_time_us); // 掃引速度に合わせて待機。
-        gpio_put(PIN_LDAC, 0);
-        start_time_us = time_us_32();
-        gpio_put(PIN_LDAC, 1);
-    }
-    sendLog("Finish sweep.\n", 1);
-
-    // 計測後は安全のため、出力電圧を0Vに戻す。
-    write_data = DAC_setting_data + 0;
-    gpio_put(PIN_CS, 0);
-    spi_write16_blocking(SPI_PORT, &write_data, 2);
-    gpio_put(PIN_CS, 1);
-    gpio_put(PIN_LDAC, 0);
-    gpio_put(PIN_LDAC, 1);
-
-    if(over_time_flag) {
-        sendLog("The specified sweep speed could not be achieved. Reduce the sweep speed.", 2);
-    }
-    return 0;
-}*/
 
 // IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {conversionRegistor(Ω)(0でオートレンジ)} {reg_waitingTime(us)} {repetitions(繰り返し回数)} {測定方向(0: 最小→最大, 1: 両方向)} {電圧設定値の反転(1: 無し, -1:あり)} {測定前待機時間(ms)} {&result_list} {&result_size}
 int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, int waiting_time, int voltage_step_min, int voltage_step_max, int conv_reg, int reg_waiting_time, int repetitions, int INV, int inpINV, int before_waiting_time, uint16_t result_list[][2], int *result_size) {
@@ -461,61 +391,6 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
     return 0;
 }
 
-// IVcal {resistance(Ω)} {offset_voltage_step}(step表記) {isInvert} {&IV_list} {&IV_size} {&cal_list} {&isCalibrated}
-// キャリブレーションはクライアント側で行うため、この関数は使用しない。
-/*int IVcal(float resistance, float VtoIresistance, int offset_voltage_step, bool isInvert, uint16_t *IV_list, int *IV_size, int *cal_list, bool *isCalibrated) {
-    char buffer[512];
-    if(resistance <= 0) {
-        sendLog("The calibration resistance value must be greater than 0.\n", 3);
-        return -1;
-    }
-    if(*IV_size == 0) {
-        sendLog("No IV data for calibration.\n", 3);
-        return -1;
-    }
-
-    for (int i = 0; i < ADC_STEP; i++) {
-        cal_list[i] = -ADC_STEP;
-    }
-
-    const float conversionFactor = ADC_REF / (1 << 12);
-    int theoretical_vol;
-    int vol_diff;
-    int vol_step;
-
-    sendLog("Start calibration data calculation.\n", 1);
-    for (int i = 0; i < *IV_size; i++) {
-        vol_step = IV_list[i];
-
-        theoretical_vol = ((ADC_REF / ADC_STEP * i) / resistance * VtoIresistance) / ADC_REF * ADC_STEP;
-        theoretical_vol -= offset_voltage_step;
-        if (isInvert) {
-            theoretical_vol = (theoretical_vol - ADC_STEP) * -1;
-        }
-        vol_diff = vol_step - theoretical_vol;
-        if(cal_list[vol_step] == -ADC_STEP) {
-            cal_list[vol_step] = vol_diff;
-        }else {
-            cal_list[vol_step] = (int)((cal_list[vol_step] + vol_diff) / 2);
-        }
-    }
-    sendLog("End calibration data calculation.\n", 1);
-    sendLog("Start data supplement for proofreading.\n", 1);
-    for (int i = 0; i < ADC_STEP; i++) {
-        if(cal_list[i] == -ADC_STEP) {
-            if(i == 0) {
-                cal_list[i] = 0;
-            }else {
-                cal_list[i] = cal_list[i - 1];
-            }
-        }
-    }
-    sendLog("Calibration complete.\n", 1);
-    *isCalibrated = true;
-
-    return 0;
-}*/
-
 // EIS {DACchannel(0:A, 1:B)} {ADCchannel} {samplingRate(Hz)} {raise_time(ms)} {Voltage_min(step)} {Voltage_max(step)} {repeat_count} {repetitions} {&result_list} {&result_size}
 int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, int volage_min, int volage_max, int conv_reg, int repeat_count, int repetitions, uint16_t result_list[][2], int *result_size) {
     char buffer[512];
@@ -802,23 +677,6 @@ int main() {
     gpio_set_dir(LED_PIN, GPIO_OUT);
     gpio_put(LED_PIN, 0);
 
-    // RTC初期化
-    // !=====RTCはRP2350で使用できないため、対応待ち=====!
-    /*
-    datetime_t t = {
-        .year  = 2000,
-        .month = 01,
-        .day   = 01,
-        .dotw  = 6, // 0 is Sunday, so 5 is Friday
-        .hour  = 00,
-        .min   = 00,
-        .sec   = 00
-    };
-    rtc_init();
-    rtc_set_datetime(&t);
-    sleep_us(64);
-    */
-
     // コマンド変数
     char com_command[128];
     float float_com_arg1;
@@ -838,7 +696,6 @@ int main() {
     int success;
     char buffer[512];
 
-    //int IVcal_list[IV_BUF_SIZE] = {0};
     int IVcurve_size = 0;
 
     sendLog("system started\n", 1);
@@ -852,18 +709,7 @@ int main() {
             if (result == 1) {
                 gpio_put(LED_PIN, 1);
                 add_alarm_in_ms(20, LED_off_callback, NULL, false);
-
-                if(strcmp(com_command, "INFO") == 0) {
-                    // INFO
-                    /*success = INFO(&t);
-                    if(success==0) {
-                        sendLog("INFO was executed\n", 0);
-                    }else {
-                        sendLog("INFO was failed\n", 3);
-                    }*/
-                   sendLog("Can't use RTC yet.\n", 1);
-                }
-                else if(strcmp(com_command, "DEBUG") == 0) {
+                if(strcmp(com_command, "DEBUG") == 0) {
                     // ADCチェック
                     float ADC_CONVERSION_FACTOR = 3.0f / (1 << 12);
                 
@@ -921,19 +767,6 @@ int main() {
                         sendLog("readVol was failed\n", 3);
                     }
                 }
-                else if(strcmp(com_command, "IVsweep") == 0) {
-                    // 非推奨コマンド
-                    // IVsweep {channel(0:A, 1:B)} {speed(V/s)} {maxVoltageStep} {Inverse}
-                    /*scanf("%d", &int_com_arg1);
-                    scanf("%f", &float_com_arg1);
-                    scanf("%d", &int_com_arg2);
-                    success = IVsweep(int_com_arg1, float_com_arg1, int_com_arg2);
-                    if(success==0) {
-                        sendLog("IVsweep was executed\n", 0);
-                    }else {
-                        sendLog("IVsweep was failed\n", 3);
-                    }*/
-                }
                 else if(strcmp(com_command, "IVcurve") == 0) {
                     // IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {conversionResistor(Ω)(0でオートレンジ)} {reg_waitingTime(us)} {反転の有無(0: false, 1: true)}
                     scanf("%d", &int_com_arg1);
@@ -956,19 +789,6 @@ int main() {
                         sendLog("IVcurve was failed\n", 3);
                     }
                 }
-                /*else if(strcmp(com_command, "IVcal") == 0) {
-                    // キャリブレーションはクライアント側で行うため、このコマンドは非推奨。
-                    // IVcal {resistance(Ω)} {VtoIresistance(Ω)}{&IV_list} {&IV_size} {&cal_list}
-                    scanf("%f", &float_com_arg1);
-                    scanf("%f", &float_com_arg2);
-                    success = IVcal(float_com_arg1, float_com_arg2, offset_voltage_step, isInvert, IVcurve_list, &IVcurve_size, IVcal_list, &isCalibrated);
-                    if(success==0) {
-                        sendLog("IVcal was executed\n", 0);
-                    }else {
-                        sendLog("IVcal was failed\n", 3);
-                    }
-                    sendLog("Can't use IVcal command.\n", 3);
-                }*/
                 else if(strcmp(com_command, "EIS") == 0) {
                     // EIS {DACchannel(0:A, 1:B)} {ADCchannel} {samplingRate(Hz)} {raise_time(ms)} {Voltage_min(step)} {Voltage_max(step)} {repeat_count}
                     scanf("%d", &int_com_arg1);
@@ -988,19 +808,6 @@ int main() {
                         sendLog("EIS was failed\n", 3);
                     }
                 }
-                /*
-                // IVcalと同様に、キャリブレーション関係はクライアント側で行うため、非推奨コマンド
-                else if(strcmp(com_command, "setOffsets") == 0) {
-                    // setOffsets {offset_voltage(step)} {isInvert(0:false, 1:true)}
-                    scanf("%d", &int_com_arg1);
-                    scanf("%d", &int_com_arg2);
-                
-                    offset_voltage_step = int_com_arg1;
-                    isInvert = int_com_arg2;
-                    sprintf(buffer, "offset_voltage:%d, isInvert:%d\n", offset_voltage_step, isInvert);
-                    sendLog(buffer, 0);
-                    sendLog("setOffsets was executed\n", 0);
-                }*/
                 else if(strcmp(com_command, "setRefVoltage") == 0) {
                     // setRefVoltage {ADC_REF(V)} {DAC_REF(V)}
                     scanf("%f", &float_com_arg1);
