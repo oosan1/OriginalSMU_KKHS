@@ -170,8 +170,8 @@ int readVol(int channel) {
     return 0;
 }*/
 
-// IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {conversionRegistor(Ω)(0でオートレンジ)} {reg_waitingTime(us)} {repetitions(繰り返し回数)} {測定方向(0: 最小→最大, 1: 両方向)} {電圧設定値の反転(1: 無し, -1:あり)} {測定前待機時間(ms)} {&result_list} {&result_size} {&isCalibrated}
-int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, int waiting_time, int voltage_step_min, int voltage_step_max, int conv_reg, int reg_waiting_time, int repetitions, int INV, int inpINV, int before_waiting_time, uint16_t result_list[][2], int *result_size, bool *isCalibrated) {
+// IVcurve {DACchannel(0:A, 1:B)} {ADCchannel} {speed(step/s)} {step} {waitingTime(us)} {minVoltageStep(step)} {maxVoltageStep(step)} {conversionRegistor(Ω)(0でオートレンジ)} {reg_waitingTime(us)} {repetitions(繰り返し回数)} {測定方向(0: 最小→最大, 1: 両方向)} {電圧設定値の反転(1: 無し, -1:あり)} {測定前待機時間(ms)} {&result_list} {&result_size}
+int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, int waiting_time, int voltage_step_min, int voltage_step_max, int conv_reg, int reg_waiting_time, int repetitions, int INV, int inpINV, int before_waiting_time, uint16_t result_list[][2], int *result_size) {
     char buffer[512];
     if(ADCchannel < 0 || ADCchannel > 4) {
         sendLog("Available ADC channels are 1 to 3.", 3);
@@ -245,11 +245,6 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
 
     // IVcurve測定
     sendLog("Start sending.\n", 1);
-    if(*isCalibrated) {
-        printf("CALIBRATION:ON\n");
-    }else {
-        printf("CALIBRATION:OFF\n");
-    }
     printf("START\n");
 
     int set_voltage;
@@ -521,8 +516,8 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
     return 0;
 }*/
 
-// EIS {DACchannel(0:A, 1:B)} {ADCchannel} {samplingRate(Hz)} {raise_time(ms)} {Voltage_min(step)} {Voltage_max(step)} {repeat_count} {repetitions} {&result_list} {&result_size} {&isCalibrated}
-int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, int volage_min, int volage_max, int conv_reg, int repeat_count, int repetitions, uint16_t result_list[][2], int *result_size, bool *isCalibrated) {
+// EIS {DACchannel(0:A, 1:B)} {ADCchannel} {samplingRate(Hz)} {raise_time(ms)} {Voltage_min(step)} {Voltage_max(step)} {repeat_count} {repetitions} {&result_list} {&result_size}
+int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, int volage_min, int volage_max, int conv_reg, int repeat_count, int repetitions, uint16_t result_list[][2], int *result_size) {
     char buffer[512];
     if(ADCchannel < 0 || ADCchannel > 4) {
         sendLog("Available ADC channels are 1 to 3.", 3);
@@ -661,11 +656,6 @@ int EIS(int DACchannel, int ADCchannel, float samplingRate, float raise_time, in
     // 測定データの送信
     voltage_status = true;
     sendLog("Start sending.\n", 1);
-    if(*isCalibrated) {
-        printf("CALIBRATION:ON\n");
-    }else {
-        printf("CALIBRATION:OFF\n");
-    }
     printf("START\n");
     for (int i = 0; i < loop_count; i++) {
         if (i % loop_count_half == 0) {
@@ -849,7 +839,6 @@ int main() {
     char buffer[512];
 
     //int IVcal_list[IV_BUF_SIZE] = {0};
-    bool isCalibrated = false;
     int IVcurve_size = 0;
 
     sendLog("system started\n", 1);
@@ -960,7 +949,7 @@ int main() {
                     scanf("%d", &int_com_arg10);
                     scanf("%d", &int_com_arg11);
                     scanf("%d", &int_com_arg12);
-                    success = IVcurve(int_com_arg1, int_com_arg2, float_com_arg1, int_com_arg3, int_com_arg4, int_com_arg5, int_com_arg6, int_com_arg7, int_com_arg8, int_com_arg9, int_com_arg10, int_com_arg11, int_com_arg12, IVcurve_list, &IVcurve_size, &isCalibrated);
+                    success = IVcurve(int_com_arg1, int_com_arg2, float_com_arg1, int_com_arg3, int_com_arg4, int_com_arg5, int_com_arg6, int_com_arg7, int_com_arg8, int_com_arg9, int_com_arg10, int_com_arg11, int_com_arg12, IVcurve_list, &IVcurve_size);
                     if(success==0) {
                         sendLog("IVcurve was executed\n", 0);
                     }else {
@@ -992,7 +981,7 @@ int main() {
                     scanf("%d", &int_com_arg8);
                     scanf("%d", &int_com_arg9);
                 
-                    success = EIS(int_com_arg1, int_com_arg2, float_com_arg1, float_com_arg2, int_com_arg5, int_com_arg6, int_com_arg7, int_com_arg8, int_com_arg9, IVcurve_list, &IVcurve_size, &isCalibrated);
+                    success = EIS(int_com_arg1, int_com_arg2, float_com_arg1, float_com_arg2, int_com_arg5, int_com_arg6, int_com_arg7, int_com_arg8, int_com_arg9, IVcurve_list, &IVcurve_size);
                     if(success==0) {
                         sendLog("EIS was executed\n", 0);
                     }else {

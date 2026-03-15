@@ -12,6 +12,8 @@ const STATUS_UPDATE_INTERVAL = 1000; // 状態更新の間隔(ms)
 
 let status_interval;
 
+let receivedDataCount = 0;
+
 let drawDataList = [];
 let graph_xMax;
 let graph_yMax;
@@ -57,6 +59,7 @@ const firmwareVersion = document.getElementById("firmware_version");
 const upTime = document.getElementById("uptime");
 const CPUTemp = document.getElementById("CPU_temp");
 const updateStatus = document.getElementById("update_status");
+const dataCount = document.getElementById("data_count");
 
 
 const DACaButton = document.getElementById("setVolA_btn");
@@ -709,10 +712,6 @@ function SerialControl(text) {
                 IV_counter = 0;
                 startStatusUpdate();
             }
-        }else if (noCtrlCharText === "CALIBRATION:ON") {
-            isCalibrated = true;
-        }else if (noCtrlCharText === "CALIBRATION:OFF") {
-            isCalibrated = false;
         }else if (recording) {
             const rawInputStepVol = noCtrlCharText.split(" ")[0];
             const rawOutputStepVol = noCtrlCharText.split(" ")[1];
@@ -810,10 +809,6 @@ function SerialControl(text) {
             if (EIS_flag_promise) {
                 EIS_flag_promise();
             }
-        }else if (noCtrlCharText === "CALIBRATION:ON") {
-            isCalibrated = true;
-        }else if (noCtrlCharText === "CALIBRATION:OFF") {
-            isCalibrated = false;
         }else if (noCtrlCharText.split(" ")[1] === "error:") {
             parseSerial(text);
             recording = false;
@@ -1135,11 +1130,13 @@ async function readTextSerial() {
             while (true) {
                 const { value, done } = await reader.read();
                 if (done) {
-                  console.log("Canceled");
-                  break;
+                    console.log("Canceled");
+                    break;
                 }
+                receivedDataCount++;
+                dataCount.textContent = receivedDataCount;
                 SerialControl(value);
-              }
+            }
         } catch (error) {
             console.log(error);
         }finally {
