@@ -1,5 +1,6 @@
 let port;
 let MODE = "NORMAL";
+let recording = false;
 const EIS_max_data = 199000; // EIS計測の最大データ個数
 const EIS_max_sampling_freq = 100000; // EIS計測の最大サンプリングレート
 
