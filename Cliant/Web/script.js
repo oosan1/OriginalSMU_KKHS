@@ -329,6 +329,8 @@ async function onEISButtonClick() {
     let input_delay_time;
     let sampfreq;
     let input_freq;
+
+    ButtonEnDi("IVcurve_start");
     for (let i = 0; i < mesure_times; i++) {
         input_freq = EIS_freqs[i].freq;
         input_delay_time = Math.round(((1 / input_freq) * 1000 / 2)*100)/100;
@@ -360,10 +362,8 @@ async function onEISButtonClick() {
         for (let i = 0; i < EIS_avg; i++) {
             status_text.innerText = `EIS測定中...(${i+1}/${mesure_times}) 平均回数:${i+1}/${EIS_avg}回`;
             EIS_avgCountNow = i;
-            setTimeout(() => {
-                MODE = "EIS";
-                writeTextSerial(`EIS 0 0 ${sampfreq_arrange} ${input_delay_time} ${step_low_voltage} ${step_high_voltage} ${ADC_IconvR} 1 ${DEBUG_HARDWARE_AVERAGE_COUNT}`);
-            }, 200);
+            MODE = "EIS";
+            writeTextSerial(`EIS 0 0 ${sampfreq_arrange} ${input_delay_time} ${step_low_voltage} ${step_high_voltage} ${ADC_IconvR} 1 ${DEBUG_HARDWARE_AVERAGE_COUNT}`);
             const flagPromise = new Promise(resolve => {
                 EIS_flag_promise = resolve;
             });
@@ -689,6 +689,7 @@ function SerialControl(text) {
             const rawOutputStepVol = noCtrlCharText.split(" ")[1];
             const outputStepVol = (rawOutputStepVol - (ADC_absMinVol / ADC_absVol) * ADC_step) * ADC_invert;
             let I_convertion_R = noCtrlCharText.split(" ")[2];
+            const INV = noCtrlCharText.split(" ")[3];
 
             // 電流電圧変換における並列抵抗を考慮した補正
             if (I_convertion_R == 100) {
@@ -749,7 +750,6 @@ function SerialControl(text) {
                 calibrated_current = current * 1000;
             }
 
-            const INV = noCtrlCharText.split(" ")[3];
             graph.data.datasets[INV].data.push({x: converted_voltage, y: calibrated_current});
             graph.update();
             drawDataList.push({
@@ -762,7 +762,6 @@ function SerialControl(text) {
             parseSerial(text);
         }
     }else if (MODE === "EIS") {
-        ButtonEnDi("IVcurve_start");
         if (noCtrlCharText === "START") {
             console.log("記録開始...")
             drawDataList = [];

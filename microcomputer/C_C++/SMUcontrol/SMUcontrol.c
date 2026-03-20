@@ -42,11 +42,9 @@ struct repeating_timer LED_timer;
 #define PIN_LDAC 20
 #define SPI_CLOCK_SPEED 15 * MHZ
 #define LDAC_MASK (1u << PIN_LDAC)
-float DAC_REF = 2.048;
 
 // ADC設定
 #define ADC_STEP 4096
-float ADC_REF = 2.96;
 // ADCの抵抗切り替え閾値(2048を0とした場合の絶対値)
 #define ADC_100to1k_THRESHOLD 190 // 100Ωから1kΩ
 #define ADC_100to10k_THRESHOLD 11 // 100Ωから10kΩ
@@ -173,6 +171,8 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
     sleep_ms(before_waiting_time);
     start_time_us = time_us_64();
 
+    bool stop_command_received = false;
+
     // IVcurve測定
     sendLog("Start sending.\n", 1);
     printf("START\n");
@@ -181,6 +181,7 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
     for (int i = voltage_step_min; i < voltage_step_max; i+=per_step) {
         int stop_command = getchar_timeout_us(0);
         if (stop_command != PICO_ERROR_TIMEOUT && stop_command != EOF) {
+            stop_command_received = true;
             break;
         }
 
@@ -264,7 +265,7 @@ int IVcurve(int DACchannel, int ADCchannel, float speed_stepPerS, int per_step, 
         /*result_list[i][0] = ADCvalue;
         result_list[i][1] = current_reg;*/
     }
-    if (INV == 1) {
+    if (INV == 1 && !stop_command_received) {
         for (int i = voltage_step_max - 2; i >= voltage_step_min; i-=per_step) {
             int stop_command = getchar_timeout_us(0);
             if (stop_command != PICO_ERROR_TIMEOUT && stop_command != EOF) {
@@ -807,17 +808,6 @@ int main() {
                     }else {
                         sendLog("EIS was failed\n", 3);
                     }
-                }
-                else if(strcmp(com_command, "setRefVoltage") == 0) {
-                    // setRefVoltage {ADC_REF(V)} {DAC_REF(V)}
-                    scanf("%f", &float_com_arg1);
-                    scanf("%f", &float_com_arg2);
-                
-                    ADC_REF = float_com_arg1;
-                    DAC_REF = float_com_arg2;
-                    sprintf(buffer, "ADC_REF:%f, DAC_REF:%f\n", ADC_REF, DAC_REF);
-                    sendLog(buffer, 0);
-                    sendLog("setRefVoltage was executed\n", 0);
                 }else if(strcmp(com_command, "setReg") == 0) {
                     // setReg {1k:0, 100:1} {off:0, on:1}
                     scanf("%d", &int_com_arg1);
