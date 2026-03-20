@@ -25,7 +25,7 @@ struct repeating_timer LED_timer;
 #define BOARD_NAME "RaspberryPiPico2"
 #define CPU_NAME "RP2350"
 #define CIRCUIT_VERSION "β0.0.4"
-#define FIRMWARE_VERSION "β1.1.3"
+#define FIRMWARE_VERSION "β1.1.4"
 
 // 電源設定
 //#define PIN_POWER_MODE 23  初代Picoの場合
